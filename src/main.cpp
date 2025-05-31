@@ -1,6 +1,7 @@
 #include <cstdio> 
 #include "ConfigManager.hpp"
 #include "Logger.hpp"
+#include "ModelHandler.h"
 #include <ament_index_cpp/get_package_share_directory.hpp>
 
 
@@ -12,4 +13,15 @@ int main()
 
     ConfigManager::get().load(configPath); 
 
+    ModelHandler mh; 
+
+    YAML::Node modelsConfig; 
+    if(!ConfigManager::get().getConfig<YAML::Node>("models", modelsConfig))
+    {
+        LOGE << "Unable to get models config"; 
+        return 0; 
+    }
+
+    mh.setupModels(modelsConfig);
+    mh.test(); 
 }

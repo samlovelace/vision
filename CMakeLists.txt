@@ -12,7 +12,12 @@ find_package(std_msgs REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
 set(SOURCES 
+  ${CMAKE_CURRENT_LIST_DIR}/src/EngineFactory.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/ModelFactory.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/ModelHandler.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/OpenCvEngine.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/YoloModel.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCES})
