@@ -6,4 +6,5 @@ models:
 
 camera:
   type: webcam
-  rate: 1 # Hz
+  rate: 10 # Hz
+  visualize: false

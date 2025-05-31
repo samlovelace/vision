@@ -20,6 +20,8 @@ private:
     std::shared_ptr<RateController> mRate; 
     std::shared_ptr<ICamera> mCamera; 
     std::shared_ptr<ModelHandler> mModelHandler; 
+
+    bool mVisualize; 
    
 };
 #endif //CAMERAHANDLER_H
