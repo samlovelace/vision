@@ -10,6 +10,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(yaml-cpp REQUIRED)
+find_package(OpenCV REQUIRED)
 
 set(SOURCES 
   ${CMAKE_CURRENT_LIST_DIR}/src/EngineFactory.cpp
@@ -25,6 +26,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 include_directories(${PROJECT_NAME}
   ${CMAKE_CURRENT_LIST_DIR}/include 
   ${CMAKE_CURRENT_LIST_DIR}/dependencies/plog/plog-master/include
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ament_target_dependencies(${PROJECT_NAME}
@@ -33,6 +35,7 @@ ament_target_dependencies(${PROJECT_NAME}
 )
 target_link_libraries(${PROJECT_NAME} 
   yaml-cpp 
+  ${OpenCV_LIBS}
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})

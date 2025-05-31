@@ -17,3 +17,13 @@ bool YoloModel::init()
     LOGD << "YoloModel initialized!"; 
     return true; 
 }
+
+bool YoloModel::preprocess()
+{
+
+}
+
+bool YoloModel::postprocess()
+{
+    
+}

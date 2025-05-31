@@ -10,6 +10,8 @@ public:
     ~YoloModel();
 
     bool init() override; 
+    bool preprocess() override; 
+    bool postprocess() override; 
 
 private:
    

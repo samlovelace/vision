@@ -4,10 +4,12 @@
  
 class IModel 
 { 
-public:;
+public:
     ~IModel() = default; 
     
     virtual bool init() = 0; 
+    virtual bool preprocess() = 0; 
+    virtual bool postprocess() = 0; 
 
 private:
    

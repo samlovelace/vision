@@ -10,6 +10,8 @@ public:
     ~OpenCvEngine();
 
     bool init() override; 
+    bool loadModel(const std::string& aModelPath) override; 
+    void doInference(const cv::Mat& anImage) override; 
 
 private:
    
