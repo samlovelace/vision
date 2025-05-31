@@ -49,3 +49,8 @@ void ModelHandler::test()
 
 }
 
+void ModelHandler::handleFrame(const cv::Mat& aFrame)
+{
+    LOGD << "passing frame to models"; 
+}
+

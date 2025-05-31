@@ -3,3 +3,7 @@ models:
     type: 2d-detection
     path: /home/sam/models/yolov8.pt
     engine: opencv
+
+camera:
+  type: webcam
+  rate: 1 # Hz

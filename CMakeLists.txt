@@ -13,11 +13,15 @@ find_package(yaml-cpp REQUIRED)
 find_package(OpenCV REQUIRED)
 
 set(SOURCES 
+  ${CMAKE_CURRENT_LIST_DIR}/src/CameraFactory.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/CameraHandler.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/EngineFactory.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/ModelFactory.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/ModelHandler.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/OpenCvEngine.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/RateController.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/UsbCamera.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/YoloModel.cpp
 )
 

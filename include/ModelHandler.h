@@ -14,6 +14,8 @@ public:
 
     void test(); 
 
+    void handleFrame(const cv::Mat& aFrame); 
+
 private:
 
     std::vector<ModelContext> mModels; 
