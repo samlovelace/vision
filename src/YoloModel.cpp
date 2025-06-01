@@ -18,12 +18,12 @@ bool YoloModel::init()
     return true; 
 }
 
-bool YoloModel::preprocess()
+bool YoloModel::preprocess(const cv::Mat& inputImage, cv::Mat& outputBlob)
 {
 
 }
 
-bool YoloModel::postprocess()
+bool YoloModel::postprocess(const cv::Mat& netOutput, std::vector<cv::Rect>& boxes)
 {
     
 }

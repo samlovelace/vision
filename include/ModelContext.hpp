@@ -16,6 +16,7 @@ struct ModelContext
 
     std::unique_ptr<IModel> mModel; 
     std::unique_ptr<IInferenceEngine> mEngine; 
+    std::vector<cv::Rect> mDetections; 
 };
 
 #endif // MODELCONTEXT_H

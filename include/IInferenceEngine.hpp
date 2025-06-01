@@ -2,6 +2,7 @@
 #define IINFERENCEENGINE_H
 
 #include <opencv4/opencv2/core/core.hpp>
+#include <opencv4/opencv2/core/mat.hpp>
  
 class IInferenceEngine 
 { 
@@ -10,7 +11,7 @@ public:
 
     virtual bool init() = 0; 
     virtual bool loadModel(const std::string& aModelPath) = 0; 
-    virtual void doInference(const cv::Mat& anImage) = 0; 
+    virtual cv::Mat doInference(const cv::Mat& anImage) = 0; 
 
 private:
    

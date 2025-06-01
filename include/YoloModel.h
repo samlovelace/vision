@@ -10,8 +10,8 @@ public:
     ~YoloModel();
 
     bool init() override; 
-    bool preprocess() override; 
-    bool postprocess() override; 
+    bool preprocess(const cv::Mat& inputImage, cv::Mat& outputBlob) override; 
+    bool postprocess(const cv::Mat& netOutput, std::vector<cv::Rect>& boxes) override; 
 
 private:
    

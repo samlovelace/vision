@@ -1,10 +1,10 @@
 models:
-  - name: yolo
+  - name: mobilenet
     type: 2d-detection
-    path: /home/sam/models/yolov8.pt
+    path: /home/sam/models/mobilenet.caffemodel
     engine: opencv
 
 camera:
   type: webcam
-  rate: 10 # Hz
-  visualize: false
+  rate: 5 # Hz
+  visualize: true

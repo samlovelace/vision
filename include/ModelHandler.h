@@ -11,10 +11,10 @@ public:
     ~ModelHandler();
 
     bool setupModels(YAML::Node& aModelsConfig);
-
-    void test(); 
-
+    void init(); 
     void handleFrame(const cv::Mat& aFrame); 
+
+    std::vector<cv::Rect> getModelDetections(); 
 
 private:
 

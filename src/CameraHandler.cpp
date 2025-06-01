@@ -39,22 +39,31 @@ void CameraHandler::run()
         mRate->start(); 
 
         cv::Mat frame = mCamera->getFrame(); 
-        
-        if(mVisualize)
+        if (frame.empty()) 
         {
-            if (frame.empty()) 
-            {
-                continue; 
-            }
-            
-            cv::imshow("Live Webcam Feed", frame);  // Show the frame
+            LOGD << "Frame empty..."; 
+            continue; 
         }
 
-        mModelHandler->handleFrame(frame); 
+        mModelHandler->handleFrame(frame);
+
+        if(mVisualize)
+        {
+            std::vector<cv::Rect> detections = mModelHandler->getModelDetections(); 
+            cv::Scalar color = cv::Scalar(0, 255, 0);
+            int thickness = 2;
+
+            for(const auto& rect : detections) 
+            {
+                cv::rectangle(frame, rect, color, thickness);
+            }
+            
+            cv::imshow("detections", frame);  // Show the frame
+        }
         
         // Exit on 'q' key press
-        if (cv::waitKey(1) == 'q') {
-            std::cout << "✅ Quitting...\n";
+        if (cv::waitKey(1) == 'q') 
+        {
             break;
         }
 
@@ -62,3 +71,5 @@ void CameraHandler::run()
     }
 
 }
+
+

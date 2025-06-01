@@ -25,7 +25,7 @@ int main()
     }
 
     mh->setupModels(modelsConfig);
-    mh->test(); 
+    mh->init(); 
 
     YAML::Node cameraConfig; 
     if(!ConfigManager::get().getConfig<YAML::Node>("camera", cameraConfig))

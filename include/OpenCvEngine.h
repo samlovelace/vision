@@ -2,6 +2,8 @@
 #define OPENCVENGINE_H
  
 #include "IInferenceEngine.hpp"
+#include <opencv2/opencv.hpp>
+#include <opencv2/dnn.hpp>
  
 class OpenCvEngine : public IInferenceEngine
 { 
@@ -11,9 +13,10 @@ public:
 
     bool init() override; 
     bool loadModel(const std::string& aModelPath) override; 
-    void doInference(const cv::Mat& anImage) override; 
+    cv::Mat doInference(const cv::Mat& anImage) override; 
 
 private:
+    cv::dnn::Net mNet; 
    
 };
 #endif //OPENCVENGINE_H
