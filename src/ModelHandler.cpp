@@ -4,17 +4,8 @@
 #include "EngineFactory.h"
 #include "plog/Log.h"
 
-ModelHandler::ModelHandler()
-{
-
-}
-
-ModelHandler::~ModelHandler()
-{
-
-}
-
-bool ModelHandler::setupModels(YAML::Node& aModelsConfig)
+ModelHandler::ModelHandler(const YAML::Node& aModelsConfig, std::shared_ptr<ConcurrentQueue<cv::Mat>> aFrameQueue) : 
+    mFrameQueue(aFrameQueue)
 {
     for (const auto& modelConfig : aModelsConfig) {
         std::string modelType = modelConfig["name"].as<std::string>();
@@ -31,21 +22,33 @@ bool ModelHandler::setupModels(YAML::Node& aModelsConfig)
         auto engine = EngineFactory::create(engineType); 
         auto model = ModelFactory::create(modelType); 
         
+        // TODO: not sure this is the best place to put this? 
         engine->loadModel(path); 
+        engine->init(); 
+        model->init(); 
 
         ModelContext ctx(std::move(model), std::move(engine)); 
         mModels.push_back(std::move(ctx)); 
     }
 
-    return true; 
 }
 
-void ModelHandler::init()
+ModelHandler::~ModelHandler()
 {
-    for(const auto& ctx : mModels)
+
+}
+
+void ModelHandler::run()
+{
+    while(true)
     {
-        ctx.mModel->init(); 
-        ctx.mEngine->init(); 
+        cv::Mat frame; 
+        if(mFrameQueue->pop(frame))
+        {
+            handleFrame(frame); 
+
+            //TODO: push to Detection queue once implemented
+        }
     }
 }
 
@@ -54,7 +57,6 @@ void ModelHandler::handleFrame(const cv::Mat& aFrame)
     for(auto& ctx : mModels)
     {
         cv::Mat preProcFrame; 
-        //std::vector<cv::Rect> detections; 
 
         ctx.mModel->preprocess(aFrame, preProcFrame); 
         cv::Mat output = ctx.mEngine->doInference(preProcFrame); 
@@ -68,4 +70,6 @@ std::vector<cv::Rect> ModelHandler::getModelDetections()
     //       Need some way of keying the model contexts
     return mModels[0].mDetections; 
 }
+
+
 

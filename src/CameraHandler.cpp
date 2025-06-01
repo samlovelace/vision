@@ -5,16 +5,8 @@
 
 #include "plog/Log.h"
 
-CameraHandler::CameraHandler(std::shared_ptr<ModelHandler> mh) : mModelHandler(mh), mRate(nullptr), mVisualize(false)
-{
-
-}
-
-CameraHandler::~CameraHandler()
-{
-}
-
-bool CameraHandler::init(const YAML::Node& aCameraConfig)
+CameraHandler::CameraHandler(const YAML::Node& aCameraConfig, std::shared_ptr<ConcurrentQueue<cv::Mat>> aFrameQueue) : 
+        mFrameQueue(aFrameQueue), mRate(nullptr)
 {
     LOGD << YAML::Dump(aCameraConfig); 
 
@@ -24,10 +16,13 @@ bool CameraHandler::init(const YAML::Node& aCameraConfig)
     mCamera = CameraFactory::create(aCameraConfig["type"].as<std::string>()); 
     if(nullptr == mCamera)
     {
-        return false; 
+        throw std::invalid_argument("Invalid camera configuration");  
     }
 
-    return true; 
+}
+
+CameraHandler::~CameraHandler()
+{
 }
 
 void CameraHandler::run()
@@ -45,27 +40,7 @@ void CameraHandler::run()
             continue; 
         }
 
-        mModelHandler->handleFrame(frame);
-
-        if(mVisualize)
-        {
-            std::vector<cv::Rect> detections = mModelHandler->getModelDetections(); 
-            cv::Scalar color = cv::Scalar(0, 255, 0);
-            int thickness = 2;
-
-            for(const auto& rect : detections) 
-            {
-                cv::rectangle(frame, rect, color, thickness);
-            }
-            
-            cv::imshow("detections", frame);  // Show the frame
-        }
-        
-        // Exit on 'q' key press
-        if (cv::waitKey(1) == 'q') 
-        {
-            break;
-        }
+        mFrameQueue->push(frame);
 
         mRate->block(); 
     }

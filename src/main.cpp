@@ -5,6 +5,7 @@
 #include "CameraHandler.h"
 #include <ament_index_cpp/get_package_share_directory.hpp>
 
+#include "Vision.h"
 
 int main()
 {
@@ -14,26 +15,8 @@ int main()
 
     ConfigManager::get().load(configPath); 
 
-    auto mh = std::make_shared<ModelHandler>(); 
-    auto ch = std::make_shared<CameraHandler>(mh); 
+    Vision vision; 
+    vision.start(); 
 
-    YAML::Node modelsConfig; 
-    if(!ConfigManager::get().getConfig<YAML::Node>("models", modelsConfig))
-    {
-        LOGE << "Unable to get models config"; 
-        return 0; 
-    }
-
-    mh->setupModels(modelsConfig);
-    mh->init(); 
-
-    YAML::Node cameraConfig; 
-    if(!ConfigManager::get().getConfig<YAML::Node>("camera", cameraConfig))
-    {
-        LOGE << "Invalid camera config"; 
-        return 0; 
-    }
-
-    ch->init(cameraConfig); 
-    ch->run(); 
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000)); 
 }

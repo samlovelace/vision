@@ -22,6 +22,7 @@ set(SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/src/OpenCvEngine.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/RateController.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/UsbCamera.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/Vision.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/YoloModel.cpp
 )
 
