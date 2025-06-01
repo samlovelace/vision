@@ -4,8 +4,13 @@
 #include "EngineFactory.h"
 #include "plog/Log.h"
 
-ModelHandler::ModelHandler(const YAML::Node& aModelsConfig, std::shared_ptr<ConcurrentQueue<cv::Mat>> aFrameQueue) : 
-    mFrameQueue(aFrameQueue)
+#include <opencv2/opencv.hpp>
+
+ModelHandler::ModelHandler(const YAML::Node& aModelsConfig, 
+                           std::shared_ptr<ConcurrentQueue<cv::Mat>> aFrameQueue, 
+                           std::shared_ptr<ConcurrentQueue<Detection>> aDetectionQueue,
+                           std::shared_ptr<ConcurrentQueue<Detection>> aVisQueue) : 
+    mFrameQueue(aFrameQueue), mDetectionQueue(aDetectionQueue), mVisQueue(aVisQueue)
 {
     for (const auto& modelConfig : aModelsConfig) {
         std::string modelType = modelConfig["name"].as<std::string>();
@@ -44,10 +49,28 @@ void ModelHandler::run()
     {
         cv::Mat frame; 
         if(mFrameQueue->pop(frame))
-        {
-            handleFrame(frame); 
+        { 
+            cv::Mat preProcFrame; 
+            Detection detection;
 
-            //TODO: push to Detection queue once implemented
+            // TODO: pushing to the queue wont behavior properly when there are multiple models 
+            for(auto& ctx : mModels)
+            {
+                cv::Mat preProcFrame; 
+
+                ctx.mModel->preprocess(frame, preProcFrame); 
+                cv::Mat output = ctx.mEngine->doInference(preProcFrame); 
+                ctx.mModel->postprocess(output, detection.mDetections); 
+            }
+
+            // set the frame that the model(s) ran inference on
+            detection.mFrame = frame; 
+
+            // push to queues for 3d estimator
+            mDetectionQueue->push(detection); 
+
+            renderDetections(detection); 
+            mVisQueue->push(detection); 
         }
     }
 }
@@ -61,6 +84,14 @@ void ModelHandler::handleFrame(const cv::Mat& aFrame)
         ctx.mModel->preprocess(aFrame, preProcFrame); 
         cv::Mat output = ctx.mEngine->doInference(preProcFrame); 
         ctx.mModel->postprocess(output, ctx.mDetections); 
+    }
+}
+
+void ModelHandler::renderDetections(Detection& aDetection)
+{
+    for(const auto& bbox : aDetection.mDetections)
+    {
+        cv::rectangle(aDetection.mFrame, bbox, cv::Scalar(0, 255, 0, 0), 1, 8); 
     }
 }
 

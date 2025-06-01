@@ -17,6 +17,4 @@ int main()
 
     Vision vision; 
     vision.start(); 
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000)); 
 }

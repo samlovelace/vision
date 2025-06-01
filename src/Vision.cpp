@@ -4,7 +4,7 @@
 
 #include "plog/Log.h"
 
-Vision::Vision()
+Vision::Vision() : mVisualize(true)
 {
     //******** CAMERA SETUP ******************/
     YAML::Node cameraConfig; 
@@ -24,7 +24,9 @@ Vision::Vision()
     }
 
     // TODO: pass Detection queue once implemented 
-    mDetector = std::make_shared<ModelHandler>(modelsConfig, mFrameQueue); 
+    mDetectionQueue = std::make_shared<ConcurrentQueue<Detection>>();
+    m2DVisQueue = std::make_shared<ConcurrentQueue<Detection>>(); 
+    mDetector = std::make_shared<ModelHandler>(modelsConfig, mFrameQueue, mDetectionQueue, m2DVisQueue); 
 
 }
 
@@ -44,6 +46,34 @@ void Vision::start()
 {
     mThreads.emplace_back(&CameraHandler::run, mCameraHandler.get());
     mThreads.emplace_back(&ModelHandler::run, mDetector.get()); 
+
+    RateController rate(5); 
+
+    while(true)
+    {
+        rate.start(); 
+
+        if(mVisualize)
+        {
+            Detection detection; 
+            if(m2DVisQueue->pop(detection))
+            {
+                if(detection.mFrame.empty())
+                {
+                    continue; 
+                }
+
+                cv::imshow("Detections", detection.mFrame); 
+            }
+        }
+
+        if(cv::waitKey(1) == 'q')
+        {
+            break; 
+        }
+    
+        rate.block();
+    } 
 }
 
 void Vision::stop()

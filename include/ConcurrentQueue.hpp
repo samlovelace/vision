@@ -5,6 +5,8 @@
 #include <mutex>
 #include <condition_variable>
 
+#include "plog/Log.h"
+
 template <typename T>
 class ConcurrentQueue {
 public:
@@ -39,6 +41,13 @@ public:
 
         item = std::move(mQueue.front());
         mQueue.pop();
+        return true;
+    }
+
+    bool peek(T& item) const {
+        std::lock_guard<std::mutex> lock(mMutex);
+        if (mQueue.empty()) return false;
+        item = mQueue.front();
         return true;
     }
 

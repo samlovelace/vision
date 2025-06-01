@@ -24,9 +24,12 @@ private:
     std::shared_ptr<ConcurrentQueue<cv::Mat>> mFrameQueue; 
 
     std::shared_ptr<ModelHandler> mDetector; 
-    //std::shared_ptr<ConcurrentQueue<Detections> mDetectionQueue; 
+    std::shared_ptr<ConcurrentQueue<Detection>> mDetectionQueue; 
+    std::shared_ptr<ConcurrentQueue<Detection>> m2DVisQueue; 
 
     //std::shared_ptr<PoseEstimator> mPoseEstimator
+
+    bool mVisualize; 
    
 };
 #endif //VISION_H
