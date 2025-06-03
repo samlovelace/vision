@@ -35,7 +35,7 @@ Vision::Vision() : mVisualize(true)
         throw std::invalid_argument("Missing or invalid pose_estimation config"); 
     }
 
-    //mPoseEstimationHandler = std::make_shared<PoseEstimationHandler>(poseEstConfig, mDetectionQueue); 
+    mPoseEstimationHandler = std::make_shared<PoseEstimationHandler>(poseEstConfig, mDetectionQueue); 
 
 }
 
@@ -55,7 +55,9 @@ void Vision::start()
 {
     mThreads.emplace_back(&CameraHandler::run, mCameraHandler.get());
     mThreads.emplace_back(&ObjectDetectionHandler::run, mDetector.get()); 
+    mThreads.emplace_back(&PoseEstimationHandler::run, mPoseEstimationHandler.get());
 
+    // TODO: get this rate from somewhere, maybe match camera rate? 
     RateController rate(5); 
 
     while(true)

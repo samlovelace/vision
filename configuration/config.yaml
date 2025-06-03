@@ -11,4 +11,4 @@ models:
     engine: opencv
 
 pose_estimation:
-  type: ml
+  depth_estimation: monocular

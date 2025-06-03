@@ -11,6 +11,7 @@ int main()
     std::string packagePath = ament_index_cpp::get_package_share_directory("vision");
     std::string configPath = packagePath + "/configuration/config.yaml";
 
+    //TODO: dump full config file in log 
     ConfigManager::get().load(configPath); 
 
     Vision vision; 

@@ -32,7 +32,7 @@ private:
     std::shared_ptr<ConcurrentQueue<Detection>> mDetectionQueue; 
     std::shared_ptr<ConcurrentQueue<Detection>> m2DVisQueue; 
 
-    //std::shared_ptr<PoseEstimationHandler> mPoseEstimationHandler;
+    std::shared_ptr<PoseEstimationHandler> mPoseEstimationHandler;
 
     bool mVisualize; 
    

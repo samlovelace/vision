@@ -15,12 +15,15 @@ find_package(OpenCV REQUIRED)
 set(SOURCES 
   ${CMAKE_CURRENT_LIST_DIR}/src/CameraFactory.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/CameraHandler.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/DepthEstimatorFactory.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/EngineFactory.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/InferenceHandler.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/ModelFactory.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/MonocularDepthEstimator.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/ObjectDetectionHandler.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/OpenCvEngine.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/PoseEstimationHandler.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/RateController.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/UsbCamera.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/Vision.cpp
