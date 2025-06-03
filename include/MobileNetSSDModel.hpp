@@ -25,9 +25,10 @@ public:
         return true;
     }
 
-    bool postprocess(const cv::Mat& netOutput, std::vector<cv::Rect>& boxes) override 
+    bool postprocess(const cv::Mat& netOutput, std::shared_ptr<IModelOutput>& output) override 
     {
-        boxes.clear();
+        std::vector<cv::Rect> boxes; 
+        auto detections = std::make_shared<DetectionOutput>(); 
         const float confidenceThreshold = 0.15;
 
         // Format: [1, 1, N, 7]
@@ -42,6 +43,8 @@ public:
             }
         }
 
+        detections->boxes = boxes; 
+        output = detections; 
         return true;
     }
 

@@ -1,10 +1,14 @@
+camera:
+  type: webcam
+  stereo: false
+  rate: 5 # Hz
+  visualize: true
+
 models:
   - name: mobilenet
     type: 2d-detection
     path: /home/sam/models/mobilenet.caffemodel
     engine: opencv
 
-camera:
-  type: webcam
-  rate: 5 # Hz
-  visualize: true
+pose_estimation:
+  type: ml

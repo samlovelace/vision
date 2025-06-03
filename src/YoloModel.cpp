@@ -23,7 +23,7 @@ bool YoloModel::preprocess(const cv::Mat& inputImage, cv::Mat& outputBlob)
 
 }
 
-bool YoloModel::postprocess(const cv::Mat& netOutput, std::vector<cv::Rect>& boxes)
+bool YoloModel::postprocess(const cv::Mat& netOutput, std::shared_ptr<IModelOutput>& output)
 {
     
 }

@@ -11,7 +11,7 @@ public:
 
     bool init() override; 
     bool preprocess(const cv::Mat& inputImage, cv::Mat& outputBlob) override; 
-    bool postprocess(const cv::Mat& netOutput, std::vector<cv::Rect>& boxes) override; 
+    bool postprocess(const cv::Mat& netOutput, std::shared_ptr<IModelOutput>& output) override; 
 
 private:
    

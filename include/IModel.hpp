@@ -2,6 +2,7 @@
 #define IMODEL_H
 
 #include <opencv2/core.hpp>
+#include "IModelOutput.hpp"
 
 class IModel 
 { 
@@ -14,7 +15,7 @@ public:
     virtual bool preprocess(const cv::Mat& inputImage, cv::Mat& outputBlob) = 0;
 
     // Accepts the output from the network and processes the detections
-    virtual bool postprocess(const cv::Mat& netOutput, std::vector<cv::Rect>& boxes) = 0;
+    virtual bool postprocess(const cv::Mat& netOutput, std::shared_ptr<IModelOutput>& output) = 0;
 };
 
 #endif // IMODEL_H

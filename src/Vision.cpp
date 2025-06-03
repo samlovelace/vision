@@ -23,10 +23,19 @@ Vision::Vision() : mVisualize(true)
         throw std::invalid_argument("Missing models configuration");
     }
 
-    // TODO: pass Detection queue once implemented 
+    mInferenceHandler = std::make_shared<InferenceHandler>(modelsConfig); 
+
     mDetectionQueue = std::make_shared<ConcurrentQueue<Detection>>();
     m2DVisQueue = std::make_shared<ConcurrentQueue<Detection>>(); 
-    mDetector = std::make_shared<ModelHandler>(modelsConfig, mFrameQueue, mDetectionQueue, m2DVisQueue); 
+    mDetector = std::make_shared<ModelHandler>(modelsConfig, mFrameQueue, mDetectionQueue, m2DVisQueue, mInferenceHandler); 
+
+    YAML::Node poseEstConfig; 
+    if(!ConfigManager::get().getConfig<YAML::Node>("pose_estimation", poseEstConfig))
+    {
+        throw std::invalid_argument("Missing or invalid pose_estimation config"); 
+    }
+
+    //mPoseEstimationHandler = std::make_shared<PoseEstimationHandler>(poseEstConfig, mDetectionQueue); 
 
 }
 
