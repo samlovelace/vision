@@ -27,7 +27,7 @@ Vision::Vision() : mVisualize(true)
 
     mDetectionQueue = std::make_shared<ConcurrentQueue<Detection>>();
     m2DVisQueue = std::make_shared<ConcurrentQueue<Detection>>(); 
-    mDetector = std::make_shared<ModelHandler>(modelsConfig, mFrameQueue, mDetectionQueue, m2DVisQueue, mInferenceHandler); 
+    mDetector = std::make_shared<ObjectDetectionHandler>(modelsConfig, mFrameQueue, mDetectionQueue, m2DVisQueue, mInferenceHandler); 
 
     YAML::Node poseEstConfig; 
     if(!ConfigManager::get().getConfig<YAML::Node>("pose_estimation", poseEstConfig))
@@ -54,7 +54,7 @@ Vision::~Vision()
 void Vision::start()
 {
     mThreads.emplace_back(&CameraHandler::run, mCameraHandler.get());
-    mThreads.emplace_back(&ModelHandler::run, mDetector.get()); 
+    mThreads.emplace_back(&ObjectDetectionHandler::run, mDetector.get()); 
 
     RateController rate(5); 
 

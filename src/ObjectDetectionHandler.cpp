@@ -1,12 +1,12 @@
 
-#include "ModelHandler.h"
+#include "ObjectDetectionHandler.h"
 #include "ModelFactory.h"
 #include "EngineFactory.h"
 #include "plog/Log.h"
 
 #include <opencv2/opencv.hpp>
 
-ModelHandler::ModelHandler(const YAML::Node& aModelsConfig, 
+ObjectDetectionHandler::ObjectDetectionHandler(const YAML::Node& aModelsConfig, 
                            std::shared_ptr<ConcurrentQueue<cv::Mat>> aFrameQueue, 
                            std::shared_ptr<ConcurrentQueue<Detection>> aDetectionQueue,
                            std::shared_ptr<ConcurrentQueue<Detection>> aVisQueue, 
@@ -16,12 +16,12 @@ ModelHandler::ModelHandler(const YAML::Node& aModelsConfig,
 
 }
 
-ModelHandler::~ModelHandler()
+ObjectDetectionHandler::~ObjectDetectionHandler()
 {
 
 }
 
-void ModelHandler::run()
+void ObjectDetectionHandler::run()
 {
     while(true)
     {
@@ -50,7 +50,7 @@ void ModelHandler::run()
     }
 }
 
-void ModelHandler::renderDetections(Detection& aDetection)
+void ObjectDetectionHandler::renderDetections(Detection& aDetection)
 {
     for(const auto& bbox : aDetection.mDetections)
     {

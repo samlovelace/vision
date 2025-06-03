@@ -3,7 +3,7 @@
  
 #include "CameraHandler.h"
 #include "ConcurrentQueue.hpp" 
-#include "ModelHandler.h"
+#include "ObjectDetectionHandler.h"
 #include "PoseEstimationHandler.h"
 
 #include "InferenceHandler.h"
@@ -28,7 +28,7 @@ private:
     std::shared_ptr<CameraHandler> mCameraHandler; 
     std::shared_ptr<ConcurrentQueue<cv::Mat>> mFrameQueue; 
 
-    std::shared_ptr<ModelHandler> mDetector; 
+    std::shared_ptr<ObjectDetectionHandler> mDetector; 
     std::shared_ptr<ConcurrentQueue<Detection>> mDetectionQueue; 
     std::shared_ptr<ConcurrentQueue<Detection>> m2DVisQueue; 
 

@@ -1,5 +1,5 @@
-#ifndef MODELHANDLER_H
-#define MODELHANDLER_H
+#ifndef ObjectDetectionHandler_H
+#define ObjectDetectionHandler_H
  
 #include <yaml-cpp/yaml.h>
 #include "ModelContext.hpp"
@@ -8,16 +8,16 @@
 
 #include "InferenceHandler.h"
  
-class ModelHandler 
+class ObjectDetectionHandler 
 { 
 public:
-    ModelHandler(const YAML::Node& aModelsConfig, 
+    ObjectDetectionHandler(const YAML::Node& aModelsConfig, 
                  std::shared_ptr<ConcurrentQueue<cv::Mat>> aFrameQueue, 
                  std::shared_ptr<ConcurrentQueue<Detection>> aDetectionQueue, 
                  std::shared_ptr<ConcurrentQueue<Detection>> aVisQueue, 
                  std::shared_ptr<InferenceHandler> anInferenceHandler);
 
-    ~ModelHandler();
+    ~ObjectDetectionHandler();
 
     void run();
 
@@ -32,4 +32,4 @@ private:
     void renderDetections(Detection& aDetection);
    
 };
-#endif //MODELHANDLER_H
+#endif //ObjectDetectionHandler_H
