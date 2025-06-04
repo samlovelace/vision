@@ -61,3 +61,8 @@ std::shared_ptr<IModelOutput> InferenceHandler::runInference(const std::string& 
 
     return modelOutput; 
 }
+
+bool InferenceHandler::hasModelType(const std::string& aType)
+{
+    return mModels.find(aType) != mModels.end(); 
+}

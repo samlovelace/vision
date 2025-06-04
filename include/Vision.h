@@ -31,6 +31,7 @@ private:
     std::shared_ptr<ObjectDetectionHandler> mDetector; 
     std::shared_ptr<ConcurrentQueue<Detection>> mDetectionQueue; 
     std::shared_ptr<ConcurrentQueue<Detection>> m2DVisQueue; 
+    std::shared_ptr<ConcurrentQueue<cv::Mat>> mDepthFrameVisQueue; 
 
     std::shared_ptr<PoseEstimationHandler> mPoseEstimationHandler;
 

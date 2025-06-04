@@ -10,6 +10,9 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(yaml-cpp REQUIRED)
+
+# Explicitly look for OpenCV in /usr/local
+set(OpenCV_DIR "/usr/local/lib/cmake/opencv4")
 find_package(OpenCV REQUIRED)
 
 set(SOURCES 
@@ -19,6 +22,7 @@ set(SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/src/EngineFactory.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/InferenceHandler.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/MidasModel.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/ModelFactory.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/MonocularDepthEstimator.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/ObjectDetectionHandler.cpp

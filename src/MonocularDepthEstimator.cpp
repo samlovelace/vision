@@ -2,7 +2,8 @@
 #include "MonocularDepthEstimator.h"
 #include "plog/Log.h"
 
-MonocularDepthEstimator::MonocularDepthEstimator()
+MonocularDepthEstimator::MonocularDepthEstimator(std::shared_ptr<InferenceHandler> anInferenceHandler) : 
+    mInferenceHandler(anInferenceHandler)
 {
 
 }
@@ -12,7 +13,20 @@ MonocularDepthEstimator::~MonocularDepthEstimator()
 
 }
 
-bool MonocularDepthEstimator::estimateDepth()
+bool MonocularDepthEstimator::estimateDepth(std::vector<cv::Mat>& aFramePair, cv::Mat& aDepthMapOut)
 {
-    LOGD << "Monocular depth estimation!!"; 
+    // only monocular so take first image of frame pair 
+    cv::Mat monoFrame = aFramePair[0]; 
+
+    auto output = mInferenceHandler->runInference("depth", monoFrame); 
+
+    if(nullptr == output)
+    {
+        return false; 
+    }
+
+    // safe to cast and assign output
+    auto depthOutput = std::dynamic_pointer_cast<DepthOutput>(output);
+    aDepthMapOut = depthOutput->depthMap; 
+    return true; 
 }

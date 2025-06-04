@@ -1,13 +1,18 @@
 camera:
   type: webcam
   stereo: false
-  rate: 5 # Hz
+  rate: 2 # Hz
   visualize: true
 
 models:
   - name: mobilenet
     type: 2d-detection
     path: /home/sam/models/mobilenet.caffemodel
+    engine: opencv
+
+  - name: midas
+    type: depth
+    path: /home/sam/models/dpt_next_vit_large_384.onnx
     engine: opencv
 
 pose_estimation:

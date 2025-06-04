@@ -35,8 +35,8 @@ Vision::Vision() : mVisualize(true)
         throw std::invalid_argument("Missing or invalid pose_estimation config"); 
     }
 
-    mPoseEstimationHandler = std::make_shared<PoseEstimationHandler>(poseEstConfig, mDetectionQueue); 
-
+    mDepthFrameVisQueue = std::make_shared<ConcurrentQueue<cv::Mat>>(); 
+    mPoseEstimationHandler = std::make_shared<PoseEstimationHandler>(poseEstConfig, mDetectionQueue, mInferenceHandler, mDepthFrameVisQueue); 
 }
 
 Vision::~Vision()
@@ -75,6 +75,17 @@ void Vision::start()
                 }
 
                 cv::imshow("Detections", detection.mFrame); 
+            }
+
+            cv::Mat depthFrame; 
+            if(mDepthFrameVisQueue->pop(depthFrame))
+            {
+                if(depthFrame.empty())
+                {
+                    continue; 
+                }
+
+                cv::imshow("DepthMap", depthFrame); 
             }
         }
 

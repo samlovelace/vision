@@ -12,7 +12,7 @@ public:
     ~InferenceHandler();
 
     std::shared_ptr<IModelOutput> runInference(const std::string& aType, const cv::Mat aFrame);
-
+    bool hasModelType(const std::string& aType); 
 
 private:
 
