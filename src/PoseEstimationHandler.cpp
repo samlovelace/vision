@@ -1,6 +1,5 @@
 
 #include "PoseEstimationHandler.h"
-#include "DepthEstimatorFactory.h"
 #include "MonocularDepthEstimator.h"
 
 
@@ -55,7 +54,6 @@ void PoseEstimationHandler::run()
                 LOGW << "COuld not compute depth map!"; 
                 continue; 
             }
-
 
             // computePose();
             
