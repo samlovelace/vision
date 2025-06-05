@@ -15,28 +15,30 @@ find_package(yaml-cpp REQUIRED)
 set(OpenCV_DIR "/usr/local/lib/cmake/opencv4")
 find_package(OpenCV REQUIRED)
 
+add_subdirectory(src/camera)
+add_subdirectory(src/general)
+add_subdirectory(src/inference)
+add_subdirectory(src/model)
+add_subdirectory(src/pose)
+
+add_executable(${PROJECT_NAME} src/main.cpp)
+
 set(SOURCES 
-  ${CMAKE_CURRENT_LIST_DIR}/src/CameraFactory.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/CameraHandler.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/EngineFactory.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/InferenceHandler.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/main.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/MidasModel.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/ModelFactory.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/MonocularDepthEstimator.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/ObjectDetectionHandler.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/OpenCvEngine.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/PoseEstimationHandler.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/RateController.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/UsbCamera.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/Vision.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/YoloModel.cpp
+  ${CAMERA_SOURCES}
+  ${GENERAL_SOURCES}
+  ${INFERENCE_SOURCES}
+  ${MODEL_SOURCES}
+  ${POSE_SOURCES}
 )
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 
 include_directories(${PROJECT_NAME}
-  ${CMAKE_CURRENT_LIST_DIR}/include 
+  src/camera
+  src/general
+  src/inference
+  src/model
+  src/pose
   ${CMAKE_CURRENT_LIST_DIR}/dependencies/plog/plog-master/include
   ${OpenCV_INCLUDE_DIRS}
 )
