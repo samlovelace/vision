@@ -1,8 +1,14 @@
+mode: calibration # vision, calibration,
+
 camera:
   type: webcam
   stereo: false
   rate: 5 # Hz
   visualize: true
+  focal:
+  center:
+  near:
+  far:
 
 models:
   - name: mobilenet

@@ -5,18 +5,18 @@
 #include "ConcurrentQueue.hpp" 
 #include "ObjectDetectionHandler.h"
 #include "PoseEstimationHandler.h"
-
 #include "InferenceHandler.h"
+#include "IModule.hpp"
 
 #include <thread> 
 
-class Vision 
+class Vision : public IModule
 { 
 public:
     Vision();
     ~Vision();
 
-    void start(); 
+    void start() override; 
     void stop(); 
 
 private:
