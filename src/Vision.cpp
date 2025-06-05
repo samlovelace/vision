@@ -67,7 +67,7 @@ void Vision::start()
         if(mVisualize)
         {
             Detection detection; 
-            if(m2DVisQueue->pop(detection))
+            if(m2DVisQueue->try_pop(detection))
             {
                 if(detection.mFrame.empty())
                 {
@@ -78,7 +78,7 @@ void Vision::start()
             }
 
             cv::Mat depthFrame; 
-            if(mDepthFrameVisQueue->pop(depthFrame))
+            if(mDepthFrameVisQueue->try_pop(depthFrame))
             {
                 if(depthFrame.empty())
                 {

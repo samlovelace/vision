@@ -1,7 +1,7 @@
 camera:
   type: webcam
   stereo: false
-  rate: 1 # Hz
+  rate: 5 # Hz
   visualize: true
 
 models:
