@@ -62,8 +62,6 @@ void Vision::start()
 
     while(true)
     {
-        rate.start(); 
-
         if(mVisualize)
         {
             Detection detection; 
@@ -93,8 +91,6 @@ void Vision::start()
         {
             break; 
         }
-    
-        rate.block();
     } 
 }
 
