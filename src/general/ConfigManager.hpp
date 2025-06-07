@@ -23,6 +23,8 @@ public:
             std::cerr << "Error loading config: " << e.what() << std::endl;
             return false;
         }
+
+        std::cout << YAML::Dump(mRoot); 
     }
 
     template<typename T>

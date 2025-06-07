@@ -7,6 +7,7 @@
 #include "PoseEstimationHandler.h"
 #include "InferenceHandler.h"
 #include "IModule.hpp"
+#include "CameraFrame.hpp"
 
 #include <thread> 
 
@@ -26,7 +27,7 @@ private:
     std::vector<std::thread> mThreads; 
 
     std::shared_ptr<CameraHandler> mCameraHandler; 
-    std::shared_ptr<ConcurrentQueue<cv::Mat>> mFrameQueue; 
+    std::shared_ptr<ConcurrentQueue<CameraFrame>> mFrameQueue; 
 
     std::shared_ptr<ObjectDetectionHandler> mDetector; 
     std::shared_ptr<ConcurrentQueue<Detection>> mDetectionQueue; 

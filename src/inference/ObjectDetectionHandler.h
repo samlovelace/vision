@@ -5,6 +5,7 @@
 #include "ModelContext.hpp"
 #include "ConcurrentQueue.hpp"
 #include "Detection.hpp"
+#include "CameraFrame.hpp"
 
 #include "InferenceHandler.h"
  
@@ -12,7 +13,7 @@ class ObjectDetectionHandler
 { 
 public:
     ObjectDetectionHandler(const YAML::Node& aModelsConfig, 
-                 std::shared_ptr<ConcurrentQueue<cv::Mat>> aFrameQueue, 
+                 std::shared_ptr<ConcurrentQueue<CameraFrame>> aFrameQueueVector, 
                  std::shared_ptr<ConcurrentQueue<Detection>> aDetectionQueue, 
                  std::shared_ptr<ConcurrentQueue<Detection>> aVisQueue, 
                  std::shared_ptr<InferenceHandler> anInferenceHandler);
@@ -25,7 +26,7 @@ private:
 
     std::shared_ptr<InferenceHandler> mInferenceHandler; 
 
-    std::shared_ptr<ConcurrentQueue<cv::Mat>> mFrameQueue; 
+    std::shared_ptr<ConcurrentQueue<CameraFrame>> mFrameQueue; 
     std::shared_ptr<ConcurrentQueue<Detection>> mDetectionQueue; 
     std::shared_ptr<ConcurrentQueue<Detection>> mVisQueue; 
 

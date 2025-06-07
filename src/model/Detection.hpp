@@ -7,6 +7,7 @@
 // TODO: eventually this has to hold the stereo image pair
 struct Detection
 {
+    // TODO: this needs to be the CameraFrame struct instead of just cv::Mat
     cv::Mat mFrame;
     std::vector<cv::Rect> mDetections; 
 };

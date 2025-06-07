@@ -7,7 +7,7 @@
 #include <opencv2/opencv.hpp>
 
 ObjectDetectionHandler::ObjectDetectionHandler(const YAML::Node& aModelsConfig, 
-                           std::shared_ptr<ConcurrentQueue<cv::Mat>> aFrameQueue, 
+                           std::shared_ptr<ConcurrentQueue<CameraFrame>> aFrameQueue, 
                            std::shared_ptr<ConcurrentQueue<Detection>> aDetectionQueue,
                            std::shared_ptr<ConcurrentQueue<Detection>> aVisQueue, 
                            std::shared_ptr<InferenceHandler> anInferenceHandler) : 
@@ -25,25 +25,25 @@ void ObjectDetectionHandler::run()
 {
     while(true)
     {
-        cv::Mat frame; 
+        CameraFrame frame; 
         if(mFrameQueue->pop(frame))
         { 
             Detection detection;
 
-            auto output = mInferenceHandler->runInference("2d-detection", frame); 
+            auto output = mInferenceHandler->runInference("2d-detection", frame.mFrame); 
 
             if(nullptr != output)
             {
                 auto detections = std::dynamic_pointer_cast<DetectionOutput>(output);
                 
                 detection.mDetections = detections->boxes; 
-                detection.mFrame = frame; 
+                detection.mFrame = frame.mFrame; 
 
                 // push to queues for 3d estimator
                 mDetectionQueue->push(detection); 
             }
 
-            // TODO: only render and pus to vis queue if visualizing
+            // TODO: only render and push to vis queue if visualizing
             renderDetections(detection); 
             mVisQueue->push(detection); 
         }

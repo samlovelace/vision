@@ -7,14 +7,14 @@
 Vision::Vision() : mVisualize(true)
 {
     //******** CAMERA SETUP ******************/
-    YAML::Node cameraConfig; 
-    if(!ConfigManager::get().getConfig<YAML::Node>("camera", cameraConfig))
+    YAML::Node camerasConfig; 
+    if(!ConfigManager::get().getConfig<YAML::Node>("cameras", camerasConfig))
     {
         throw std::invalid_argument("Missing camera configuration");
     }
 
-    mFrameQueue = std::make_shared<ConcurrentQueue<cv::Mat>>(); 
-    mCameraHandler = std::make_shared<CameraHandler>(cameraConfig, mFrameQueue);
+    mFrameQueue = std::make_shared<ConcurrentQueue<CameraFrame>>(); 
+    mCameraHandler = std::make_shared<CameraHandler>(camerasConfig, mFrameQueue);
 
     /****** Neural Network Detection Setup ********/
     YAML::Node modelsConfig; 
