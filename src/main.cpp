@@ -1,8 +1,8 @@
 #include <cstdio> 
-#include "ConfigManager.hpp"
-#include "Logger.hpp"
 #include <ament_index_cpp/get_package_share_directory.hpp>
 
+#include "ConfigManager.hpp"
+#include "Logger.hpp"
 #include "Vision.h"
 #include "Calibration.h"
 
@@ -12,8 +12,8 @@ int main()
     std::string packagePath = ament_index_cpp::get_package_share_directory("vision");
     std::string configPath = packagePath + "/configuration/config.yaml";
 
-    //TODO: dump full config file in log 
     ConfigManager::get().load(configPath); 
+    LOGV << "############## Configuration: #################\n" << YAML::Dump(ConfigManager::get().getFullConfig()); 
 
     // TODO: put this chunk somehwere else? 
     std::string mode; 

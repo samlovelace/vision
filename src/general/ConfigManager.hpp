@@ -43,6 +43,8 @@ public:
         return false;
     }
 
+    YAML::Node& getFullConfig() {return mRoot; }
+
 private:
 
     ConfigManager() {}

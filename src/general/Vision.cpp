@@ -4,8 +4,11 @@
 #include "RosTopicManager.hpp"
 #include "plog/Log.h"
 
-Vision::Vision() : mVisualize(true)
+Vision::Vision() : mVisualize(false)
 {
+    auto config = ConfigManager::get().getFullConfig(); 
+    mVisualize = config["visualize"].as<bool>(); 
+
     //******** CAMERA SETUP ******************/
     YAML::Node camerasConfig; 
     if(!ConfigManager::get().getConfig<YAML::Node>("cameras", camerasConfig))
@@ -56,9 +59,6 @@ void Vision::start()
     mThreads.emplace_back(&CameraHandler::run, mCameraHandler.get());
     mThreads.emplace_back(&ObjectDetectionHandler::run, mDetector.get()); 
     mThreads.emplace_back(&PoseEstimationHandler::run, mPoseEstimationHandler.get());
-
-    // TODO: get this rate from somewhere, maybe match camera rate? 
-    RateController rate(5); 
 
     while(true)
     {
