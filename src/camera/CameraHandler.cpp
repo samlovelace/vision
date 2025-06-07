@@ -40,6 +40,13 @@ void CameraHandler::run()
 void CameraHandler::runCamera(const CameraContext aCameraCtx)
 {
     aCameraCtx.mCamera->init(); 
+    LOGD << "Getting frames for camera with params: (fx fy cx cy near(m) far(m)): " 
+         << aCameraCtx.mParams->mIntrinsics->focalX()       << ", "
+         << aCameraCtx.mParams->mIntrinsics->focalY()       << ", "
+         << aCameraCtx.mParams->mIntrinsics->centerX()      << ", " 
+         << aCameraCtx.mParams->mIntrinsics->centerY()      << ", "
+         << aCameraCtx.mParams->mIntrinsics->nearPlane_m    << ", "
+         << aCameraCtx.mParams->mIntrinsics->farPlane_m; 
 
     while(true)
     {
@@ -83,7 +90,7 @@ void CameraHandler::parseCameraConfig(const YAML::Node& aCameraConfig)
     //TODO: parse s2v and pass to params 
     auto params = std::make_shared<CameraParams>(intr); 
 
-    auto camCtx = CameraContext(rate, camera, params); 
+    auto camCtx = CameraContext(rate, camera, params);
 
     mCameraContextMap.insert({id, camCtx}); 
 }
