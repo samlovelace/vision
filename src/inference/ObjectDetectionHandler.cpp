@@ -36,8 +36,8 @@ void ObjectDetectionHandler::run()
             {
                 auto detections = std::dynamic_pointer_cast<DetectionOutput>(output);
                 
-                detection.mDetections = detections->boxes; 
-                detection.mFrame = frame.mFrame; 
+                detection.mDetectionsMap.insert({"unknown", detections->boxes}); 
+                detection.mFrame = frame; 
 
                 // push to queues for 3d estimator
                 mDetectionQueue->push(detection); 
@@ -52,9 +52,12 @@ void ObjectDetectionHandler::run()
 
 void ObjectDetectionHandler::renderDetections(Detection& aDetection)
 {
-    for(const auto& bbox : aDetection.mDetections)
+    for(const auto& [type, detections] : aDetection.mDetectionsMap)
     {
-        cv::rectangle(aDetection.mFrame, bbox, cv::Scalar(0, 255, 0, 0), 1, 8); 
+        for(const auto& bbox : detections)
+        {
+            cv::rectangle(aDetection.mFrame.mFrame, bbox, cv::Scalar(0, 255, 0, 0), 1, 8); 
+        }
     }
 }
 

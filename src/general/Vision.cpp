@@ -1,7 +1,7 @@
 
 #include "Vision.h"
 #include "ConfigManager.hpp"
-
+#include "RosTopicManager.hpp"
 #include "plog/Log.h"
 
 Vision::Vision() : mVisualize(true)
@@ -67,12 +67,12 @@ void Vision::start()
             Detection detection; 
             if(m2DVisQueue->try_pop(detection))
             {
-                if(detection.mFrame.empty())
+                if(detection.mFrame.mFrame.empty())
                 {
                     continue; 
                 }
 
-                cv::imshow("Detections", detection.mFrame); 
+                cv::imshow("Detections", detection.mFrame.mFrame); 
             }
 
             cv::Mat depthFrame; 

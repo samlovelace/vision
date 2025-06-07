@@ -1,6 +1,6 @@
 mode: vision # vision, calibration,
 visualize: false
-num_cams: 2
+nav_topic: /robot/pose
 
 cameras:
   - id: 0

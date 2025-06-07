@@ -46,12 +46,12 @@ void PoseEstimationHandler::run()
         {
             // HACK until Detection is better defined with std::vector<cv::Mat> mFrame
             std::vector<cv::Mat> frames; 
-            frames.push_back(detection.mFrame);  
+            frames.push_back(detection.mFrame.mFrame);  
             cv::Mat depthMap; 
 
             if(!mDepthEstimator->estimateDepth(frames, depthMap))
             {
-                LOGW << "COuld not compute depth map!"; 
+                LOGW << "Could not compute depth map!"; 
                 continue; 
             }
 
