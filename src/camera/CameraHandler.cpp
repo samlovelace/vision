@@ -52,17 +52,15 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
     {
         aCameraCtx.mRate->start(); 
 
-        cv::Mat frame = aCameraCtx.mCamera->getFrame(); 
-        if (frame.empty()) 
+        CameraFrame frame = aCameraCtx.mCamera->getFrame(); 
+        if (frame.mFrame.empty()) 
         {
             LOGD << "Frame empty..."; 
             continue; 
         }
-
-        CameraFrame camFrame(frame); 
         
         // push to master frame queue 
-        mFrameQueue->push(camFrame);
+        mFrameQueue->push(frame);
 
         aCameraCtx.mRate->block(); 
     }

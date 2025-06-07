@@ -51,13 +51,9 @@ std::shared_ptr<IModelOutput> InferenceHandler::runInference(const std::string& 
     cv::Mat preProcFrame; 
     const auto& ctx = mModels.at(aType);
 
-    LOGD << "Running inference for " << aType; 
-
     ctx.mModel->preprocess(aFrame, preProcFrame); 
     auto output = ctx.mEngine->doInference(preProcFrame); 
     ctx.mModel->postprocess(output, modelOutput);
-    
-    LOGD << "Inference completed for " << aType; 
 
     return modelOutput; 
 }
