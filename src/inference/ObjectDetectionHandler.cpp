@@ -7,10 +7,10 @@
 #include <opencv2/opencv.hpp>
 
 ObjectDetectionHandler::ObjectDetectionHandler(const YAML::Node& aModelsConfig, 
-                           std::shared_ptr<ConcurrentQueue<CameraFrame>> aFrameQueue, 
-                           std::shared_ptr<ConcurrentQueue<Detection>> aDetectionQueue,
-                           std::shared_ptr<ConcurrentQueue<Detection>> aVisQueue, 
-                           std::shared_ptr<InferenceHandler> anInferenceHandler) : 
+                                               std::shared_ptr<ConcurrentQueue<CameraFrame>> aFrameQueue, 
+                                               std::shared_ptr<ConcurrentQueue<Detection>> aDetectionQueue,
+                                               std::shared_ptr<ConcurrentQueue<Detection>> aVisQueue, 
+                                               std::shared_ptr<InferenceHandler> anInferenceHandler) : 
     mFrameQueue(aFrameQueue), mDetectionQueue(aDetectionQueue), mVisQueue(aVisQueue), mInferenceHandler(anInferenceHandler)
 {
 
@@ -43,9 +43,11 @@ void ObjectDetectionHandler::run()
                 mDetectionQueue->push(detection); 
             }
 
-            // TODO: only render and push to vis queue if visualizing
-            renderDetections(detection); 
-            mVisQueue->push(detection); 
+            if(nullptr != mVisQueue)
+            {
+                renderDetections(detection); 
+                mVisQueue->push(detection);
+            }
         }
     }
 }

@@ -29,7 +29,13 @@ Vision::Vision() : mVisualize(false)
     mInferenceHandler = std::make_shared<InferenceHandler>(modelsConfig); 
 
     mDetectionQueue = std::make_shared<ConcurrentQueue<Detection>>();
-    m2DVisQueue = std::make_shared<ConcurrentQueue<Detection>>(); 
+    
+    m2DVisQueue = nullptr; 
+    if(mVisualize)
+    {
+        m2DVisQueue = std::make_shared<ConcurrentQueue<Detection>>(); 
+    }
+    
     mDetector = std::make_shared<ObjectDetectionHandler>(modelsConfig, mFrameQueue, mDetectionQueue, m2DVisQueue, mInferenceHandler); 
 
     YAML::Node poseEstConfig; 
