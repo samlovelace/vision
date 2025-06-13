@@ -13,10 +13,10 @@ MonocularDepthEstimator::~MonocularDepthEstimator()
 
 }
 
-bool MonocularDepthEstimator::estimateDepth(std::vector<cv::Mat>& aFramePair, cv::Mat& aDepthMapOut)
+bool MonocularDepthEstimator::estimateDepth(CameraOutput& aCameraOutput, cv::Mat& aDepthMapOut)
 {
     // only monocular so take first image of frame pair 
-    cv::Mat monoFrame = aFramePair[0]; 
+    cv::Mat monoFrame = aCameraOutput.left.mFrame; 
 
     auto output = mInferenceHandler->runInference("depth", monoFrame); 
 

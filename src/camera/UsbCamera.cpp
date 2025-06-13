@@ -25,12 +25,16 @@ bool UsbCamera::init()
     mCapture.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
 }
 
-CameraFrame UsbCamera::getFrame()
+CameraOutput UsbCamera::getOutput()
 {
     cv::Mat img; 
     mCapture >> img; 
     auto now = std::chrono::steady_clock::now(); 
     CameraFrame frame(img, now); 
 
-    return frame; 
+    CameraOutput out; 
+    out.isStereo = false; 
+    out.left = frame; 
+
+    return out; 
 }

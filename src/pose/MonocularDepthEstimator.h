@@ -10,7 +10,7 @@ public:
     MonocularDepthEstimator(std::shared_ptr<InferenceHandler> anInferenceHandler);
     ~MonocularDepthEstimator();
 
-    bool estimateDepth(std::vector<cv::Mat>& aFramePair, cv::Mat& aDepthMapOut) override; 
+    bool estimateDepth(CameraOutput& aCameraOutput, cv::Mat& aDepthMapOut) override; 
 
 private:
 

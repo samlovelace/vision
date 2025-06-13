@@ -11,9 +11,19 @@ struct CameraFrame
 
     cv::Mat mFrame; 
     std::chrono::steady_clock::time_point mTimestamp; 
-    
-    // TODO: populate with global pose of sensor at frame time
-    //cv::Matx44f mT_g_c; 
+};
+
+struct CameraOutput
+{
+    CameraFrame left; 
+    CameraFrame right; 
+    bool isStereo = false; 
+};
+
+struct StampedCameraOutput
+{
+    CameraOutput frames; 
+    cv::Matx44f T_G_C; 
 };
 
 #endif

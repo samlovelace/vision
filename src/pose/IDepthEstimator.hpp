@@ -3,13 +3,14 @@
  
 #include <vector> 
 #include <opencv2/opencv.hpp>
+#include "CameraData.hpp"
  
 class IDepthEstimator 
 { 
 public:
     ~IDepthEstimator() = default; 
 
-    virtual bool estimateDepth(std::vector<cv::Mat>& aFramePair, cv::Mat& aDepthMapOut) = 0; 
+    virtual bool estimateDepth(CameraOutput& aCameraOutput, cv::Mat& aDepthMapOut) = 0; 
 
 private:
    

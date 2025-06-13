@@ -16,7 +16,7 @@ Vision::Vision() : mVisualize(false)
         throw std::invalid_argument("Missing camera configuration");
     }
 
-    mFrameQueue = std::make_shared<ConcurrentQueue<CameraFrame>>(); 
+    mFrameQueue = std::make_shared<ConcurrentQueue<StampedCameraOutput>>(); 
     mCameraHandler = std::make_shared<CameraHandler>(camerasConfig, mFrameQueue);
 
     /****** Neural Network Detection Setup ********/
@@ -73,12 +73,13 @@ void Vision::start()
             Detection detection; 
             if(m2DVisQueue->try_pop(detection))
             {
-                if(detection.mFrame.mFrame.empty())
+                cv::Mat leftFrame = detection.mCameraOutput.frames.left.mFrame; 
+                if(leftFrame.empty())
                 {
                     continue; 
                 }
 
-                cv::imshow("Detections", detection.mFrame.mFrame); 
+                cv::imshow("Detections", leftFrame); 
             }
 
             cv::Mat depthFrame; 

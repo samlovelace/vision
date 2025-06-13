@@ -6,7 +6,7 @@
 #include "plog/Log.h"
 #include <vector> 
 
-CameraHandler::CameraHandler(const YAML::Node& aCameraConfig, std::shared_ptr<ConcurrentQueue<CameraFrame>> aFrameQueue) : 
+CameraHandler::CameraHandler(const YAML::Node& aCameraConfig, std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueue) : 
     mFrameQueue(aFrameQueue)
 {
     LOGD << YAML::Dump(aCameraConfig); 
@@ -52,15 +52,21 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
     {
         aCameraCtx.mRate->start(); 
 
-        CameraFrame frame = aCameraCtx.mCamera->getFrame(); 
-        if (frame.mFrame.empty()) 
+        CameraOutput frames = aCameraCtx.mCamera->getOutput();
+        CameraFrame left = frames.left;  
+        if (left.mFrame.empty()) 
         {
             LOGD << "Frame empty..."; 
             continue; 
         }
         
+        // TODO: attach global sensor pose computed from nav data and S2V
+        StampedCameraOutput output; 
+        output.frames = frames; 
+        output.T_G_C = cv::Matx44f::eye();
+
         // push to master frame queue 
-        mFrameQueue->push(frame);
+        mFrameQueue->push(output);
 
         aCameraCtx.mRate->block(); 
     }

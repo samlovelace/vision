@@ -9,19 +9,19 @@
 #include "ConcurrentQueue.hpp"
 
 #include "CameraContext.hpp"
-#include "CameraFrame.hpp"
+#include "CameraData.hpp"
  
 class CameraHandler 
 { 
 public:
-    CameraHandler(const YAML::Node& aCameraConfig, std::shared_ptr<ConcurrentQueue<CameraFrame>> aFrameQueue);
+    CameraHandler(const YAML::Node& aCameraConfig, std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueue);
     ~CameraHandler();
 
     void run();
 
 private:
 
-    std::shared_ptr<ConcurrentQueue<CameraFrame>> mFrameQueue;
+    std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> mFrameQueue;
     std::map<int, CameraContext> mCameraContextMap;
     
     void runCamera(const CameraContext aCamCtx); 

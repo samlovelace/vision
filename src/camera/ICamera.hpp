@@ -1,8 +1,8 @@
 #ifndef ICAMERA_HPP
 #define ICAMERA_HPP
  
-#include "CameraFrame.hpp"
- 
+#include "CameraData.hpp"
+
 class ICamera 
 { 
 public:
@@ -10,7 +10,7 @@ public:
     ~ICamera() = default; 
 
     virtual bool init() = 0; 
-    virtual CameraFrame getFrame() = 0; 
+    virtual CameraOutput getOutput() = 0; 
 
 private:
    
