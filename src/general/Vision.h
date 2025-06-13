@@ -8,6 +8,7 @@
 #include "InferenceHandler.h"
 #include "IModule.hpp"
 #include "CameraData.hpp"
+#include "NavDataHandler.h"
 
 #include <thread> 
 
@@ -35,6 +36,8 @@ private:
     std::shared_ptr<ConcurrentQueue<cv::Mat>> mDepthFrameVisQueue; 
 
     std::shared_ptr<PoseEstimationHandler> mPoseEstimationHandler;
+
+    std::shared_ptr<NavDataHandler> mNavDataHandler; 
 
     bool mVisualize; 
    

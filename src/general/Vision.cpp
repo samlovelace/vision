@@ -16,8 +16,10 @@ Vision::Vision() : mVisualize(false)
         throw std::invalid_argument("Missing camera configuration");
     }
 
+    mNavDataHandler = std::make_shared<NavDataHandler>(config["nav_topic"].as<std::string>());
+
     mFrameQueue = std::make_shared<ConcurrentQueue<StampedCameraOutput>>(); 
-    mCameraHandler = std::make_shared<CameraHandler>(camerasConfig, mFrameQueue);
+    mCameraHandler = std::make_shared<CameraHandler>(camerasConfig, mFrameQueue, mNavDataHandler);
 
     /****** Neural Network Detection Setup ********/
     YAML::Node modelsConfig; 

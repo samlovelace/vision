@@ -10,11 +10,14 @@
 
 #include "CameraContext.hpp"
 #include "CameraData.hpp"
+#include "NavDataHandler.h"
  
 class CameraHandler 
 { 
 public:
-    CameraHandler(const YAML::Node& aCameraConfig, std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueue);
+    CameraHandler(const YAML::Node& aCameraConfig, 
+                  std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueue, 
+                  std::shared_ptr<NavDataHandler> aNavDataHandler);
     ~CameraHandler();
 
     void run();
@@ -28,6 +31,8 @@ private:
     void parseCameraConfig(const YAML::Node& aCameraConfig); 
 
     std::vector<std::thread> mCameraThreads; 
+
+    std::shared_ptr<NavDataHandler> mNavDataHandler; 
    
 };
 #endif //CAMERAHANDLER_H

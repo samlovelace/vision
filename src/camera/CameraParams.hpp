@@ -26,10 +26,10 @@ struct CameraIntrinsics
 
 struct CameraParams
 {
-    CameraParams(std::shared_ptr<CameraIntrinsics> anIntrinsics) : mIntrinsics(anIntrinsics) {}
+    CameraParams(std::shared_ptr<CameraIntrinsics> anIntrinsics, cv::Matx44f anS2V) : mIntrinsics(anIntrinsics), mS2V(anS2V) {}
 
     std::shared_ptr<CameraIntrinsics> mIntrinsics; 
-    //cv::Matx44f mS2V; 
+    cv::Matx44f mS2V; 
 };
 
 

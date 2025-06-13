@@ -8,7 +8,7 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(std_msgs REQUIRED)
+find_package(nora_idl REQUIRED)
 find_package(yaml-cpp REQUIRED)
 
 # Explicitly look for OpenCV in /usr/local
@@ -45,7 +45,7 @@ include_directories(${PROJECT_NAME}
 
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp
-  std_msgs
+  nora_idl
 )
 target_link_libraries(${PROJECT_NAME} 
   yaml-cpp 

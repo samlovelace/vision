@@ -29,7 +29,7 @@ CameraOutput UsbCamera::getOutput()
 {
     cv::Mat img; 
     mCapture >> img; 
-    auto now = std::chrono::steady_clock::now(); 
+    auto now = std::chrono::system_clock::now(); 
     CameraFrame frame(img, now); 
 
     CameraOutput out; 

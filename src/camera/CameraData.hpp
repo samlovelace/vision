@@ -5,12 +5,12 @@
 
 struct CameraFrame
 {
-    CameraFrame(const cv::Mat& aFrame, std::chrono::steady_clock::time_point aTimestamp) : 
+    CameraFrame(const cv::Mat& aFrame, std::chrono::system_clock::time_point aTimestamp) : 
         mFrame(aFrame), mTimestamp(aTimestamp) {}
     CameraFrame() {}
 
     cv::Mat mFrame; 
-    std::chrono::steady_clock::time_point mTimestamp; 
+    std::chrono::system_clock::time_point mTimestamp; 
 };
 
 struct CameraOutput

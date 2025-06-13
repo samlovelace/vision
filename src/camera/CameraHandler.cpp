@@ -5,9 +5,11 @@
 
 #include "plog/Log.h"
 #include <vector> 
+#include "Utils.hpp"
 
-CameraHandler::CameraHandler(const YAML::Node& aCameraConfig, std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueue) : 
-    mFrameQueue(aFrameQueue)
+CameraHandler::CameraHandler(const YAML::Node& aCameraConfig, 
+    std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueue, std::shared_ptr<NavDataHandler> aNavDataHandler) : 
+    mFrameQueue(aFrameQueue), mNavDataHandler(aNavDataHandler)
 {
     LOGD << YAML::Dump(aCameraConfig); 
 
@@ -60,10 +62,13 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
             continue; 
         }
         
-        // TODO: attach global sensor pose computed from nav data and S2V
+        // get global pose of robot at timestamp of image 
         StampedCameraOutput output; 
         output.frames = frames; 
-        output.T_G_C = cv::Matx44f::eye();
+        cv::Matx44f T_G_V = mNavDataHandler->getMatchingGlobalPose(frames.left.mTimestamp); 
+
+        // compute pose of camera in global frame 
+        output.T_G_C = T_G_V * aCameraCtx.mParams->mS2V; 
 
         // push to master frame queue 
         mFrameQueue->push(output);
@@ -91,8 +96,12 @@ void CameraHandler::parseCameraConfig(const YAML::Node& aCameraConfig)
 
     auto intr = std::make_shared<CameraIntrinsics>(focal, center, near, far); 
 
-    //TODO: parse s2v and pass to params 
-    auto params = std::make_shared<CameraParams>(intr); 
+    //parse s2v and pass to params 
+    std::vector<float> xyz = aCameraConfig["xyz"].as<std::vector<float>>(); 
+    std::vector<float> quat = aCameraConfig["quat"].as<std::vector<float>>(); 
+    cv::Matx44f s2v = Utils::transformFromXYZQuat(xyz, quat); 
+
+    auto params = std::make_shared<CameraParams>(intr, s2v); 
 
     auto camCtx = CameraContext(rate, camera, params);
 
