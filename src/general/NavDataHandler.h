@@ -12,7 +12,7 @@ public:
     NavDataHandler(const std::string& aNavTopicName);
     ~NavDataHandler();
 
-    cv::Matx44f getMatchingGlobalPose(const std::chrono::system_clock::time_point& aTime);
+    cv::Matx44f getClosestGlobalPose(const std::chrono::system_clock::time_point& aTime);
 
 private:
 

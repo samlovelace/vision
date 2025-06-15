@@ -27,25 +27,40 @@ public:
 
     bool postprocess(const cv::Mat& netOutput, std::shared_ptr<IModelOutput>& output) override 
     {
-        std::vector<cv::Rect> boxes; 
-        auto detections = std::make_shared<DetectionOutput>(); 
-        const float confidenceThreshold = 0.15;
+        auto detections = std::make_shared<DetectionOutput>();
 
         // Format: [1, 1, N, 7]
-        for (int i = 0; i < netOutput.size[2]; ++i) {
-            float confidence = netOutput.ptr<float>(0, 0, i)[2];
-            if (confidence > confidenceThreshold) {
-                int xLeft = static_cast<int>(netOutput.ptr<float>(0, 0, i)[3] * imageWidth);
-                int yTop  = static_cast<int>(netOutput.ptr<float>(0, 0, i)[4] * imageHeight);
-                int xRight = static_cast<int>(netOutput.ptr<float>(0, 0, i)[5] * imageWidth);
-                int yBottom = static_cast<int>(netOutput.ptr<float>(0, 0, i)[6] * imageHeight);
-                boxes.emplace_back(cv::Rect(cv::Point(xLeft, yTop), cv::Point(xRight, yBottom)));
-            }
+        const int numDetections = netOutput.size[2];
+        const float* data = reinterpret_cast<float*>(netOutput.data);
+
+        for (int i = 0; i < numDetections; ++i) 
+        {
+            int classId = static_cast<int>(data[i * 7 + 1]);
+
+            int xLeft   = static_cast<int>(data[i * 7 + 3] * imageWidth);
+            int yTop    = static_cast<int>(data[i * 7 + 4] * imageHeight);
+            int xRight  = static_cast<int>(data[i * 7 + 5] * imageWidth);
+            int yBottom = static_cast<int>(data[i * 7 + 6] * imageHeight);
+
+            cv::Rect bbox(cv::Point(xLeft, yTop), cv::Point(xRight, yBottom));
+
+            Detection2D det;
+            det.class_name = getClassName(classId);
+            det.confidence = data[i * 7 + 2];
+            det.bounding_box = bbox;
+            det.segmentation_mask = cv::Mat(); // Not available for MobileNet-SSD
+
+            detections->mDetections[det.class_name].emplace_back(det);
         }
 
-        detections->boxes = boxes; 
-        output = detections; 
+        output = detections;
         return true;
+    }
+
+    std::string getClassName(int id) {
+        if (id >= 0 && id < classNames.size())
+            return classNames[id];
+        return "unknown";
     }
 
     void setInputSize(int w, int h) {
@@ -55,8 +70,8 @@ public:
 
 private:
     cv::dnn::Net net;
-    std::string protoPath = "/home/sam/models/deploy.prototxt";
-    std::string modelPath = "/home/sam/models/mobilenet.caffemodel";
+    // std::string protoPath = "/home/sam/models/deploy.prototxt";
+    // std::string modelPath = "/home/sam/models/mobilenet.caffemodel";
     int imageWidth = 300;
     int imageHeight = 300;
 

@@ -34,5 +34,8 @@ models:
     path: /home/sam/models/dpt_next_vit_large_384.onnx
     engine: opencv
 
+object_detection:
+  type: bounding-box
+
 pose_estimation:
   depth_estimation: monocular

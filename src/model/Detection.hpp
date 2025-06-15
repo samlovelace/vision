@@ -3,13 +3,13 @@
 
 #include <opencv2/opencv.hpp>
 #include "CameraData.hpp"
-#include <map>  
+#include "IModelOutput.hpp" 
 
 
 struct Detection
 {
     StampedCameraOutput mCameraOutput;
-    std::map<std::string, std::vector<cv::Rect>> mDetectionsMap; 
+    std::shared_ptr<DetectionOutput> mDetections; 
 };
 
 #endif

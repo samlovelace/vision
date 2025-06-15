@@ -44,7 +44,7 @@ std::shared_ptr<IModelOutput> InferenceHandler::runInference(const std::string& 
 
     if(mModels.find(aType) == mModels.end())
     {
-        // model type not in map, cant do inference
+        LOGW << "No model configured for " << aType;
         return modelOutput;  
     }
 

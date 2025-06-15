@@ -65,10 +65,11 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
         // get global pose of robot at timestamp of image 
         StampedCameraOutput output; 
         output.frames = frames; 
-        cv::Matx44f T_G_V = mNavDataHandler->getMatchingGlobalPose(frames.left.mTimestamp); 
+        cv::Matx44f T_G_V = mNavDataHandler->getClosestGlobalPose(frames.left.mTimestamp); 
 
         // compute pose of camera in global frame 
         output.T_G_C = T_G_V * aCameraCtx.mParams->mS2V; 
+        output.mParams = aCameraCtx.mParams; 
 
         // push to master frame queue 
         mFrameQueue->push(output);

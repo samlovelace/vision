@@ -73,7 +73,7 @@ cv::Matx44f NavDataHandler::transformFromXYZQuat(float x, float y, float z, floa
     return mat;
 }
 
-cv::Matx44f NavDataHandler::getMatchingGlobalPose(const std::chrono::system_clock::time_point& aTime)
+cv::Matx44f NavDataHandler::getClosestGlobalPose(const std::chrono::system_clock::time_point& aTime)
 {
     if(mGlobalPoseMap.empty())
     { 

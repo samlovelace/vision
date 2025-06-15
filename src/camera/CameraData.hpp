@@ -2,6 +2,8 @@
 #define CAMERAFRAME_HPP
 
 #include <opencv2/opencv.hpp> 
+#include <memory>
+#include "CameraParams.hpp"
 
 struct CameraFrame
 {
@@ -23,6 +25,7 @@ struct CameraOutput
 struct StampedCameraOutput
 {
     CameraOutput frames; 
+    std::shared_ptr<CameraParams> mParams; 
     cv::Matx44f T_G_C; 
 };
 

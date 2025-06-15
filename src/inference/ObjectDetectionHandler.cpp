@@ -30,13 +30,20 @@ void ObjectDetectionHandler::run()
         { 
             Detection detection;
 
+            // TODO: could make this configurable so that we could do 2d-detection or mask-segementation to find objects ?
             auto output = mInferenceHandler->runInference("2d-detection", frame.frames.left.mFrame); 
 
             if(nullptr != output)
             {
                 auto detections = std::dynamic_pointer_cast<DetectionOutput>(output);
+
+                // TODO: loop through all detections for each type and consolidate if bbox centroid within some threshold? 
+                for(auto& [objClass, detectionData] : detections->mDetections)
+                {
+                    LOGD << "Detected class: " << objClass; 
+                }
                 
-                detection.mDetectionsMap.insert({"unknown", detections->boxes}); 
+                detection.mDetections = detections; 
                 detection.mCameraOutput = frame;  
 
                 // push to queues for 3d estimator
@@ -54,11 +61,11 @@ void ObjectDetectionHandler::run()
 
 void ObjectDetectionHandler::renderDetections(Detection& aDetection)
 {
-    for(const auto& [type, detections] : aDetection.mDetectionsMap)
+    for(const auto& [type, detections] : aDetection.mDetections->mDetections)
     {
-        for(const auto& bbox : detections)
+        for(const auto& inst : detections)
         {
-            cv::rectangle(aDetection.mCameraOutput.frames.left.mFrame, bbox, cv::Scalar(0, 255, 0, 0), 1, 8); 
+            cv::rectangle(aDetection.mCameraOutput.frames.left.mFrame, inst.bounding_box, cv::Scalar(0, 255, 0, 0), 1, 8); 
         }
     }
 }
