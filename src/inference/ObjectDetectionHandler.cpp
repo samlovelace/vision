@@ -40,7 +40,7 @@ void ObjectDetectionHandler::run()
                 // TODO: loop through all detections for each type and consolidate if bbox centroid within some threshold? 
                 for(auto& [objClass, detectionData] : detections->mDetections)
                 {
-                    LOGD << "Detected class: " << objClass; 
+                 
                 }
                 
                 detection.mDetections = detections; 
@@ -66,7 +66,29 @@ void ObjectDetectionHandler::renderDetections(Detection& aDetection)
         for(const auto& inst : detections)
         {
             cv::rectangle(aDetection.mCameraOutput.frames.left.mFrame, inst.bounding_box, cv::Scalar(0, 255, 0, 0), 1, 8); 
-        }
+            // Prepare label text
+            std::ostringstream labelStream;
+            labelStream << inst.class_name << " " << std::fixed << std::setprecision(2) << inst.confidence;
+            std::string label = labelStream.str();
+
+            int baseLine = 0;
+            cv::Size labelSize = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
+
+            // Make sure label doesn't go outside the image
+            int top = std::max(inst.bounding_box.y, labelSize.height + 4);
+
+            // Draw background rectangle for the label
+            cv::rectangle(aDetection.mCameraOutput.frames.left.mFrame,
+                cv::Point(inst.bounding_box.x, top - labelSize.height - 4),
+                cv::Point(inst.bounding_box.x + labelSize.width, top + baseLine - 4),
+                cv::Scalar(0, 255, 0, 0),
+                cv::FILLED);
+
+            // Draw label text
+            cv::putText(aDetection.mCameraOutput.frames.left.mFrame, label,
+                cv::Point(inst.bounding_box.x, top - 2),
+                cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
+                }
     }
 }
 

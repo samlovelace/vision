@@ -69,11 +69,8 @@ public:
     }
 
 private:
-    cv::dnn::Net net;
-    // std::string protoPath = "/home/sam/models/deploy.prototxt";
-    // std::string modelPath = "/home/sam/models/mobilenet.caffemodel";
-    int imageWidth = 300;
-    int imageHeight = 300;
+    int imageWidth = 640;
+    int imageHeight = 480;
 
     const std::vector<std::string> classNames = {
     "background", "aeroplane", "bicycle", "bird", "boat",
