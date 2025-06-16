@@ -54,6 +54,15 @@ namespace Utils
         return mat;
     }
 
+    inline float computeIoU(const cv::Rect& a, const cv::Rect& b) 
+    {
+        cv::Rect inter = a & b;
+        float interArea = static_cast<float>(inter.area());
+        float unionArea = static_cast<float>(a.area() + b.area() - interArea);
+        return (unionArea > 0.0f) ? (interArea / unionArea) : 0.0f;
+    }
+
+
 
 } // namespace Utils
 

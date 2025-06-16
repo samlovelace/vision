@@ -3,6 +3,7 @@
 #include "ModelFactory.h"
 #include "EngineFactory.h"
 #include "plog/Log.h"
+#include "Utils.hpp"
 
 #include <opencv2/opencv.hpp>
 
@@ -12,9 +13,10 @@ ObjectDetectionHandler::ObjectDetectionHandler(const YAML::Node& aDetectionConfi
                                                std::shared_ptr<ConcurrentQueue<Detection>> aVisQueue, 
                                                std::shared_ptr<InferenceHandler> anInferenceHandler) : 
     mFrameQueue(aFrameQueue), mDetectionQueue(aDetectionQueue), mVisQueue(aVisQueue), mInferenceHandler(anInferenceHandler), 
-    mMinConfidenceThreshold(0.5)
+    mMinConfidenceThreshold(0.5), mSimilarDetectionThreshold(0.75)
 {
     mMinConfidenceThreshold = aDetectionConfig["min_confidence"].as<float>(); 
+    mSimilarDetectionThreshold = aDetectionConfig["similar_detection"].as<float>(); 
 
 }
 
@@ -41,8 +43,8 @@ void ObjectDetectionHandler::run()
 
                 // TODO: loop through all detections for each type and consolidate if bbox centroid within some threshold? 
                 removeLowConfidenceDetections(detections); 
+                removeSimilarDetections(detections); 
 
-                
                 detection.mDetections = detections; 
                 detection.mCameraOutput = frame;  
 
@@ -112,6 +114,42 @@ void ObjectDetectionHandler::removeLowConfidenceDetections(std::shared_ptr<Detec
             ++mapIt;
     }
 
+}
+
+void ObjectDetectionHandler::removeSimilarDetections(std::shared_ptr<DetectionOutput>& aDetections)
+{
+    for (auto& [objClass, detections] : aDetections->mDetections)
+    {
+        if (detections.size() <= 1)
+            continue;
+
+        // Loop through all pairs and remove lower-confidence duplicates
+        for (size_t i = 0; i < detections.size(); ++i) 
+        {
+            for (size_t j = i + 1; j < detections.size(); ) 
+            {
+                float iou = Utils::computeIoU(detections[i].bounding_box, detections[j].bounding_box);
+                if (iou > mSimilarDetectionThreshold) 
+                {
+                    // Keep the one with higher confidence
+                    if (detections[i].confidence >= detections[j].confidence)
+                    {
+                        detections.erase(detections.begin() + j);
+                    }
+                    else 
+                    {
+                        detections.erase(detections.begin() + i);
+                        --i; // restart this i to compare remaining j's
+                        break;
+                    }
+                } 
+                else 
+                {
+                    ++j;
+                }
+            }
+        }
+    }
 }
 
 

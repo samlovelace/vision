@@ -30,9 +30,11 @@ private:
     std::shared_ptr<ConcurrentQueue<Detection>> mVisQueue; 
 
     float mMinConfidenceThreshold; 
+    float mSimilarDetectionThreshold;
 
     void renderDetections(Detection& aDetection);
     void removeLowConfidenceDetections(std::shared_ptr<DetectionOutput>& aDetections);
+    void removeSimilarDetections(std::shared_ptr<DetectionOutput>& aDetections); 
    
 };
 #endif //ObjectDetectionHandler_H
