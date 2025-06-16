@@ -13,7 +13,7 @@ Vision::Vision() : mVisualize(false)
     YAML::Node camerasConfig; 
     if(!ConfigManager::get().getConfig<YAML::Node>("cameras", camerasConfig))
     {
-        throw std::invalid_argument("Missing camera configuration");
+        throw std::runtime_error("Missing camera configuration");
     }
 
     mNavDataHandler = std::make_shared<NavDataHandler>(config["nav_topic"].as<std::string>());
@@ -25,11 +25,10 @@ Vision::Vision() : mVisualize(false)
     YAML::Node modelsConfig; 
     if(!ConfigManager::get().getConfig<YAML::Node>("models", modelsConfig))
     {
-        throw std::invalid_argument("Missing models configuration");
+        throw std::runtime_error("Missing models configuration");
     }
 
     mInferenceHandler = std::make_shared<InferenceHandler>(modelsConfig); 
-
     mDetectionQueue = std::make_shared<ConcurrentQueue<Detection>>();
     
     m2DVisQueue = nullptr; 
@@ -37,13 +36,19 @@ Vision::Vision() : mVisualize(false)
     {
         m2DVisQueue = std::make_shared<ConcurrentQueue<Detection>>(); 
     }
+
+    YAML::Node detectionConfig; 
+    if(!ConfigManager::get().getConfig<YAML::Node>("object_detection", detectionConfig))
+    {
+        throw std::runtime_error("invalid object_detection config"); 
+    }
     
-    mDetector = std::make_shared<ObjectDetectionHandler>(modelsConfig, mFrameQueue, mDetectionQueue, m2DVisQueue, mInferenceHandler); 
+    mDetector = std::make_shared<ObjectDetectionHandler>(detectionConfig, mFrameQueue, mDetectionQueue, m2DVisQueue, mInferenceHandler); 
 
     YAML::Node poseEstConfig; 
     if(!ConfigManager::get().getConfig<YAML::Node>("pose_estimation", poseEstConfig))
     {
-        throw std::invalid_argument("Missing or invalid pose_estimation config"); 
+        throw std::runtime_error("Missing or invalid pose_estimation config"); 
     }
 
     mDepthFrameVisQueue = std::make_shared<ConcurrentQueue<cv::Mat>>(); 

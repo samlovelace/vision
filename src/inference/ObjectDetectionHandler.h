@@ -12,7 +12,7 @@
 class ObjectDetectionHandler 
 { 
 public:
-    ObjectDetectionHandler(const YAML::Node& aModelsConfig, 
+    ObjectDetectionHandler(const YAML::Node& aDetectionConfig, 
                  std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueueVector, 
                  std::shared_ptr<ConcurrentQueue<Detection>> aDetectionQueue, 
                  std::shared_ptr<ConcurrentQueue<Detection>> aVisQueue, 
@@ -25,12 +25,14 @@ public:
 private:
 
     std::shared_ptr<InferenceHandler> mInferenceHandler; 
-
     std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> mFrameQueue; 
     std::shared_ptr<ConcurrentQueue<Detection>> mDetectionQueue; 
     std::shared_ptr<ConcurrentQueue<Detection>> mVisQueue; 
 
+    float mMinConfidenceThreshold; 
+
     void renderDetections(Detection& aDetection);
+    void removeLowConfidenceDetections(std::shared_ptr<DetectionOutput>& aDetections);
    
 };
 #endif //ObjectDetectionHandler_H

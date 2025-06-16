@@ -6,13 +6,15 @@
 
 #include <opencv2/opencv.hpp>
 
-ObjectDetectionHandler::ObjectDetectionHandler(const YAML::Node& aModelsConfig, 
+ObjectDetectionHandler::ObjectDetectionHandler(const YAML::Node& aDetectionConfig, 
                                                std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueue, 
                                                std::shared_ptr<ConcurrentQueue<Detection>> aDetectionQueue,
                                                std::shared_ptr<ConcurrentQueue<Detection>> aVisQueue, 
                                                std::shared_ptr<InferenceHandler> anInferenceHandler) : 
-    mFrameQueue(aFrameQueue), mDetectionQueue(aDetectionQueue), mVisQueue(aVisQueue), mInferenceHandler(anInferenceHandler)
+    mFrameQueue(aFrameQueue), mDetectionQueue(aDetectionQueue), mVisQueue(aVisQueue), mInferenceHandler(anInferenceHandler), 
+    mMinConfidenceThreshold(0.5)
 {
+    mMinConfidenceThreshold = aDetectionConfig["min_confidence"].as<float>(); 
 
 }
 
@@ -38,10 +40,8 @@ void ObjectDetectionHandler::run()
                 auto detections = std::dynamic_pointer_cast<DetectionOutput>(output);
 
                 // TODO: loop through all detections for each type and consolidate if bbox centroid within some threshold? 
-                for(auto& [objClass, detectionData] : detections->mDetections)
-                {
-                 
-                }
+                removeLowConfidenceDetections(detections); 
+
                 
                 detection.mDetections = detections; 
                 detection.mCameraOutput = frame;  
@@ -90,6 +90,28 @@ void ObjectDetectionHandler::renderDetections(Detection& aDetection)
                 cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
                 }
     }
+}
+
+void ObjectDetectionHandler::removeLowConfidenceDetections(std::shared_ptr<DetectionOutput>& aDetections)
+{
+    for (auto mapIt = aDetections->mDetections.begin(); mapIt != aDetections->mDetections.end(); ) 
+    {
+        auto& detectionData = mapIt->second;
+
+        for (auto it = detectionData.begin(); it != detectionData.end(); ) 
+        {
+            if (it->confidence < mMinConfidenceThreshold)
+                it = detectionData.erase(it);
+            else
+                ++it;
+        }
+
+        if (detectionData.empty())
+            mapIt = aDetections->mDetections.erase(mapIt);
+        else
+            ++mapIt;
+    }
+
 }
 
 

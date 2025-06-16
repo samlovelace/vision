@@ -1,4 +1,4 @@
-mode: vision # vision, calibration,
+mode: vision # vision, calibration
 visualize: true
 nav_topic: /robot/pose
 
@@ -35,7 +35,7 @@ models:
     engine: opencv
 
 object_detection:
-  type: bounding-box
+  min_confidence: 0.75
 
 pose_estimation:
   depth_estimation: monocular

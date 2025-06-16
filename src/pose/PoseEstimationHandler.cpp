@@ -16,7 +16,7 @@ PoseEstimationHandler::PoseEstimationHandler(const YAML::Node& aPoseEstConfig,
     {
         if(!anInferenceHandler->hasModelType("depth"))
         {
-            throw std::invalid_argument("Cannot use monocular depth estimation without depth estimating neural network"); 
+            throw std::runtime_error("Cannot use monocular depth estimation without depth estimating neural network"); 
         }
         mDepthEstimator = std::make_shared<MonocularDepthEstimator>(anInferenceHandler); 
     }
@@ -28,7 +28,7 @@ PoseEstimationHandler::PoseEstimationHandler(const YAML::Node& aPoseEstConfig,
     
     if(nullptr == mDepthEstimator)
     {
-        throw std::invalid_argument("Invalid pose estimation configuration"); 
+        throw std::runtime_error("Invalid pose estimation configuration"); 
     }
 }
 
