@@ -54,8 +54,12 @@ void ObjectDetectionHandler::run()
 
             if(nullptr != mVisQueue)
             {
-                renderDetections(detection); 
-                mVisQueue->push(detection);
+                // TODO: maybe there is a better way to clone this frame so the bounding box doesnt show in the image processes by the depth estimation
+                Detection detectionToRender; 
+                detectionToRender.mDetections = detection.mDetections; 
+                detectionToRender.mCameraOutput.frames.left.mFrame = detection.mCameraOutput.frames.left.mFrame.clone(); 
+                renderDetections(detectionToRender); 
+                mVisQueue->push(detectionToRender);
             }
         }
     }

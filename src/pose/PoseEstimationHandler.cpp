@@ -52,8 +52,18 @@ void PoseEstimationHandler::run()
                 continue; 
             }
 
-            // computePose();
+            cv::resize(depthMap, depthMap, cv::Size(640, 480)); 
+
+            // for(auto& [obj, detections] : detection.mDetections->mDetections)
+            // {
+            //     for(auto& det : detections)
+            //     {
+            //         det.bounding_box
+            //     }
+            // }
             
+
+            // computePose();
             mDepthMapVisQueue->push(depthMap); 
         }
     }

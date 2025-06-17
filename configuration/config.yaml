@@ -7,6 +7,7 @@ cameras:
     type: webcam
     stereo: false
     rate: 5 # Hz
+    img_size: [384, 384]
     focal: [0.1, 0.1]
     center: [128, 128]
     near: 0.5

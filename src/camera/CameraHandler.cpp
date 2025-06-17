@@ -71,7 +71,7 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
         output.T_G_C = T_G_V * aCameraCtx.mParams->mS2V; 
         output.mParams = aCameraCtx.mParams; 
 
-        // push to master frame queue 
+        // push to frame queue 
         mFrameQueue->push(output);
 
         aCameraCtx.mRate->block(); 
