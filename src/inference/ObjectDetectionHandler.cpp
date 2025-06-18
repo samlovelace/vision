@@ -85,16 +85,16 @@ void ObjectDetectionHandler::renderDetections(Detection& aDetection)
 
             // Draw background rectangle for the label
             cv::rectangle(aDetection.mCameraOutput.frames.left.mFrame,
-                cv::Point(inst.bounding_box.x, top - labelSize.height - 4),
-                cv::Point(inst.bounding_box.x + labelSize.width, top + baseLine - 4),
-                cv::Scalar(0, 255, 0, 0),
-                cv::FILLED);
+                          cv::Point(inst.bounding_box.x, top - labelSize.height - 4),
+                          cv::Point(inst.bounding_box.x + labelSize.width, top + baseLine - 4),
+                          cv::Scalar(0, 255, 0, 0),
+                          cv::FILLED);
 
             // Draw label text
             cv::putText(aDetection.mCameraOutput.frames.left.mFrame, label,
-                cv::Point(inst.bounding_box.x, top - 2),
-                cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
-                }
+                        cv::Point(inst.bounding_box.x, top - 2),
+                        cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
+        }
     }
 }
 

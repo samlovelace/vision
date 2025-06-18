@@ -1,5 +1,6 @@
 mode: vision # vision, calibration
 visualize: true
+visualize_cloud: false
 nav_topic: /robot/pose
 
 cameras:

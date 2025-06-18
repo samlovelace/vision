@@ -10,6 +10,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(nora_idl REQUIRED)
 find_package(yaml-cpp REQUIRED)
+find_package(PCL REQUIRED)
 
 # Explicitly look for OpenCV in /usr/local
 set(OpenCV_DIR "/usr/local/lib/cmake/opencv4")
@@ -41,6 +42,7 @@ include_directories(${PROJECT_NAME}
   src/pose
   ${CMAKE_CURRENT_LIST_DIR}/dependencies/plog/plog-master/include
   ${OpenCV_INCLUDE_DIRS}
+  ${PCL_INCLUDE_DIRS}
 )
 
 ament_target_dependencies(${PROJECT_NAME}
@@ -50,6 +52,7 @@ ament_target_dependencies(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} 
   yaml-cpp 
   ${OpenCV_LIBS}
+  ${PCL_LIBRARIES}
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})

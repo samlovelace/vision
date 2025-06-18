@@ -3,11 +3,13 @@
 #include "ConfigManager.hpp"
 #include "RosTopicManager.hpp"
 #include "plog/Log.h"
+#include "PointCloudViewer.h"
 
-Vision::Vision() : mVisualize(false)
+Vision::Vision() : mVisualize(false), mVisualizePointCloud(true)
 {
     auto config = ConfigManager::get().getFullConfig(); 
     mVisualize = config["visualize"].as<bool>(); 
+    mVisualizePointCloud = config["visualize_cloud"].as<bool>(); 
 
     //******** CAMERA SETUP ******************/
     YAML::Node camerasConfig; 
@@ -51,8 +53,10 @@ Vision::Vision() : mVisualize(false)
         throw std::runtime_error("Missing or invalid pose_estimation config"); 
     }
 
+    mCloudVisQueue = std::make_shared<ConcurrentQueue<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>>(); 
+
     mDepthFrameVisQueue = std::make_shared<ConcurrentQueue<cv::Mat>>(); 
-    mPoseEstimationHandler = std::make_shared<PoseEstimationHandler>(poseEstConfig, mDetectionQueue, mInferenceHandler, mDepthFrameVisQueue); 
+    mPoseEstimationHandler = std::make_shared<PoseEstimationHandler>(poseEstConfig, mDetectionQueue, mInferenceHandler, mDepthFrameVisQueue, mCloudVisQueue); 
 }
 
 Vision::~Vision()
@@ -73,40 +77,52 @@ void Vision::start()
     mThreads.emplace_back(&ObjectDetectionHandler::run, mDetector.get()); 
     mThreads.emplace_back(&PoseEstimationHandler::run, mPoseEstimationHandler.get());
 
-    while(true)
+    PointCloudViewer pcViewer;
+    if(mVisualizePointCloud) 
+        pcViewer.start(); 
+
+    while (true)
     {
-        if(mVisualize)
+        if (mVisualize)
         {
-            Detection detection; 
-            if(m2DVisQueue->try_pop(detection))
+            Detection detection;
+            if (m2DVisQueue && m2DVisQueue->try_pop(detection))
             {
-                cv::Mat leftFrame = detection.mCameraOutput.frames.left.mFrame; 
-                if(leftFrame.empty())
-                {
-                    continue; 
-                }
-
-                cv::imshow("Detections", leftFrame); 
+                cv::Mat leftFrame = detection.mCameraOutput.frames.left.mFrame;
+                if (!leftFrame.empty())
+                    cv::imshow("Detections", leftFrame);
             }
 
-            cv::Mat depthFrame; 
-            if(mDepthFrameVisQueue->try_pop(depthFrame))
+            cv::Mat depthFrame;
+            if (mDepthFrameVisQueue && mDepthFrameVisQueue->try_pop(depthFrame))
             {
-                if(depthFrame.empty())
+                if (!depthFrame.empty())
+                    cv::imshow("DepthMap", depthFrame);
+            }
+
+            if (mVisualizePointCloud && mCloudVisQueue)
+            {
+                pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud;
+                if (mCloudVisQueue->try_pop(cloud) && cloud)
                 {
-                    continue; 
+                    if(cloud->empty())
+                    {
+                        continue; 
+                    }
+
+                    pcViewer.updateCloud(cloud); 
                 }
 
-                cv::imshow("DepthMap", depthFrame); 
             }
         }
 
-        if(cv::waitKey(1) == 'q')
-        {
-            break; 
-        }
-    } 
+        if (cv::waitKey(1) == 'q')
+            break;
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
 }
+
 
 void Vision::stop()
 {

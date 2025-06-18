@@ -10,6 +10,10 @@
 #include "CameraData.hpp"
 #include "NavDataHandler.h"
 
+#include <pcl/point_types.h>
+#include <pcl/visualization/cloud_viewer.h>
+#include <pcl/point_cloud.h>
+
 #include <thread> 
 
 class Vision : public IModule
@@ -35,11 +39,17 @@ private:
     std::shared_ptr<ConcurrentQueue<Detection>> m2DVisQueue; 
     std::shared_ptr<ConcurrentQueue<cv::Mat>> mDepthFrameVisQueue; 
 
+    std::shared_ptr<ConcurrentQueue<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>> mCloudVisQueue; 
     std::shared_ptr<PoseEstimationHandler> mPoseEstimationHandler;
 
     std::shared_ptr<NavDataHandler> mNavDataHandler; 
 
     bool mVisualize; 
+    bool mVisualizePointCloud;
+
+    pcl::visualization::PCLVisualizer::Ptr mViewer;
+    bool mViewerInitialized = false;
+
    
 };
 #endif //VISION_H

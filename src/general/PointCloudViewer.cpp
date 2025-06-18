@@ -1,0 +1,59 @@
+
+#include "PointCloudViewer.h"
+
+PointCloudViewer::PointCloudViewer(const std::string& viewerName)
+    : mViewerName(viewerName), mCloudId("cloud"), mRunning(false)
+{
+
+}
+
+PointCloudViewer::~PointCloudViewer() 
+{
+    stop();
+}
+
+void PointCloudViewer::start() 
+{
+    mRunning = true;
+    mViewer = std::make_shared<pcl::visualization::PCLVisualizer>(mViewerName);
+    mViewer->setBackgroundColor(0, 0, 0);
+    mViewer->addCoordinateSystem(0.1);
+    mViewer->initCameraParameters();
+
+    mThread = std::thread(&PointCloudViewer::run, this);
+}
+
+void PointCloudViewer::stop() 
+{
+    mRunning = false;
+    if (mThread.joinable()) {
+        mThread.join();
+    }
+}
+
+void PointCloudViewer::updateCloud(pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr newCloud) 
+{
+    std::lock_guard<std::mutex> lock(mMutex);
+    mCloud = newCloud;
+}
+
+void PointCloudViewer::run() 
+{
+    while (mRunning && !mViewer->wasStopped()) 
+    {
+        {
+            std::lock_guard<std::mutex> lock(mMutex);
+            if (mCloud) {
+                if (!mViewer->updatePointCloud(mCloud, mCloudId)) 
+                {
+                    mViewer->addPointCloud(mCloud, mCloudId);
+                    mViewer->setPointCloudRenderingProperties(
+                        pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, mCloudId);
+                }
+            }
+        }
+        
+        mViewer->spinOnce(30);
+        std::this_thread::sleep_for(std::chrono::milliseconds(30));
+    }
+}
