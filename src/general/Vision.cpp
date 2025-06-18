@@ -4,12 +4,14 @@
 #include "RosTopicManager.hpp"
 #include "plog/Log.h"
 #include "PointCloudViewer.h"
+#include "Utils.hpp"
 
-Vision::Vision() : mVisualize(false), mVisualizePointCloud(true)
+Vision::Vision() : mVisualize(false), mVisualizePointCloud(true), mSavePointCloud(true)
 {
     auto config = ConfigManager::get().getFullConfig(); 
     mVisualize = config["visualize"].as<bool>(); 
     mVisualizePointCloud = config["visualize_cloud"].as<bool>(); 
+    mSavePointCloud = config["save_clouds"].as<bool>(); 
 
     //******** CAMERA SETUP ******************/
     YAML::Node camerasConfig; 
@@ -77,6 +79,8 @@ void Vision::start()
     mThreads.emplace_back(&ObjectDetectionHandler::run, mDetector.get()); 
     mThreads.emplace_back(&PoseEstimationHandler::run, mPoseEstimationHandler.get());
 
+    int cloudNum = 0; 
+
     PointCloudViewer pcViewer;
     if(mVisualizePointCloud) 
         pcViewer.start(); 
@@ -98,9 +102,9 @@ void Vision::start()
             {
                 if (!depthFrame.empty())
                     cv::imshow("DepthMap", depthFrame);
-            }
+            } 
 
-            if (mVisualizePointCloud && mCloudVisQueue)
+            if (mCloudVisQueue && mVisualizePointCloud || mSavePointCloud)
             {
                 pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud;
                 if (mCloudVisQueue->try_pop(cloud) && cloud)
@@ -110,7 +114,17 @@ void Vision::start()
                         continue; 
                     }
 
-                    pcViewer.updateCloud(cloud); 
+                    // TODO: improve this to save point clouds for each object type or some unique object ID
+                    if(mSavePointCloud)
+                    {
+                        // TODO: improve where files are saved
+                        std::string cloudFile = "clouds/object_cloud_" + std::to_string(cloudNum++) + ".ply"; 
+                        Utils::savePointCloudAsPLY<pcl::PointXYZRGB>(cloud, cloudFile); 
+                        Utils::savePointCloudAsPLY<pcl::PointXYZRGB>(cloud, cloudFile);
+                    }
+                    
+                    if(mVisualizePointCloud)
+                        pcViewer.updateCloud(cloud); 
                 }
 
             }

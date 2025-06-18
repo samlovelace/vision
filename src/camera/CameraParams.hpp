@@ -26,10 +26,12 @@ struct CameraIntrinsics
 
 struct CameraParams
 {
-    CameraParams(std::shared_ptr<CameraIntrinsics> anIntrinsics, cv::Matx44f anS2V) : mIntrinsics(anIntrinsics), mS2V(anS2V) {}
+    CameraParams(std::shared_ptr<CameraIntrinsics> anIntrinsics, cv::Matx44f anS2V, std::pair<int, int> anImgSize) : 
+        mIntrinsics(anIntrinsics), mS2V(anS2V), mImgSize(anImgSize) {}
 
     std::shared_ptr<CameraIntrinsics> mIntrinsics; 
     cv::Matx44f mS2V; 
+    std::pair<int, int> mImgSize; 
 };
 
 

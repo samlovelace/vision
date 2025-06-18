@@ -16,6 +16,11 @@ public:
 
     // Accepts the output from the network and processes the detections
     virtual bool postprocess(const cv::Mat& netOutput, std::shared_ptr<IModelOutput>& output) = 0;
+
+    std::pair<int, int> getInputSize() {return mInputSize;}
+
+protected:   
+    std::pair<int, int> mInputSize; 
 };
 
 #endif // IMODEL_H

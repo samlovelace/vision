@@ -21,8 +21,8 @@ bool UsbCamera::init()
         return false; 
     }
 
-    mCapture.set(cv::CAP_PROP_FRAME_WIDTH, 640);
-    mCapture.set(cv::CAP_PROP_FRAME_HEIGHT, 480);
+    mCapture.set(cv::CAP_PROP_FRAME_WIDTH, 800);
+    mCapture.set(cv::CAP_PROP_FRAME_HEIGHT, 600);
 }
 
 CameraOutput UsbCamera::getOutput()

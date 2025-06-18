@@ -2,6 +2,11 @@
 #define UTILS_HPP
 
 #include <opencv2/opencv.hpp>
+#include <pcl/io/ply_io.h>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <string>
+#include <iostream>
 
 namespace Utils
 {
@@ -60,6 +65,25 @@ namespace Utils
         float interArea = static_cast<float>(inter.area());
         float unionArea = static_cast<float>(a.area() + b.area() - interArea);
         return (unionArea > 0.0f) ? (interArea / unionArea) : 0.0f;
+    }
+
+    template<typename PointT>
+    bool savePointCloudAsPLY(const typename pcl::PointCloud<PointT>::ConstPtr& cloud, const std::string& filename)
+    {
+        if (!cloud || cloud->empty())
+        {
+            std::cerr << "[savePointCloudAsPLY] Error: Empty or null cloud\n";
+            return false;
+        }
+
+        if (pcl::io::savePLYFileASCII(filename, *cloud) != 0)
+        {
+            std::cerr << "[savePointCloudAsPLY] Failed to save to " << filename << "\n";
+            return false;
+        }
+
+        std::cout << "[savePointCloudAsPLY] Saved " << cloud->size() << " points to " << filename << "\n";
+        return true;
     }
 
 

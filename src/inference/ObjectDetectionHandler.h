@@ -32,7 +32,7 @@ private:
     float mMinConfidenceThreshold; 
     float mSimilarDetectionThreshold;
 
-    void renderDetections(Detection& aDetection);
+    void renderDetections(Detection& aDetection, const int aModelInputWidth, const int aModelInputHeight);
     void removeLowConfidenceDetections(std::shared_ptr<DetectionOutput>& aDetections);
     void removeSimilarDetections(std::shared_ptr<DetectionOutput>& aDetections); 
    

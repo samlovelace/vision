@@ -53,7 +53,8 @@ void PoseEstimationHandler::run()
                 continue; 
             }
 
-            cv::resize(depthMap, depthMap, cv::Size(640, 480)); 
+            std::pair<int, int> imgSize = detection.mCameraOutput.mParams->mImgSize; 
+            cv::resize(depthMap, depthMap, cv::Size(imgSize.first, imgSize.second)); 
             mDepthMapVisQueue->push(depthMap); 
 
             // save camera intrinsics in local variable for easy use

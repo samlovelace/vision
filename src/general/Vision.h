@@ -46,6 +46,7 @@ private:
 
     bool mVisualize; 
     bool mVisualizePointCloud;
+    bool mSavePointCloud; 
 
     pcl::visualization::PCLVisualizer::Ptr mViewer;
     bool mViewerInitialized = false;

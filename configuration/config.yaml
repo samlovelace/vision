@@ -1,6 +1,7 @@
 mode: vision # vision, calibration
 visualize: true
 visualize_cloud: false
+save_clouds: true
 nav_topic: /robot/pose
 
 cameras:
@@ -8,9 +9,9 @@ cameras:
     type: webcam
     stereo: false
     rate: 5 # Hz
-    img_size: [384, 384]
-    focal: [0.1, 0.1]
-    center: [128, 128]
+    img_size: [640, 480]
+    focal: [0.001, 0.001]
+    center: [320, 240]
     near: 0.5
     far: 3.5
     xyz: [0, 0, 0]

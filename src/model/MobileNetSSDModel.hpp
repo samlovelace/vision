@@ -6,6 +6,11 @@
 class MobileNetSSDModel : public IModel
 {
 public:
+
+    // Pretty hacky for such an important thing but idk how better to maintain img sizes
+    // outside of the model implementations
+    MobileNetSSDModel() {mInputSize = std::make_pair<int, int>(300, 300); }
+
     bool init() override 
     {
         return true; 
@@ -37,10 +42,10 @@ public:
         {
             int classId = static_cast<int>(data[i * 7 + 1]);
 
-            int xLeft   = static_cast<int>(data[i * 7 + 3] * imageWidth);
-            int yTop    = static_cast<int>(data[i * 7 + 4] * imageHeight);
-            int xRight  = static_cast<int>(data[i * 7 + 5] * imageWidth);
-            int yBottom = static_cast<int>(data[i * 7 + 6] * imageHeight);
+            int xLeft   = static_cast<int>(data[i * 7 + 3]* 300);// * imageWidth);
+            int yTop    = static_cast<int>(data[i * 7 + 4]* 300);// * imageHeight);
+            int xRight  = static_cast<int>(data[i * 7 + 5]* 300);// * imageWidth);
+            int yBottom = static_cast<int>(data[i * 7 + 6]* 300);// * imageHeight);
 
             cv::Rect bbox(cv::Point(xLeft, yTop), cv::Point(xRight, yBottom));
 
@@ -63,14 +68,8 @@ public:
         return "unknown";
     }
 
-    void setInputSize(int w, int h) {
-        imageWidth = w;
-        imageHeight = h;
-    }
 
 private:
-    int imageWidth = 640;
-    int imageHeight = 480;
 
     const std::vector<std::string> classNames = {
     "background", "aeroplane", "bicycle", "bird", "boat",

@@ -62,3 +62,13 @@ bool InferenceHandler::hasModelType(const std::string& aType)
 {
     return mModels.find(aType) != mModels.end(); 
 }
+
+std::pair<int, int> InferenceHandler::getModelInputSize(const std::string& aType)
+{
+    if(!hasModelType(aType))
+    {
+        return std::make_pair<int, int>(0, 0); 
+    }
+
+    return mModels.at(aType).mModel->getInputSize(); 
+}

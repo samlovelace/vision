@@ -61,6 +61,18 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
             LOGD << "Frame empty..."; 
             continue; 
         }
+
+        // always resize the left image
+        int width = aCameraCtx.mParams->mImgSize.first; 
+        int height = aCameraCtx.mParams->mImgSize.second; 
+
+        cv::resize(frames.left.mFrame,frames.left.mFrame, cv::Size(width, height)); 
+
+        if(frames.isStereo)
+        {
+            // resize right frame
+            cv::resize(frames.right.mFrame, frames.right.mFrame, cv::Size(width, height)); 
+        }
         
         // get global pose of robot at timestamp of image 
         StampedCameraOutput output; 
@@ -102,7 +114,10 @@ void CameraHandler::parseCameraConfig(const YAML::Node& aCameraConfig)
     std::vector<float> quat = aCameraConfig["quat"].as<std::vector<float>>(); 
     cv::Matx44f s2v = Utils::transformFromXYZQuat(xyz, quat); 
 
-    auto params = std::make_shared<CameraParams>(intr, s2v); 
+    std::vector<int> widthHeight = aCameraConfig["img_size"].as<std::vector<int>>();  
+    std::pair<int, int> imgSize = {widthHeight[0], widthHeight[1]}; 
+    
+    auto params = std::make_shared<CameraParams>(intr, s2v, imgSize); 
 
     auto camCtx = CameraContext(rate, camera, params);
 

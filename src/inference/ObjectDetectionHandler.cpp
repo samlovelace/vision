@@ -46,9 +46,13 @@ void ObjectDetectionHandler::run()
                 removeSimilarDetections(detections); 
 
                 detection.mDetections = detections; 
-                detection.mCameraOutput = frame;  
+                detection.mCameraOutput = frame;
+                
+                int width = frame.mParams->mImgSize.first; 
+                int height = frame.mParams->mImgSize.second; 
+                cv::resize(detection.mCameraOutput.frames.left.mFrame, detection.mCameraOutput.frames.left.mFrame, cv::Size(width, height)); 
 
-                // push to queues for 3d estimator
+                // push to queue for 3d estimator
                 mDetectionQueue->push(detection); 
             }
 
@@ -58,20 +62,41 @@ void ObjectDetectionHandler::run()
                 Detection detectionToRender; 
                 detectionToRender.mDetections = detection.mDetections; 
                 detectionToRender.mCameraOutput.frames.left.mFrame = detection.mCameraOutput.frames.left.mFrame.clone(); 
-                renderDetections(detectionToRender); 
+
+                // get model input size to scale bounding box rendering 
+                std::pair<int, int> imgSize = mInferenceHandler->getModelInputSize("2d-detection");
+
+                renderDetections(detectionToRender, imgSize.first, imgSize.second); 
                 mVisQueue->push(detectionToRender);
             }
         }
     }
 }
 
-void ObjectDetectionHandler::renderDetections(Detection& aDetection)
+void ObjectDetectionHandler::renderDetections(Detection& aDetection, const int aModelInputWidth, const int aModelInputHeight)
 {
-    for(const auto& [type, detections] : aDetection.mDetections->mDetections)
+    // Actual image size (resized back to original resolution)
+    int imageWidth = aDetection.mCameraOutput.frames.left.mFrame.cols;
+    int imageHeight = aDetection.mCameraOutput.frames.left.mFrame.rows;
+
+    // Compute scaling factors
+    float scaleX = static_cast<float>(imageWidth) / aModelInputWidth;
+    float scaleY = static_cast<float>(imageHeight) / aModelInputHeight;
+
+    for (const auto& [type, detections] : aDetection.mDetections->mDetections)
     {
-        for(const auto& inst : detections)
+        for (const auto& inst : detections)
         {
-            cv::rectangle(aDetection.mCameraOutput.frames.left.mFrame, inst.bounding_box, cv::Scalar(0, 255, 0, 0), 1, 8); 
+            // Scale the bounding box to match original image size
+            cv::Rect scaledBox;
+            scaledBox.x = static_cast<int>(inst.bounding_box.x * scaleX);
+            scaledBox.y = static_cast<int>(inst.bounding_box.y * scaleY);
+            scaledBox.width = static_cast<int>(inst.bounding_box.width * scaleX);
+            scaledBox.height = static_cast<int>(inst.bounding_box.height * scaleY);
+
+            // Draw the bounding box
+            cv::rectangle(aDetection.mCameraOutput.frames.left.mFrame, scaledBox, cv::Scalar(0, 255, 0), 1, 8);
+
             // Prepare label text
             std::ostringstream labelStream;
             labelStream << inst.class_name << " " << std::fixed << std::setprecision(2) << inst.confidence;
@@ -80,23 +105,24 @@ void ObjectDetectionHandler::renderDetections(Detection& aDetection)
             int baseLine = 0;
             cv::Size labelSize = cv::getTextSize(label, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
 
-            // Make sure label doesn't go outside the image
-            int top = std::max(inst.bounding_box.y, labelSize.height + 4);
+            // Ensure the label doesn't go above the image
+            int top = std::max(scaledBox.y, labelSize.height + 4);
 
             // Draw background rectangle for the label
             cv::rectangle(aDetection.mCameraOutput.frames.left.mFrame,
-                          cv::Point(inst.bounding_box.x, top - labelSize.height - 4),
-                          cv::Point(inst.bounding_box.x + labelSize.width, top + baseLine - 4),
-                          cv::Scalar(0, 255, 0, 0),
+                          cv::Point(scaledBox.x, top - labelSize.height - 4),
+                          cv::Point(scaledBox.x + labelSize.width, top + baseLine - 4),
+                          cv::Scalar(0, 255, 0),
                           cv::FILLED);
 
             // Draw label text
             cv::putText(aDetection.mCameraOutput.frames.left.mFrame, label,
-                        cv::Point(inst.bounding_box.x, top - 2),
+                        cv::Point(scaledBox.x, top - 2),
                         cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 0), 1);
         }
     }
 }
+
 
 void ObjectDetectionHandler::removeLowConfidenceDetections(std::shared_ptr<DetectionOutput>& aDetections)
 {
