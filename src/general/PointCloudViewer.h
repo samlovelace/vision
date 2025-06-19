@@ -15,7 +15,7 @@ public:
 
     void start();
     void stop();
-    void updateCloud(pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr newCloud);
+    void updateCloud(pcl::PointCloud<pcl::PointXYZ>::ConstPtr newCloud);
 
 private:
     void run();
@@ -25,7 +25,7 @@ private:
     std::mutex mMutex;
     std::atomic<bool> mRunning;
 
-    pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr mCloud;
+    pcl::PointCloud<pcl::PointXYZ>::ConstPtr mCloud;
     std::string mCloudId;
     std::string mViewerName;
 };

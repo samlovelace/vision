@@ -39,7 +39,7 @@ private:
     std::shared_ptr<ConcurrentQueue<Detection>> m2DVisQueue; 
     std::shared_ptr<ConcurrentQueue<cv::Mat>> mDepthFrameVisQueue; 
 
-    std::shared_ptr<ConcurrentQueue<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>> mCloudVisQueue; 
+    std::shared_ptr<ConcurrentQueue<pcl::PointCloud<pcl::PointXYZ>::Ptr>> mCloudVisQueue; 
     std::shared_ptr<PoseEstimationHandler> mPoseEstimationHandler;
 
     std::shared_ptr<NavDataHandler> mNavDataHandler; 

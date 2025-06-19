@@ -55,7 +55,7 @@ Vision::Vision() : mVisualize(false), mVisualizePointCloud(true), mSavePointClou
         throw std::runtime_error("Missing or invalid pose_estimation config"); 
     }
 
-    mCloudVisQueue = std::make_shared<ConcurrentQueue<pcl::PointCloud<pcl::PointXYZRGB>::Ptr>>(); 
+    mCloudVisQueue = std::make_shared<ConcurrentQueue<pcl::PointCloud<pcl::PointXYZ>::Ptr>>(); 
 
     mDepthFrameVisQueue = std::make_shared<ConcurrentQueue<cv::Mat>>(); 
     mPoseEstimationHandler = std::make_shared<PoseEstimationHandler>(poseEstConfig, mDetectionQueue, mInferenceHandler, mDepthFrameVisQueue, mCloudVisQueue); 
@@ -106,7 +106,7 @@ void Vision::start()
 
             if (mCloudVisQueue && mVisualizePointCloud || mSavePointCloud)
             {
-                pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud;
+                pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
                 if (mCloudVisQueue->try_pop(cloud) && cloud)
                 {
                     if(cloud->empty())
@@ -119,8 +119,8 @@ void Vision::start()
                     {
                         // TODO: improve where files are saved
                         std::string cloudFile = "clouds/object_cloud_" + std::to_string(cloudNum++) + ".ply"; 
-                        Utils::savePointCloudAsPLY<pcl::PointXYZRGB>(cloud, cloudFile); 
-                        Utils::savePointCloudAsPLY<pcl::PointXYZRGB>(cloud, cloudFile);
+                        Utils::savePointCloudAsPLY<pcl::PointXYZ>(cloud, cloudFile); 
+                        Utils::savePointCloudAsPLY<pcl::PointXYZ>(cloud, cloudFile);
                     }
                     
                     if(mVisualizePointCloud)

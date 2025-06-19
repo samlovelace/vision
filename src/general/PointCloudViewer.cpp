@@ -31,7 +31,7 @@ void PointCloudViewer::stop()
     }
 }
 
-void PointCloudViewer::updateCloud(pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr newCloud) 
+void PointCloudViewer::updateCloud(pcl::PointCloud<pcl::PointXYZ>::ConstPtr newCloud) 
 {
     std::lock_guard<std::mutex> lock(mMutex);
     mCloud = newCloud;
