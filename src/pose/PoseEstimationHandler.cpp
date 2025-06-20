@@ -63,9 +63,16 @@ void PoseEstimationHandler::run()
                 {
                     // TODO: need some way of keeping track of unique objects of same type
                     // Probably best to use the objectLibrary once that is implemented
-                    auto cloud = mObjCloudGenerator->generateCloud(det.bounding_box, depthMap, detection.mCameraOutput.mParams); 
+                    auto cloud_Cam = mObjCloudGenerator->generateCloud(det.bounding_box, depthMap, detection.mCameraOutput.mParams); 
 
-                    mCloudVisQueue->push(cloud); 
+                    // transform cloud into global frame via camera global pose
+                    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_G(new pcl::PointCloud<pcl::PointXYZ>);
+                    mObjCloudGenerator->transformCloud(cloud_Cam, cloud_G, detection.mCameraOutput.T_G_C); 
+
+                    // compute object centroid 
+                    cv::Point3f objCentroid_G = mObjCloudGenerator->computeCloudCentroid(cloud_G); 
+
+                    mCloudVisQueue->push(cloud_G); 
 
                 }
             }

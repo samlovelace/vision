@@ -14,6 +14,8 @@ public:
     ~ObjectCloudGenerator();
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr generateCloud(const cv::Rect& aBoundingBox, const cv::Mat& aDepthMap, std::shared_ptr<CameraParams> aCamParams);
+    cv::Point3f computeCloudCentroid(pcl::PointCloud<pcl::PointXYZ>::Ptr& aCloud);
+    void transformCloud(pcl::PointCloud<pcl::PointXYZ>::Ptr anInputCloud, pcl::PointCloud<pcl::PointXYZ>::Ptr& aCloudOut, cv::Matx44f aT_ref_cam); 
 
 private:
    
