@@ -58,7 +58,13 @@ Vision::Vision() : mVisualize(false), mVisualizePointCloud(true), mSavePointClou
     mCloudVisQueue = std::make_shared<ConcurrentQueue<pcl::PointCloud<pcl::PointXYZ>::Ptr>>(); 
 
     mDepthFrameVisQueue = std::make_shared<ConcurrentQueue<cv::Mat>>(); 
-    mPoseEstimationHandler = std::make_shared<PoseEstimationHandler>(poseEstConfig, mDetectionQueue, mInferenceHandler, mDepthFrameVisQueue, mCloudVisQueue); 
+    mObjectManager = std::make_shared<DetectedObjectManager>(); 
+    mPoseEstimationHandler = std::make_shared<PoseEstimationHandler>(poseEstConfig, 
+                                                                     mDetectionQueue, 
+                                                                     mInferenceHandler, 
+                                                                     mDepthFrameVisQueue, 
+                                                                     mCloudVisQueue, 
+                                                                     mObjectManager); 
 }
 
 Vision::~Vision()

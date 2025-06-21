@@ -9,6 +9,7 @@
 #include "IModule.hpp"
 #include "CameraData.hpp"
 #include "NavDataHandler.h"
+#include "DetectedObjectManager.h"
 
 #include <pcl/point_types.h>
 #include <pcl/visualization/cloud_viewer.h>
@@ -41,6 +42,7 @@ private:
 
     std::shared_ptr<ConcurrentQueue<pcl::PointCloud<pcl::PointXYZ>::Ptr>> mCloudVisQueue; 
     std::shared_ptr<PoseEstimationHandler> mPoseEstimationHandler;
+    std::shared_ptr<DetectedObjectManager> mObjectManager; 
 
     std::shared_ptr<NavDataHandler> mNavDataHandler; 
 

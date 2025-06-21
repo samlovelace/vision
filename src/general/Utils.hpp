@@ -72,17 +72,17 @@ namespace Utils
     {
         if (!cloud || cloud->empty())
         {
-            std::cerr << "[savePointCloudAsPLY] Error: Empty or null cloud\n";
+            //std::cerr << "[savePointCloudAsPLY] Error: Empty or null cloud\n";
             return false;
         }
 
         if (pcl::io::savePLYFileASCII(filename, *cloud) != 0)
         {
-            std::cerr << "[savePointCloudAsPLY] Failed to save to " << filename << "\n";
+            //std::cerr << "[savePointCloudAsPLY] Failed to save to " << filename << "\n";
             return false;
         }
 
-        std::cout << "[savePointCloudAsPLY] Saved " << cloud->size() << " points to " << filename << "\n";
+        //std::cout << "[savePointCloudAsPLY] Saved " << cloud->size() << " points to " << filename << "\n";
         return true;
     }
 

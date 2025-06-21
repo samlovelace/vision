@@ -7,8 +7,11 @@ PoseEstimationHandler::PoseEstimationHandler(const YAML::Node& aPoseEstConfig,
                                              std::shared_ptr<ConcurrentQueue<Detection>> aDetectionQueue, 
                                              std::shared_ptr<InferenceHandler> anInferenceHandler, 
                                              std::shared_ptr<ConcurrentQueue<cv::Mat>> aDepthMapVisQueue, 
-                                             std::shared_ptr<ConcurrentQueue<pcl::PointCloud<pcl::PointXYZ>::Ptr>> aPcVisQueue) : 
-    mDetectionQueue(aDetectionQueue), mDepthMapVisQueue(aDepthMapVisQueue), mCloudVisQueue(aPcVisQueue), mObjCloudGenerator(std::make_shared<ObjectCloudGenerator>())
+                                             std::shared_ptr<ConcurrentQueue<pcl::PointCloud<pcl::PointXYZ>::Ptr>> aPcVisQueue, 
+                                             std::shared_ptr<DetectedObjectManager> anObjManager) : 
+    mDetectionQueue(aDetectionQueue), mDepthMapVisQueue(aDepthMapVisQueue), mCloudVisQueue(aPcVisQueue), 
+    mObjCloudGenerator(std::make_shared<ObjectCloudGenerator>()), 
+    mDetectedObjectManager(anObjManager)
 {
     std::string depthEstType = aPoseEstConfig["depth_estimation"].as<std::string>(); 
 
@@ -69,11 +72,14 @@ void PoseEstimationHandler::run()
                     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_G(new pcl::PointCloud<pcl::PointXYZ>);
                     mObjCloudGenerator->transformCloud(cloud_Cam, cloud_G, detection.mCameraOutput.T_G_C); 
 
+                    // push to visualization queue
+                    mCloudVisQueue->push(cloud_G);
+
                     // compute object centroid 
                     cv::Point3f objCentroid_G = mObjCloudGenerator->computeCloudCentroid(cloud_G); 
 
-                    mCloudVisQueue->push(cloud_G); 
-
+                    // TODO: idk a good name for this function 
+                    mDetectedObjectManager->storeObject(det, objCentroid_G);
                 }
             }
               

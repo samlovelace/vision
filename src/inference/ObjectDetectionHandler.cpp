@@ -43,6 +43,8 @@ void ObjectDetectionHandler::run()
 
                 // TODO: loop through all detections for each type and consolidate if bbox centroid within some threshold? 
                 removeLowConfidenceDetections(detections); 
+                
+                // TODO: do I really need this? Probably more needed when computing global centroid of object
                 removeSimilarDetections(detections); 
 
                 detection.mDetections = detections; 
