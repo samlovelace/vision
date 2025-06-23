@@ -32,10 +32,15 @@ models:
     path: /home/sam/models/mobilenet.caffemodel
     engine: opencv
 
-  - name: midas
+  - name: zoeDepth
     type: depth
-    path: /home/sam/models/dpt_next_vit_large_384.onnx
-    engine: opencv
+    path: /home/sam/models/zoedepth.onnx
+    engine: onnx
+
+  # - name: midas
+  #   type: depth
+  #   path: /home/sam/models/dpt_next_vit_large_384.onnx
+  #   engine: opencv
 
 object_detection:
   min_confidence: 0.75

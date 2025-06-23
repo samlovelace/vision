@@ -3,6 +3,7 @@
 #include "YoloModel.h"
 #include "MobileNetSSDModel.hpp"
 #include "MidasModel.h"
+#include "ZoeDepthModel.h"
 
 #include "plog/Log.h"
 
@@ -19,6 +20,10 @@ std::unique_ptr<IModel> ModelFactory::create(const std::string& aModelType)
     else if ("midas" == aModelType)
     {
         return std::make_unique<MidasModel>(); 
+    }
+    else if ("zoeDepth" == aModelType)
+    {
+        return std::make_unique<ZoeDepthModel>(); 
     }
     else{
         LOGE << "Unsupported model type: " << aModelType; 

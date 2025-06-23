@@ -16,6 +16,8 @@ find_package(PCL REQUIRED)
 set(OpenCV_DIR "/usr/local/lib/cmake/opencv4")
 find_package(OpenCV REQUIRED)
 
+set(ONNX_DIR ${CMAKE_CURRENT_LIST_DIR}/dependencies/onnxruntime )
+
 add_subdirectory(src/camera)
 add_subdirectory(src/general)
 add_subdirectory(src/inference)
@@ -43,7 +45,10 @@ include_directories(${PROJECT_NAME}
   ${CMAKE_CURRENT_LIST_DIR}/dependencies/plog/plog-master/include
   ${OpenCV_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
+  ${ONNX_DIR}/include
 )
+
+link_directories(${ONNX_DIR}/lib)
 
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp
@@ -53,6 +58,7 @@ target_link_libraries(${PROJECT_NAME}
   yaml-cpp 
   ${OpenCV_LIBS}
   ${PCL_LIBRARIES}
+  ${ONNX_DIR}/lib/libonnxruntime.so
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})
