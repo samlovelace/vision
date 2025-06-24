@@ -9,6 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(nora_idl REQUIRED)
+find_package(vision_idl REQUIRED)
 find_package(yaml-cpp REQUIRED)
 find_package(PCL REQUIRED)
 
@@ -48,6 +49,7 @@ include_directories(${PROJECT_NAME}
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp
   nora_idl
+  vision_idl
 )
 target_link_libraries(${PROJECT_NAME} 
   yaml-cpp 

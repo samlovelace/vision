@@ -6,6 +6,7 @@
 #include "Vision.h"
 #include "Calibration.h"
 #include <rclcpp/rclcpp.hpp>
+#include "CommandHandler.h"
 
 int main()
 {
@@ -17,30 +18,16 @@ int main()
     ConfigManager::get().load(configPath); 
     LOGV << "############## Configuration: #################\n" << YAML::Dump(ConfigManager::get().getFullConfig()); 
 
-    // TODO: put this chunk somehwere else? 
-    std::string mode; 
-    if(!ConfigManager::get().getConfig<std::string>("mode", mode))
+    auto vision = std::make_shared<Vision>(); 
+
+    CommandHandler ch(vision); 
+    ch.init(); 
+    
+    while(true)
     {
-        throw std::invalid_argument("invalid mode configuration"); 
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000)); 
     }
 
-    std::unique_ptr<IModule> perception = nullptr; 
-
-    if("vision" == mode)
-    {
-        perception = std::make_unique<Vision>(); 
-    }
-    else if ("calibration" == mode)
-    {
-        perception = std::make_unique<Calibration>(); 
-    }
-    else
-    {
-        LOGE << "Unsupported mode: " << mode; 
-        return 0; 
-    }
-
-    perception->start(); 
 
     rclcpp::shutdown(); 
 }

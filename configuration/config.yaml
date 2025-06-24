@@ -17,15 +17,6 @@ cameras:
     xyz: [0, 0, 0]
     quat: [0, 0, 0, 1] # (xyz w)
 
-  # - id: 1
-  #   type: thermal
-  #   stereo: true
-  #   rate: 10 # Hz
-  #   focal: [0.2, 0.2]
-  #   center: [256, 256]
-  #   near: 1.0
-  #   far: 5.0
-
 models:
   - name: mobilenet
     type: 2d-detection
