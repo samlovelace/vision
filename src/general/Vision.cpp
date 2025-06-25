@@ -12,14 +12,14 @@ Vision::~Vision()
 
 }
 
-void Vision::find_object(const std::string& anObjectTypeToFind, const std::string& aCentroidMethod)
+void Vision::find_object(const std::string& anObjectTypeToFind)
 {
     if(nullptr != mModule)
     {
         // TODO: handle shutdown of current module properly
     }
 
-    mModule = std::make_unique<ObjectLocatorModule>(anObjectTypeToFind, aCentroidMethod);
+    mModule = std::make_unique<ObjectLocatorModule>(anObjectTypeToFind);
 
     mModuleThread = std::thread([this](){
         mModule->start(); 

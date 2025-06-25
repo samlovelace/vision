@@ -11,7 +11,7 @@ public:
     Vision();
     ~Vision();
 
-    void find_object(const std::string& anObjTypeToFind, const std::string& aCentroidMethod); 
+    void find_object(const std::string& anObjTypeToFind); 
 
 private:
 

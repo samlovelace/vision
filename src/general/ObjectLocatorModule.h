@@ -20,7 +20,7 @@
 class ObjectLocatorModule : public IModule
 { 
 public:
-    ObjectLocatorModule(const std::string& anObjectType, const std::string& anCentroidMethod);
+    ObjectLocatorModule(const std::string& anObjectType);
     ~ObjectLocatorModule();
 
     void start() override; 

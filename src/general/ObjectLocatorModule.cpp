@@ -6,7 +6,7 @@
 #include "PointCloudViewer.h"
 #include "Utils.hpp"
 
-ObjectLocatorModule::ObjectLocatorModule(const std::string& anObjectType, const std::string& aCentroidMethod) : 
+ObjectLocatorModule::ObjectLocatorModule(const std::string& anObjectType) : 
     mVisualize(false), mVisualizePointCloud(true), mSavePointCloud(true)
 {
     auto config = ConfigManager::get().getFullConfig(); 
