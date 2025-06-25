@@ -13,7 +13,7 @@ ObjectDetectionHandler::ObjectDetectionHandler(const YAML::Node& aDetectionConfi
                                                std::shared_ptr<ConcurrentQueue<Detection>> aVisQueue, 
                                                std::shared_ptr<InferenceHandler> anInferenceHandler) : 
     mFrameQueue(aFrameQueue), mDetectionQueue(aDetectionQueue), mVisQueue(aVisQueue), mInferenceHandler(anInferenceHandler), 
-    mMinConfidenceThreshold(0.5), mSimilarDetectionThreshold(0.75)
+    mMinConfidenceThreshold(0.5), mSimilarDetectionThreshold(0.75), mRunning(true)
 {
     mMinConfidenceThreshold = aDetectionConfig["min_confidence"].as<float>(); 
     mSimilarDetectionThreshold = aDetectionConfig["similar_detection"].as<float>(); 
@@ -28,7 +28,7 @@ ObjectDetectionHandler::~ObjectDetectionHandler()
 void ObjectDetectionHandler::run()
 {
     // TODO: add something here to check if should stop or not
-    while(true)
+    while(isRunning())
     {
         StampedCameraOutput frame; 
         if(mFrameQueue->pop(frame))

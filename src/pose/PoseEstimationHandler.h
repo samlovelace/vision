@@ -9,6 +9,7 @@
 #include "ObjectCloudGenerator.h"
 #include "DetectedObjectManager.h"
 
+#include <mutex> 
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
 
@@ -27,6 +28,9 @@ public:
 
     void run(); 
 
+    bool isRunning() {std::lock_guard<std::mutex> lock(mRunningMutex); return mRunning; }
+    void setRunning(bool aFlag) {std::lock_guard<std::mutex> lock(mRunningMutex); mRunning = aFlag; }
+
 private:
     std::shared_ptr<ConcurrentQueue<Detection>> mDetectionQueue; 
     std::shared_ptr<ConcurrentQueue<cv::Mat>> mDepthMapVisQueue; 
@@ -34,6 +38,9 @@ private:
     std::shared_ptr<ObjectCloudGenerator> mObjCloudGenerator; 
     std::shared_ptr<ConcurrentQueue<pcl::PointCloud<pcl::PointXYZ>::Ptr>> mCloudVisQueue; 
     std::shared_ptr<DetectedObjectManager> mDetectedObjectManager; 
+
+    bool mRunning; 
+    std::mutex mRunningMutex; 
 
 };
 #endif //POSEESTIMATOR_H

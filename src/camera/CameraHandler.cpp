@@ -9,7 +9,7 @@
 
 CameraHandler::CameraHandler(const YAML::Node& aCameraConfig, 
     std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueue, std::shared_ptr<NavDataHandler> aNavDataHandler) : 
-    mFrameQueue(aFrameQueue), mNavDataHandler(aNavDataHandler)
+    mFrameQueue(aFrameQueue), mNavDataHandler(aNavDataHandler), mRunning(true)
 {
     LOGD << YAML::Dump(aCameraConfig); 
 
@@ -51,7 +51,7 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
          << aCameraCtx.mParams->mIntrinsics->farPlane_m; 
 
     // TODO: add something here to check if should stop or not
-    while(true)
+    while(isRunning())
     {
         aCameraCtx.mRate->start(); 
 

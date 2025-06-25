@@ -8,7 +8,7 @@
 #include "vision_idl/msg/found_object_response.hpp"
 
 ObjectLocatorModule::ObjectLocatorModule(const std::string& anObjectType) : 
-    mVisualize(false), mVisualizePointCloud(true), mSavePointCloud(true)
+    mVisualize(false), mVisualizePointCloud(true), mSavePointCloud(true), mRunning(true)
 {
     // Save object type to locate 
     mObjectToLocate = anObjectType; 
@@ -88,6 +88,11 @@ ObjectLocatorModule::~ObjectLocatorModule()
 
 void ObjectLocatorModule::start()
 {
+    // setRunning(true); 
+    // mCameraHandler->setRunning(true); 
+    // mDetector->setRunning(true); 
+    // mPoseEstimationHandler->setRunning(true); 
+
     mThreads.emplace_back(&CameraHandler::run, mCameraHandler.get());
     mThreads.emplace_back(&ObjectDetectionHandler::run, mDetector.get()); 
     mThreads.emplace_back(&PoseEstimationHandler::run, mPoseEstimationHandler.get());
@@ -95,7 +100,7 @@ void ObjectLocatorModule::start()
     if(mVisualize)
         mThreads.emplace_back(&ObjectLocatorModule::runVisualizer, this); 
     
-    while(true)
+    while(isRunning())
     {
         std::vector<DetectedObject> foundObjs = mObjectManager->getObjects(mObjectToLocate); 
 
@@ -148,7 +153,7 @@ void ObjectLocatorModule::runVisualizer()
 
     int cloudNum = 0;
 
-    while (true)
+    while (isRunning())
     {
         if (m2DVisQueue)
         {
@@ -192,12 +197,27 @@ void ObjectLocatorModule::runVisualizer()
 
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
+
+    cv::destroyAllWindows(); 
 }
 
 
 
 void ObjectLocatorModule::stop()
 {
-    // TODO: set condition to stop camera/2d/point cloud stuff
-    // and join threads and exit nicely?
+    LOGI << "Object Locator Module commanded to STOP"; 
+
+    setRunning(false); 
+    mCameraHandler->setRunning(false); 
+    mDetector->setRunning(false); 
+    mPoseEstimationHandler->setRunning(false); 
+
+    for(auto& t : mThreads)
+    {
+        if(t.joinable())
+        {
+            t.join(); 
+        }
+    }
+
 }

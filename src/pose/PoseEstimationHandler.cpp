@@ -11,7 +11,7 @@ PoseEstimationHandler::PoseEstimationHandler(const YAML::Node& aPoseEstConfig,
                                              std::shared_ptr<DetectedObjectManager> anObjManager) : 
     mDetectionQueue(aDetectionQueue), mDepthMapVisQueue(aDepthMapVisQueue), mCloudVisQueue(aPcVisQueue), 
     mObjCloudGenerator(std::make_shared<ObjectCloudGenerator>()), 
-    mDetectedObjectManager(anObjManager)
+    mDetectedObjectManager(anObjManager), mRunning(true)
 {
     std::string depthEstType = aPoseEstConfig["depth_estimation"].as<std::string>(); 
 
@@ -43,7 +43,7 @@ PoseEstimationHandler::~PoseEstimationHandler()
 void PoseEstimationHandler::run()
 {
     // TODO: add something here to check if should stop or not
-    while(true)
+    while(isRunning())
     {
         Detection detection; 
 

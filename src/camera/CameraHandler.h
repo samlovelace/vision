@@ -11,6 +11,8 @@
 #include "CameraContext.hpp"
 #include "CameraData.hpp"
 #include "NavDataHandler.h"
+
+#include <mutex> 
  
 class CameraHandler 
 { 
@@ -21,6 +23,9 @@ public:
     ~CameraHandler();
 
     void run();
+
+    bool isRunning() {std::lock_guard<std::mutex> lock(mRunningMutex); return mRunning; }
+    void setRunning(bool aFlag) {std::lock_guard<std::mutex> lock(mRunningMutex); mRunning = aFlag; }
 
 private:
 
@@ -33,6 +38,9 @@ private:
     std::vector<std::thread> mCameraThreads; 
 
     std::shared_ptr<NavDataHandler> mNavDataHandler; 
+
+    bool mRunning; 
+    std::mutex mRunningMutex; 
    
 };
 #endif //CAMERAHANDLER_H

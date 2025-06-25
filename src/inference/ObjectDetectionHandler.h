@@ -6,8 +6,8 @@
 #include "ConcurrentQueue.hpp"
 #include "Detection.hpp"
 #include "CameraData.hpp"
-
 #include "InferenceHandler.h"
+#include <mutex> 
  
 class ObjectDetectionHandler 
 { 
@@ -21,7 +21,9 @@ public:
     ~ObjectDetectionHandler();
 
     void run();
-    void setObjectOfInterest(const std::string& anObjectType) {mObjectToLocate = anObjectType; } 
+
+    bool isRunning() {std::lock_guard<std::mutex> lock(mRunningMutex); return mRunning; }
+    void setRunning(bool aFlag) {std::lock_guard<std::mutex> lock(mRunningMutex); mRunning = aFlag; }
 
 private:
 
@@ -32,7 +34,9 @@ private:
 
     float mMinConfidenceThreshold; 
     float mSimilarDetectionThreshold;
-    std::string mObjectToLocate; 
+    
+    bool mRunning; 
+    std::mutex mRunningMutex; 
 
     void renderDetections(Detection& aDetection, const int aModelInputWidth, const int aModelInputHeight);
     void removeLowConfidenceDetections(std::shared_ptr<DetectionOutput>& aDetections);

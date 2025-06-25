@@ -22,11 +22,15 @@ void Vision::stop()
         {
             mModuleThread.join(); 
         }
+        
+        mModule = nullptr; 
     }
 }
 
 void Vision::find_object(const std::string& anObjectTypeToFind)
 {
+    LOGD << "Commanded to find object of type: " << anObjectTypeToFind; 
+    
     if(nullptr != mModule)
     {
         // TODO: handle shutdown of current module properly

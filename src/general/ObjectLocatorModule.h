@@ -26,6 +26,9 @@ public:
     void start() override; 
     void stop() override; 
 
+    bool isRunning() {std::lock_guard<std::mutex> lock(mRunningMutex); return mRunning; }
+    void setRunning(bool aFlag) {std::lock_guard<std::mutex> lock(mRunningMutex); mRunning = aFlag; }
+
 private:
 
     std::shared_ptr<InferenceHandler> mInferenceHandler; 
@@ -49,6 +52,8 @@ private:
     bool mVisualize; 
     bool mVisualizePointCloud;
     bool mSavePointCloud; 
+    bool mRunning; 
+    std::mutex mRunningMutex; 
 
     pcl::visualization::PCLVisualizer::Ptr mViewer;
     bool mViewerInitialized = false;
