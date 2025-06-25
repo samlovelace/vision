@@ -21,6 +21,7 @@ public:
     ~ObjectDetectionHandler();
 
     void run();
+    void setObjectOfInterest(const std::string& anObjectType) {mObjectToLocate = anObjectType; } 
 
 private:
 
@@ -31,6 +32,7 @@ private:
 
     float mMinConfidenceThreshold; 
     float mSimilarDetectionThreshold;
+    std::string mObjectToLocate; 
 
     void renderDetections(Detection& aDetection, const int aModelInputWidth, const int aModelInputHeight);
     void removeLowConfidenceDetections(std::shared_ptr<DetectionOutput>& aDetections);

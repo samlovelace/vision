@@ -53,6 +53,8 @@ private:
     pcl::visualization::PCLVisualizer::Ptr mViewer;
     bool mViewerInitialized = false;
 
+    void runVisualizer();
+
    
 };
 #endif //OBJECTLOCATORMODULE_H

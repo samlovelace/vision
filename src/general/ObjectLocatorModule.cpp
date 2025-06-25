@@ -86,54 +86,59 @@ void ObjectLocatorModule::start()
     mThreads.emplace_back(&ObjectDetectionHandler::run, mDetector.get()); 
     mThreads.emplace_back(&PoseEstimationHandler::run, mPoseEstimationHandler.get());
 
-    int cloudNum = 0; 
+    if(mVisualize)
+        mThreads.emplace_back(&ObjectLocatorModule::runVisualizer, this); 
+    
+    while(true)
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000)); 
+    }
+}
 
+void ObjectLocatorModule::runVisualizer()
+{
     PointCloudViewer pcViewer;
-    if(mVisualizePointCloud) 
+    if (mVisualizePointCloud) 
         pcViewer.start(); 
+
+    int cloudNum = 0;
 
     while (true)
     {
-        if (mVisualize)
+        if (m2DVisQueue)
         {
             Detection detection;
-            if (m2DVisQueue && m2DVisQueue->try_pop(detection))
+            if (m2DVisQueue->try_pop(detection))
             {
                 cv::Mat leftFrame = detection.mCameraOutput.frames.left.mFrame;
                 if (!leftFrame.empty())
                     cv::imshow("Detections", leftFrame);
             }
+        }
 
+        if (mDepthFrameVisQueue)
+        {
             cv::Mat depthFrame;
-            if (mDepthFrameVisQueue && mDepthFrameVisQueue->try_pop(depthFrame))
+            if (mDepthFrameVisQueue->try_pop(depthFrame))
             {
                 if (!depthFrame.empty())
                     cv::imshow("DepthMap", depthFrame);
-            } 
+            }
+        }
 
-            if (mCloudVisQueue && mVisualizePointCloud || mSavePointCloud)
+        if (mCloudVisQueue && (mVisualizePointCloud || mSavePointCloud))
+        {
+            pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
+            if (mCloudVisQueue->try_pop(cloud) && cloud && !cloud->empty())
             {
-                pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
-                if (mCloudVisQueue->try_pop(cloud) && cloud)
+                if (mSavePointCloud)
                 {
-                    if(cloud->empty())
-                    {
-                        continue; 
-                    }
-
-                    // TODO: improve this to save point clouds for each object type or some unique object ID
-                    if(mSavePointCloud)
-                    {
-                        // TODO: improve where files are saved
-                        std::string cloudFile = "clouds/object_cloud_" + std::to_string(cloudNum++) + ".ply"; 
-                        Utils::savePointCloudAsPLY<pcl::PointXYZ>(cloud, cloudFile); 
-                        Utils::savePointCloudAsPLY<pcl::PointXYZ>(cloud, cloudFile);
-                    }
-                    
-                    if(mVisualizePointCloud)
-                        pcViewer.updateCloud(cloud); 
+                    std::string cloudFile = "clouds/object_cloud_" + std::to_string(cloudNum++) + ".ply";
+                    Utils::savePointCloudAsPLY<pcl::PointXYZ>(cloud, cloudFile);
                 }
 
+                if (mVisualizePointCloud)
+                    pcViewer.updateCloud(cloud);
             }
         }
 
@@ -143,6 +148,7 @@ void ObjectLocatorModule::start()
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 }
+
 
 
 void ObjectLocatorModule::stop()
