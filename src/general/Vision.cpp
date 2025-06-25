@@ -12,6 +12,19 @@ Vision::~Vision()
 
 }
 
+void Vision::stop()
+{
+    if(nullptr != mModule)
+    {
+        mModule->stop(); 
+
+        if(mModuleThread.joinable())
+        {
+            mModuleThread.join(); 
+        }
+    }
+}
+
 void Vision::find_object(const std::string& anObjectTypeToFind)
 {
     if(nullptr != mModule)

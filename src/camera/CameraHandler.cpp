@@ -50,6 +50,7 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
          << aCameraCtx.mParams->mIntrinsics->nearPlane_m    << ", "
          << aCameraCtx.mParams->mIntrinsics->farPlane_m; 
 
+    // TODO: add something here to check if should stop or not
     while(true)
     {
         aCameraCtx.mRate->start(); 

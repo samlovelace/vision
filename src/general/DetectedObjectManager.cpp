@@ -66,5 +66,20 @@ std::string DetectedObjectManager::generateInstanceId(const std::string& aClassN
     return instanceLabel + "_" + std::to_string(maxId); 
 }
 
+std::vector<DetectedObject> DetectedObjectManager::getObjects(const std::string& anObjectType)
+{
+    std::vector<DetectedObject> objs; 
+
+    for(const auto& [id, obj] : mObjects)
+    {
+        if(obj.class_label == anObjectType)
+        {
+            objs.push_back(obj); 
+        }
+    }
+
+    return objs; 
+}
+
 
 

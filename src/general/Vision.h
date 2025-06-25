@@ -12,6 +12,7 @@ public:
     ~Vision();
 
     void find_object(const std::string& anObjTypeToFind); 
+    void stop(); 
 
 private:
 

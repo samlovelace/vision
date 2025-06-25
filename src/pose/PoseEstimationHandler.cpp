@@ -42,6 +42,7 @@ PoseEstimationHandler::~PoseEstimationHandler()
 
 void PoseEstimationHandler::run()
 {
+    // TODO: add something here to check if should stop or not
     while(true)
     {
         Detection detection; 

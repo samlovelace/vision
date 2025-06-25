@@ -24,7 +24,7 @@ public:
     ~ObjectLocatorModule();
 
     void start() override; 
-    void stop(); 
+    void stop() override; 
 
 private:
 
@@ -52,6 +52,7 @@ private:
 
     pcl::visualization::PCLVisualizer::Ptr mViewer;
     bool mViewerInitialized = false;
+    std::string mObjectToLocate; 
 
     void runVisualizer();
 

@@ -5,10 +5,14 @@
 #include "plog/Log.h"
 #include "PointCloudViewer.h"
 #include "Utils.hpp"
+#include "vision_idl/msg/found_object_response.hpp"
 
 ObjectLocatorModule::ObjectLocatorModule(const std::string& anObjectType) : 
     mVisualize(false), mVisualizePointCloud(true), mSavePointCloud(true)
 {
+    // Save object type to locate 
+    mObjectToLocate = anObjectType; 
+
     auto config = ConfigManager::get().getFullConfig(); 
     mVisualize = config["visualize"].as<bool>(); 
     mVisualizePointCloud = config["visualize_cloud"].as<bool>(); 
@@ -66,6 +70,8 @@ ObjectLocatorModule::ObjectLocatorModule(const std::string& anObjectType) :
                                                                      mDepthFrameVisQueue, 
                                                                      mCloudVisQueue, 
                                                                      mObjectManager); 
+
+    RosTopicManager::getInstance()->createPublisher<vision_idl::msg::FoundObjectResponse>("/vision/found_object_response"); 
 }
 
 ObjectLocatorModule::~ObjectLocatorModule()
@@ -91,7 +97,46 @@ void ObjectLocatorModule::start()
     
     while(true)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000)); 
+        std::vector<DetectedObject> foundObjs = mObjectManager->getObjects(mObjectToLocate); 
+
+        if(foundObjs.empty())
+        {
+            continue; 
+        }
+
+        // TODO: validate the found object data in some way 
+
+
+        // Inform that object has been found 
+        for(auto& obj : foundObjs)
+        {
+            // convert internal data type to idl data type
+            //TODO: helper function to convert to idl format
+            vision_idl::msg::FoundObjectResponse foundObj; 
+            std_msgs::msg::String type; 
+            type.set__data(obj.class_label); 
+            foundObj.set__object_type(type); 
+
+            geometry_msgs::msg::PointStamped objCentroid_G;
+            objCentroid_G.header.frame_id = "world"; 
+            
+            geometry_msgs::msg::Point pt; 
+            pt.set__x(obj.global_centroid.x); 
+            pt.set__y(obj.global_centroid.y); 
+            pt.set__x(obj.global_centroid.z); 
+            objCentroid_G.set__point(pt); 
+
+            foundObj.set__obj_centroid_g(objCentroid_G); 
+
+            sensor_msgs::msg::PointCloud2 pc; 
+            foundObj.set__obj_points_g(pc); 
+
+            // publish response
+            RosTopicManager::getInstance()->publishMessage<vision_idl::msg::FoundObjectResponse>("/vision/found_object_response", foundObj); 
+            std::this_thread::sleep_for(std::chrono::milliseconds(50)); 
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); 
     }
 }
 
@@ -153,5 +198,6 @@ void ObjectLocatorModule::runVisualizer()
 
 void ObjectLocatorModule::stop()
 {
-
+    // TODO: set condition to stop camera/2d/point cloud stuff
+    // and join threads and exit nicely?
 }

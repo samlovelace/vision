@@ -22,9 +22,12 @@ void CommandHandler::init()
 
 void CommandHandler::commandCallback(vision_idl::msg::Command::SharedPtr aCommand)
 {
-
     if("find_object" == aCommand->command.data)
     {
         mVision->find_object(aCommand->object_type.data); 
+    }
+    if("disable" == aCommand->command.data)
+    {
+        mVision->stop(); 
     }
 }

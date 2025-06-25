@@ -27,6 +27,7 @@ ObjectDetectionHandler::~ObjectDetectionHandler()
 
 void ObjectDetectionHandler::run()
 {
+    // TODO: add something here to check if should stop or not
     while(true)
     {
         StampedCameraOutput frame; 

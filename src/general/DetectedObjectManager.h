@@ -13,6 +13,7 @@ public:
     ~DetectedObjectManager();
 
     void storeObject(const Detection2D& aDetection, cv::Point3f aCentroid_G); 
+    std::vector<DetectedObject> getObjects(const std::string& anObjectType); 
 
 private:
     
