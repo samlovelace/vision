@@ -31,8 +31,8 @@ void ObjectDetectionHandler::run()
     while(isRunning())
     {
         StampedCameraOutput frame; 
-        if(mFrameQueue->pop(frame))
-        { 
+        if(mFrameQueue->try_pop(frame))
+        {
             Detection detection;
 
             // TODO: could make this configurable so that we could do 2d-detection or mask-segementation to find objects ?
@@ -74,6 +74,8 @@ void ObjectDetectionHandler::run()
             }
         }
     }
+
+    LOGD << "ObjectDetectionHandler processing loop exited"; 
 }
 
 void ObjectDetectionHandler::renderDetections(Detection& aDetection, const int aModelInputWidth, const int aModelInputHeight)

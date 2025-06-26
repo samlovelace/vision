@@ -90,6 +90,7 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
         aCameraCtx.mRate->block(); 
     }
 
+    LOGD << "CameraHandler processing loop exited"; 
 }
 
 void CameraHandler::parseCameraConfig(const YAML::Node& aCameraConfig)

@@ -86,5 +86,7 @@ void PoseEstimationHandler::run()
               
         }
     }
+
+    LOGD << "PoseEstimationHandler processing loop exited"; 
 }
 

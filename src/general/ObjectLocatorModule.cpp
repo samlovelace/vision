@@ -208,7 +208,8 @@ void ObjectLocatorModule::stop()
     LOGI << "Object Locator Module commanded to STOP"; 
 
     setRunning(false); 
-    mCameraHandler->setRunning(false); 
+    mCameraHandler->setRunning(false);
+    mFrameQueue->clear(); 
     mDetector->setRunning(false); 
     mPoseEstimationHandler->setRunning(false); 
 
@@ -220,4 +221,5 @@ void ObjectLocatorModule::stop()
         }
     }
 
+    LOGD << "All processing threads in ObjectLocatorModule are stopped!"; 
 }

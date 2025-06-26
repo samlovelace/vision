@@ -22,7 +22,6 @@ void CommandHandler::init()
 
 void CommandHandler::commandCallback(vision_idl::msg::Command::SharedPtr aCommand)
 {
-    LOGD << "##################### COMMAND CALLBACK ########################"; 
     if("find_object" == aCommand->command.data)
     {
         mVision->find_object(aCommand->object_type.data); 
