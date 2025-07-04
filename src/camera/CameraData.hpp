@@ -17,6 +17,11 @@ struct CameraFrame
 
 struct CameraOutput
 {
+    CameraOutput() {}
+
+    CameraOutput(const CameraFrame aLeft, const CameraFrame aRight, bool anIsStereo) : 
+        left(aLeft), right(aRight), isStereo(anIsStereo) {}
+
     CameraFrame left; 
     CameraFrame right; 
     bool isStereo = false; 

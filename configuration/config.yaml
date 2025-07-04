@@ -5,7 +5,7 @@ nav_topic: /robot/pose
 
 cameras:
   - id: 0
-    type: webcam
+    type: ros
     stereo: false
     rate: 5 # Hz
     img_size: [640, 480]

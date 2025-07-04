@@ -11,9 +11,12 @@ find_package(rclcpp REQUIRED)
 find_package(nora_idl REQUIRED)
 find_package(vision_idl REQUIRED)
 find_package(yaml-cpp REQUIRED)
+find_package(message_filters REQUIRED)
 
 set(PCL_DIR "/usr/local/pcl-1.15/lib/cmake/pcl")
 find_package(PCL REQUIRED)
+
+find_package(cv_bridge REQUIRED)
 
 # Explicitly look for OpenCV in /usr/local
 set(OpenCV_DIR "/usr/local/lib/cmake/opencv4")
@@ -46,12 +49,15 @@ include_directories(${PROJECT_NAME}
   ${CMAKE_CURRENT_LIST_DIR}/dependencies/plog/plog-master/include
   ${OpenCV_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
+  /opt/ros/humble/include/cv_bridge
 )
 
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp
   nora_idl
   vision_idl
+  message_filters
+  cv_bridge
 )
 target_link_libraries(${PROJECT_NAME} 
   yaml-cpp 
