@@ -8,14 +8,13 @@
 #include "vision_idl/msg/found_object_response.hpp"
 
 ObjectLocatorModule::ObjectLocatorModule(const std::string& anObjectType) : 
-    mVisualize(false), mVisualizePointCloud(true), mSavePointCloud(true), mRunning(true)
+    mVisualize(false), mSavePointCloud(true), mRunning(true)
 {
     // Save object type to locate 
     mObjectToLocate = anObjectType; 
 
     auto config = ConfigManager::get().getFullConfig(); 
     mVisualize = config["visualize"].as<bool>(); 
-    mVisualizePointCloud = config["visualize_cloud"].as<bool>(); 
     mSavePointCloud = config["save_clouds"].as<bool>(); 
 
     //******** CAMERA SETUP ******************/
@@ -97,9 +96,17 @@ void ObjectLocatorModule::start()
     mThreads.emplace_back(&ObjectDetectionHandler::run, mDetector.get()); 
     mThreads.emplace_back(&PoseEstimationHandler::run, mPoseEstimationHandler.get());
 
+    mThreads.emplace_back(&ObjectLocatorModule::run, this); 
+
     if(mVisualize)
-        mThreads.emplace_back(&ObjectLocatorModule::runVisualizer, this); 
+    {
+        runVisualizer(); 
+    }
     
+}
+
+void ObjectLocatorModule::run()
+{
     while(isRunning())
     {
         std::vector<DetectedObject> foundObjs = mObjectManager->getObjects(mObjectToLocate); 
@@ -147,9 +154,11 @@ void ObjectLocatorModule::start()
 
 void ObjectLocatorModule::runVisualizer()
 {
-    PointCloudViewer pcViewer;
-    if (mVisualizePointCloud) 
-        pcViewer.start(); 
+
+    pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("Object Viewer"));
+    viewer->setBackgroundColor(0, 0, 0);
+    viewer->addCoordinateSystem(0.1);
+    viewer->initCameraParameters();
 
     int cloudNum = 0;
 
@@ -176,7 +185,7 @@ void ObjectLocatorModule::runVisualizer()
             }
         }
 
-        if (mCloudVisQueue && (mVisualizePointCloud || mSavePointCloud))
+        if (mCloudVisQueue)
         {
             pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
             if (mCloudVisQueue->try_pop(cloud) && cloud && !cloud->empty())
@@ -187,15 +196,22 @@ void ObjectLocatorModule::runVisualizer()
                     Utils::savePointCloudAsPLY<pcl::PointXYZ>(cloud, cloudFile);
                 }
 
-                if (mVisualizePointCloud)
-                    pcViewer.updateCloud(cloud);
+                // TODO: probably need to update this to be better at updating certain clouds 
+                if (!viewer->updatePointCloud(cloud, "cloud")) 
+                {
+                    viewer->addPointCloud(cloud, "cloud");
+                    viewer->setPointCloudRenderingProperties(
+                        pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "cloud");
+                }
+                    
             }
+
+            viewer->spinOnce(10);
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
 
         if (cv::waitKey(1) == 'q')
             break;
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
     cv::destroyAllWindows(); 

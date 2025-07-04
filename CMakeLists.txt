@@ -11,6 +11,8 @@ find_package(rclcpp REQUIRED)
 find_package(nora_idl REQUIRED)
 find_package(vision_idl REQUIRED)
 find_package(yaml-cpp REQUIRED)
+
+set(PCL_DIR "/usr/local/pcl-1.15/lib/cmake/pcl")
 find_package(PCL REQUIRED)
 
 # Explicitly look for OpenCV in /usr/local

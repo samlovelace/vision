@@ -1,6 +1,5 @@
 mode: vision # vision, calibration
 visualize: true
-visualize_cloud: false
 save_clouds: true
 nav_topic: /robot/pose
 

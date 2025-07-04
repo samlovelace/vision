@@ -31,6 +31,8 @@ public:
 
 private:
 
+    void run();
+
     std::shared_ptr<InferenceHandler> mInferenceHandler; 
 
     std::vector<std::thread> mThreads; 
@@ -49,8 +51,7 @@ private:
 
     std::shared_ptr<NavDataHandler> mNavDataHandler; 
 
-    bool mVisualize; 
-    bool mVisualizePointCloud;
+    bool mVisualize;
     bool mSavePointCloud; 
     bool mRunning; 
     std::mutex mRunningMutex; 
