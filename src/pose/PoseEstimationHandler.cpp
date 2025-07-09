@@ -1,6 +1,7 @@
 
 #include "PoseEstimationHandler.h"
 #include "MonocularDepthEstimator.h"
+#include "StereoDepthEstimator.h"
 #include <thread> 
 
 PoseEstimationHandler::PoseEstimationHandler(const YAML::Node& aPoseEstConfig, 
@@ -23,6 +24,10 @@ PoseEstimationHandler::PoseEstimationHandler(const YAML::Node& aPoseEstConfig,
         }
         mDepthEstimator = std::make_shared<MonocularDepthEstimator>(anInferenceHandler); 
     }
+    else if ("stereo" == depthEstType)
+    {
+        mDepthEstimator = std::make_shared<StereoDepthEstimator>(); 
+    }
     else
     {
         LOGE << "Unsupported depth estimator of type: " << depthEstType; 
@@ -42,7 +47,7 @@ PoseEstimationHandler::~PoseEstimationHandler()
 
 void PoseEstimationHandler::run()
 {
-    // TODO: add something here to check if should stop or not
+
     while(isRunning())
     {
         Detection detection; 

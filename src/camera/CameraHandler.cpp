@@ -78,14 +78,6 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
         StampedCameraOutput output; 
         output.frames = frames; 
         cv::Matx44f T_G_V = mNavDataHandler->getClosestGlobalPose(frames.left.mTimestamp); 
-        
-        std::cout << "T_G_V:" << std::endl;
-        for (int row = 0; row < 4; ++row) {
-            for (int col = 0; col < 4; ++col) {
-                std::cout << T_G_V(row, col) << "\t";
-            }
-            std::cout << std::endl;
-        }
 
         // compute pose of camera in global frame 
         output.T_G_C = T_G_V * aCameraCtx.mParams->mS2V; 

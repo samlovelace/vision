@@ -1,5 +1,6 @@
 
 #include "ObjectCloudGenerator.h"
+#include "plog/Log.h"
 
 ObjectCloudGenerator::ObjectCloudGenerator()
 {
@@ -21,21 +22,39 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr ObjectCloudGenerator::generateCloud(const cv
     float cx = aCamParams->mIntrinsics->centerX();
     float cy = aCamParams->mIntrinsics->centerY(); 
 
-    for(int x = aBoundingBox.x; x < aBoundingBox.height; x++)
-    {
-        for(int y = aBoundingBox.y; y < aBoundingBox.width; y++)
-        {
-            float d = aDepthMap.at<float>(y, x); 
-            
-            if(d <= 0.0f || std::isnan(d))
-            {
-                continue; 
-            }
+    LOGW << "Bbox x,y,h,w: " << aBoundingBox.x << ", " << aBoundingBox.y << ", " << aBoundingBox.height << ", " << aBoundingBox.width;
 
-            float X = (x - cx) * d/fx; 
-            float Y = (y - cy) * d/fy; 
-            float Z = d; 
+    int total = 0, valid = 0;
+
+    auto bbox = aBoundingBox; 
+    auto disparity_float = aDepthMap; 
+
+    for (int x = bbox.x; x < bbox.x + bbox.width; ++x) {
+        for (int y = bbox.y; y < bbox.y + bbox.height; ++y) {
+            float d = disparity_float.at<float>(y, x);
+            if (d > 0.0f) ++valid;
+            ++total;
+        }
+    }
+
+    std::cout << "Valid disparity pixels: " << valid << "/" << total << std::endl;
+
+    float baseline = 0.12; // in meters
+
+    for (int x = aBoundingBox.x; x < aBoundingBox.x + aBoundingBox.width; ++x)
+    {
+        for (int y = aBoundingBox.y; y < aBoundingBox.y + aBoundingBox.height; ++y)
+        {
+            float disparity = aDepthMap.at<float>(y, x);  
             
+            if (disparity <= 0.0f || std::isnan(disparity))
+                continue;
+
+            float Z = (fx * baseline) / disparity;
+
+            float X = (x - cx) * Z / fx;
+            float Y = (y - cy) * Z / fy;
+
             pcl::PointXYZ pt;
             pt.x = X;
             pt.y = Y;
@@ -44,6 +63,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr ObjectCloudGenerator::generateCloud(const cv
             cloud->points.push_back(pt);
         }
     }
+
 
     cloud->width = cloud->points.size();
     cloud->height = 1;
