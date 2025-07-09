@@ -125,5 +125,8 @@ cv::Matx44f NavDataHandler::getClosestGlobalPose(
     LOGD << "diff_after (ms): "
          << std::chrono::duration_cast<std::chrono::milliseconds>(diff_after).count();
 
-    return (diff_before <= diff_after) ? before->second : after->second;
+    auto match = (diff_before <= diff_after) ? before : after;
+    
+    mGlobalPoseMap.erase(mGlobalPoseMap.begin(), it); 
+    return match->second; 
 }
