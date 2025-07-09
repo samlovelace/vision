@@ -26,6 +26,9 @@ private:
     CameraOutput mOutput; 
     std::mutex mOutputMutex; 
 
+    std::chrono::system_clock::duration mTimeOffset; 
+    bool mOffsetComputed; 
+
     using ApproximateTimePolicy = message_filters::sync_policies::ApproximateTime<sensor_msgs::msg::Image,sensor_msgs::msg::Image>;
 
     message_filters::Subscriber<sensor_msgs::msg::Image> mLeftFrameSub;

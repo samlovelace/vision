@@ -2,8 +2,9 @@
 #include "RosCamera.h"
 #include "RosTopicManager.hpp"
 #include <cv_bridge/cv_bridge.h>
+#include "plog/Log.h"
 
-RosCamera::RosCamera()
+RosCamera::RosCamera() : mOffsetComputed(false)
 {
 
 }
@@ -53,8 +54,19 @@ void RosCamera::stereoCallback(const sensor_msgs::msg::Image::ConstSharedPtr aLe
     left = cv_bridge::toCvCopy(aLeftImg, "rgb8")->image;
     right = cv_bridge::toCvCopy(aRightImg, "rgb8")->image; 
 
-    auto leftTime = rosTimeToChrono(aLeftImg->header.stamp);
-    auto rightTime = rosTimeToChrono(aRightImg->header.stamp); 
+    // Only run once
+    if (!mOffsetComputed) {
+        auto wall_now = std::chrono::system_clock::now();
+        auto sim_now = rosTimeToChrono(aLeftImg->header.stamp);
+        mTimeOffset = wall_now - sim_now;
+        mOffsetComputed = true;
+
+        LOGD << "Computed camera time offset (ms): "
+            << std::chrono::duration_cast<std::chrono::milliseconds>(mTimeOffset).count();
+    }
+
+    auto leftTime = rosTimeToChrono(aLeftImg->header.stamp) + mTimeOffset;
+    auto rightTime = rosTimeToChrono(aRightImg->header.stamp) + mTimeOffset; 
 
     CameraFrame rightFrame(right, rightTime); 
     CameraFrame leftFrame(left, leftTime); 

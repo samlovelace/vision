@@ -154,7 +154,6 @@ void ObjectLocatorModule::run()
 
 void ObjectLocatorModule::runVisualizer()
 {
-
     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("Object Viewer"));
     viewer->setBackgroundColor(0, 0, 0);
     viewer->addCoordinateSystem(0.1);

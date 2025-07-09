@@ -7,9 +7,9 @@ cameras:
   - id: 0
     type: ros
     stereo: false
-    rate: 5 # Hz
+    rate: 10 # Hz
     img_size: [640, 480]
-    focal: [0.001, 0.001]
+    focal: [381.4, 381.4]
     center: [320, 240]
     near: 0.5
     far: 3.5

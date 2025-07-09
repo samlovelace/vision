@@ -1,6 +1,7 @@
 
 #include "NavDataHandler.h"
 #include "RosTopicManager.hpp"
+#include "plog/Log.h"
 
 NavDataHandler::NavDataHandler(const std::string& aNavTopicName)
 {
@@ -18,19 +19,23 @@ NavDataHandler::~NavDataHandler()
 
 void NavDataHandler::onDataRecvd(nora_idl::msg::RobotState::SharedPtr aRobotState)
 {
-    using namespace std::chrono; 
-    // process nav data and push to 
+    using namespace std::chrono;
+
     builtin_interfaces::msg::Time timestamp = aRobotState->timestamp;
-    
-    system_clock::time_point time(seconds(timestamp.sec) + nanoseconds(timestamp.nanosec));
 
-    nora_idl::msg::Vec3 pos = aRobotState->position; 
-    nora_idl::msg::Quaternion q = aRobotState->quat; 
+    auto duration_since_epoch =
+        seconds(timestamp.sec) + nanoseconds(timestamp.nanosec);
 
-    cv::Matx44f T_G_C = transformFromXYZQuat(pos.x, pos.y, pos.z, q.x, q.y, q.z, q.w); 
+    system_clock::time_point time_point(duration_since_epoch);
 
-    mGlobalPoseMap.insert({time, T_G_C}); 
+    nora_idl::msg::Vec3 pos = aRobotState->position;
+    nora_idl::msg::Quaternion q = aRobotState->quat;
+
+    cv::Matx44f T_G_V = transformFromXYZQuat(pos.x, pos.y, pos.z, q.x, q.y, q.z, q.w);
+
+    mGlobalPoseMap.insert({time_point, T_G_V});
 }
+
 
 // Create a 4x4 transform matrix from quaternion + translation
 cv::Matx44f NavDataHandler::transformFromXYZQuat(float x, float y, float z, float qx, float qy, float qz, float qw)
@@ -73,32 +78,52 @@ cv::Matx44f NavDataHandler::transformFromXYZQuat(float x, float y, float z, floa
     return mat;
 }
 
-cv::Matx44f NavDataHandler::getClosestGlobalPose(const std::chrono::system_clock::time_point& aTime)
+cv::Matx44f NavDataHandler::getClosestGlobalPose(
+    const std::chrono::system_clock::time_point& aTime)
 {
-    if(mGlobalPoseMap.empty())
-    { 
-        return cv::Matx44f::eye();  
-    }
-
-    auto it = mGlobalPoseMap.lower_bound(aTime); 
-
-    // only entry in map 
-    if(it == mGlobalPoseMap.begin())
+    if (mGlobalPoseMap.empty())
     {
-        return it->second; 
+        LOGD << "Nav data map is empty";
+        return cv::Matx44f::eye();
     }
 
-    if(it == mGlobalPoseMap.end())
+    auto cam_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                  aTime.time_since_epoch()).count();
+
+    LOGD << "CAMERA timestamp (ms): " << cam_ms;
+
+    auto it = mGlobalPoseMap.lower_bound(aTime);
+
+    if (it == mGlobalPoseMap.begin())
     {
-        return std::prev(it)->second; 
+        LOGW << "Queried time earlier than first nav data timestamp.";
+        return it->second;
     }
 
-    // Compare it and the previous timestamp to see which is closer
+    if (it == mGlobalPoseMap.end())
+    {
+        LOGW << "Queried time later than last nav data timestamp.";
+        return std::prev(it)->second;
+    }
+
     auto after = it;
     auto before = std::prev(it);
 
-    auto diff_after = std::chrono::duration_cast<std::chrono::milliseconds>(after->first - aTime).count();
-    auto diff_before = std::chrono::duration_cast<std::chrono::milliseconds>(aTime - before->first).count();
+    auto diff_after = std::chrono::abs(after->first - aTime);
+    auto diff_before = std::chrono::abs(before->first - aTime);
+
+    LOGD << "Nav data map size: " << mGlobalPoseMap.size();
+    LOGD << "Query time (ms): "
+         << std::chrono::duration_cast<std::chrono::milliseconds>(aTime.time_since_epoch()).count();
+    LOGD << "Before time (ms): "
+         << std::chrono::duration_cast<std::chrono::milliseconds>(before->first.time_since_epoch()).count();
+    LOGD << "After time (ms): "
+         << std::chrono::duration_cast<std::chrono::milliseconds>(after->first.time_since_epoch()).count();
+
+    LOGD << "diff_before (ms): "
+         << std::chrono::duration_cast<std::chrono::milliseconds>(diff_before).count();
+    LOGD << "diff_after (ms): "
+         << std::chrono::duration_cast<std::chrono::milliseconds>(diff_after).count();
 
     return (diff_before <= diff_after) ? before->second : after->second;
 }
