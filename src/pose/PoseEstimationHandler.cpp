@@ -48,6 +48,13 @@ PoseEstimationHandler::~PoseEstimationHandler()
 void PoseEstimationHandler::run()
 {
 
+    cv::Matx44f T_S_C(
+    -1.0f, 0.0f, 0.0f, 0.0f,
+     0.0f, 0.0f, 1.0f, 0.0f,
+     0.0f, 1.0f, 0.0f, 0.0f,
+     0.0f, 0.0f, 0.0f, 1.0f
+    );
+
     while(isRunning())
     {
         Detection detection; 
@@ -74,8 +81,12 @@ void PoseEstimationHandler::run()
                     // Probably best to use the objectLibrary once that is implemented
                     auto cloud_Cam = mObjCloudGenerator->generateCloud(det.bounding_box, depthMap, detection.mCameraOutput.mParams); 
 
-                    // transform cloud into global frame via camera global pose
                     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_G(new pcl::PointCloud<pcl::PointXYZ>);
+
+                    // transform cloud into sensor frame
+                    mObjCloudGenerator->transformCloud(cloud_Cam, cloud_Cam, T_S_C);
+
+                    // transform cloud into global frame
                     mObjCloudGenerator->transformCloud(cloud_Cam, cloud_G, detection.mCameraOutput.T_G_C); 
 
                     // push to visualization queue

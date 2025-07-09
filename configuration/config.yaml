@@ -13,6 +13,7 @@ cameras:
     center: [320, 240]
     near: 0.5
     far: 3.5
+    baseline: 0.12
     xyz: [0, 0, 0]
     quat: [0, 0, 0, 1] # (xyz w)
 

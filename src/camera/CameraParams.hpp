@@ -6,17 +6,18 @@
 
 struct CameraIntrinsics
 {
-    CameraIntrinsics(float fx, float fy, float cx, float cy, float near, float far)
+    CameraIntrinsics(float fx, float fy, float cx, float cy, float near, float far, float baseline)
             : intrinsicMatrix(fx, 0, cx, 0, fy, cy, 0, 0, 1),
-            nearPlane_m(near), farPlane_m(far) {}
+            nearPlane_m(near), farPlane_m(far), baseline_m(baseline) {}
 
-    CameraIntrinsics(std::vector<float> focal, std::vector<float> center, float near, float far) 
+    CameraIntrinsics(std::vector<float> focal, std::vector<float> center, float near, float far, float baseline) 
         : intrinsicMatrix(focal[0], 0, center[0], 0, focal[1], center[1], 0, 0, 1), 
-        nearPlane_m(near), farPlane_m(far) {}
+        nearPlane_m(near), farPlane_m(far), baseline_m(baseline) {}
 
     cv::Matx33f intrinsicMatrix;
     float nearPlane_m;
     float farPlane_m;
+    float baseline_m; 
 
     float focalX() const { return intrinsicMatrix(0, 0); }
     float focalY() const { return intrinsicMatrix(1, 1); }

@@ -81,6 +81,7 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
 
         // compute pose of camera in global frame 
         output.T_G_C = T_G_V * aCameraCtx.mParams->mS2V; 
+
         output.mParams = aCameraCtx.mParams; 
 
         // push to frame queue 
@@ -107,8 +108,9 @@ void CameraHandler::parseCameraConfig(const YAML::Node& aCameraConfig)
     std::vector<float> center = aCameraConfig["center"].as<std::vector<float>>(); 
     float near = aCameraConfig["near"].as<float>(); 
     float far = aCameraConfig["far"].as<float>(); 
+    float baseline = aCameraConfig["baseline"].as<float>(); 
 
-    auto intr = std::make_shared<CameraIntrinsics>(focal, center, near, far); 
+    auto intr = std::make_shared<CameraIntrinsics>(focal, center, near, far, baseline); 
 
     //parse s2v and pass to params 
     std::vector<float> xyz = aCameraConfig["xyz"].as<std::vector<float>>(); 

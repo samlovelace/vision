@@ -20,26 +20,10 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr ObjectCloudGenerator::generateCloud(const cv
     float fx = aCamParams->mIntrinsics->focalX(); 
     float fy = aCamParams->mIntrinsics->focalY();
     float cx = aCamParams->mIntrinsics->centerX();
-    float cy = aCamParams->mIntrinsics->centerY(); 
-
-    LOGW << "Bbox x,y,h,w: " << aBoundingBox.x << ", " << aBoundingBox.y << ", " << aBoundingBox.height << ", " << aBoundingBox.width;
-
-    int total = 0, valid = 0;
-
-    auto bbox = aBoundingBox; 
-    auto disparity_float = aDepthMap; 
-
-    for (int x = bbox.x; x < bbox.x + bbox.width; ++x) {
-        for (int y = bbox.y; y < bbox.y + bbox.height; ++y) {
-            float d = disparity_float.at<float>(y, x);
-            if (d > 0.0f) ++valid;
-            ++total;
-        }
-    }
-
-    std::cout << "Valid disparity pixels: " << valid << "/" << total << std::endl;
-
-    float baseline = 0.12; // in meters
+    float cy = aCamParams->mIntrinsics->centerY();
+    float near = aCamParams->mIntrinsics->nearPlane_m; 
+    float far = aCamParams->mIntrinsics->farPlane_m;  
+    float baseline = aCamParams->mIntrinsics->baseline_m; 
 
     for (int x = aBoundingBox.x; x < aBoundingBox.x + aBoundingBox.width; ++x)
     {
@@ -51,6 +35,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr ObjectCloudGenerator::generateCloud(const cv
                 continue;
 
             float Z = (fx * baseline) / disparity;
+            if (Z < near || Z > far) continue;
 
             float X = (x - cx) * Z / fx;
             float Y = (y - cy) * Z / fy;
