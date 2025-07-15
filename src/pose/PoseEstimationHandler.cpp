@@ -83,12 +83,12 @@ void PoseEstimationHandler::run()
 
                     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_G(new pcl::PointCloud<pcl::PointXYZ>);
 
-                    // transform cloud into sensor frame
-                    mObjCloudGenerator->transformCloud(cloud_Cam, cloud_Cam, T_S_C);
-
                     // transform cloud into global frame
-                    mObjCloudGenerator->transformCloud(cloud_Cam, cloud_G, detection.mCameraOutput.T_G_C); 
-
+                    //mObjCloudGenerator->transformCloud(cloud_Cam, cloud_G, detection.mCameraOutput.T_G_C*T_S_C); 
+                    
+                    // WANT TO SEE WHAT THE POINT CLOUD LOOKS LIKE IN CAMERA FRAME 
+                    cloud_G = cloud_Cam; 
+                    
                     // push to visualization queue
                     mCloudVisQueue->push(cloud_G);
 

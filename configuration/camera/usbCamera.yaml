@@ -1,0 +1,13 @@
+id: 0
+type: usb
+stereo: false
+rate: 10 # Hz
+img_size: [640, 480]
+focal: [381.3611502479813, 286.020862685986]
+center: [320, 240]
+near: 0.5
+far: 3.5
+baseline: 0.12
+xyz: [0, 0, 0]
+quat: [0, 0, 0, 1] # (xyz w)
+

@@ -6,16 +6,24 @@
 #include "plog/Log.h"
 #include <vector> 
 #include "Utils.hpp"
+#include <ament_index_cpp/get_package_share_directory.hpp>
 
 CameraHandler::CameraHandler(const YAML::Node& aCameraConfig, 
     std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueue, std::shared_ptr<NavDataHandler> aNavDataHandler) : 
     mFrameQueue(aFrameQueue), mNavDataHandler(aNavDataHandler), mRunning(true)
 {
     LOGD << YAML::Dump(aCameraConfig); 
+    std::string packagePath = ament_index_cpp::get_package_share_directory("vision");
+    std::string configPath = packagePath + "/configuration/camera/"; 
 
-    for(const auto& camera : aCameraConfig)
+    for(const auto& cameraFile : aCameraConfig)
     {
-        parseCameraConfig(camera); 
+        if(cameraFile["file"])
+        {
+            YAML::Node camera = YAML::LoadFile(configPath + cameraFile["file"].as<std::string>()); 
+            parseCameraConfig(camera);
+        }
+             
     }
 
 }
