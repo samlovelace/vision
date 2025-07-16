@@ -23,4 +23,4 @@ object_detection:
   similar_detection: 0.7 # IoU threshold to check if bounding boxes are over the same object
 
 pose_estimation:
-  depth_estimation: monocular
+  depth_estimation: realSense

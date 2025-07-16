@@ -2,6 +2,7 @@
 #include "PoseEstimationHandler.h"
 #include "MonocularDepthEstimator.h"
 #include "StereoDepthEstimator.h"
+#include "RealSenseDepthEstimator.h"
 #include <thread> 
 
 PoseEstimationHandler::PoseEstimationHandler(const YAML::Node& aPoseEstConfig, 
@@ -27,6 +28,11 @@ PoseEstimationHandler::PoseEstimationHandler(const YAML::Node& aPoseEstConfig,
     else if ("stereo" == depthEstType)
     {
         mDepthEstimator = std::make_shared<StereoDepthEstimator>(); 
+    }
+    else if ("realSense" == depthEstType)
+    {
+        // TODO: possible checking of user configs. Force that real sense must be used as at least one of the cameras
+        mDepthEstimator = std::make_shared<RealSenseDepthEstimator>(); 
     }
     else
     {

@@ -26,6 +26,8 @@ private:
     CameraOutput mLatest; 
 
     std::chrono::system_clock::time_point mStartTime; 
+
+    bool mRunning; 
    
 };
 #endif //REALSENSECAMERA_D435i_H

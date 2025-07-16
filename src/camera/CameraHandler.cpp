@@ -67,6 +67,7 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
         if (left.mFrame.empty()) 
         {
             LOGD << "Frame empty..."; 
+            aCameraCtx.mRate->block(); 
             continue; 
         }
 
