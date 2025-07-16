@@ -12,6 +12,7 @@ find_package(nora_idl REQUIRED)
 find_package(vision_idl REQUIRED)
 find_package(yaml-cpp REQUIRED)
 find_package(message_filters REQUIRED)
+find_package(realsense2 REQUIRED)
 
 set(PCL_DIR "/usr/local/pcl-1.15/lib/cmake/pcl")
 find_package(PCL REQUIRED)
@@ -63,6 +64,7 @@ target_link_libraries(${PROJECT_NAME}
   yaml-cpp 
   ${OpenCV_LIBS}
   ${PCL_LIBRARIES}
+  realsense2
 )
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})

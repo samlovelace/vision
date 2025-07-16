@@ -24,7 +24,9 @@ struct CameraOutput
 
     CameraFrame left; 
     CameraFrame right; 
-    bool isStereo = false; 
+    CameraFrame depth; 
+    bool isStereo = false;
+    bool isDepth = false;  
 };
 
 struct StampedCameraOutput

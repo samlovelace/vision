@@ -4,8 +4,8 @@ save_clouds: true
 nav_topic: /robot/pose
 
 cameras:
-  - file: usbCamera.yaml
-  #- file: realSenseCamera_d435i.yaml
+  #- file: usbCamera.yaml
+  - file: realSenseCamera_d435i.yaml
 
 models:
   - name: mobilenet
@@ -23,4 +23,4 @@ object_detection:
   similar_detection: 0.7 # IoU threshold to check if bounding boxes are over the same object
 
 pose_estimation:
-  depth_estimation: stereo
+  depth_estimation: monocular

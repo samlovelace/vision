@@ -83,7 +83,7 @@ cv::Matx44f NavDataHandler::getClosestGlobalPose(
 {
     if (mGlobalPoseMap.empty())
     {
-        LOGD << "Nav data map is empty";
+        //LOGD << "Nav data map is empty";
         return cv::Matx44f::eye();
     }
 
