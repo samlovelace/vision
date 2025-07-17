@@ -73,21 +73,33 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr ObjectCloudGenerator::generateCloud(const cv
     {
         for (int y = aBoundingBox.y; y < aBoundingBox.y + aBoundingBox.height; ++y)
         {
-            float disparity = aDepthMap.at<float>(y, x);  
+            // float disparity = aDepthMap.at<float>(y, x);  
             
-            if (disparity <= 0.0f || std::isnan(disparity))
+            // if (disparity <= 0.0f || std::isnan(disparity))
+            //     continue;
+
+            // float Z = (fx * baseline) / disparity;
+            // if (Z < near || Z > far) continue;
+
+            float Z = aDepthMap.at<float>(y, x);
+            
+            // skip invalid depths
+            if (Z <= 0.0f || std::isnan(Z))
                 continue;
 
-            float Z = (fx * baseline) / disparity;
-            if (Z < near || Z > far) continue;
+            if (Z < near || Z > far)
+                continue;
 
-            float X = (x - cx) * Z / fx;
-            float Y = (y - cy) * Z / fy;
+
+            float X = (x - cx) * (Z / fx);
+            float Y = (y - cy) * (Z / fy);
 
             pcl::PointXYZ pt;
             pt.x = X;
             pt.y = Y;
             pt.z = Z;
+
+            //LOGW << "Pt: " << pt; 
 
             cloud->points.push_back(pt);
         }

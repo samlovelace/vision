@@ -3,10 +3,10 @@ type: rs-d435i
 stereo: true
 rate: 10 # Hz
 img_size: [640, 480]
-focal: [381.3611502479813, 286.020862685986]
-center: [320, 240]
-near: 0.5
-far: 3.5
-baseline: 0.12
+focal: [383.619, 383.619]
+center: [321.347, 239.354]
+near: 0.5 # m
+far: 3.5 # m
+baseline: 0.0049759 # m
 xyz: [0, 0, 0]
 quat: [0, 0, 0, 1] # (xyz w)
