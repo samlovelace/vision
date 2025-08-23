@@ -15,12 +15,12 @@ CommandHandler::~CommandHandler()
 
 void CommandHandler::init()
 {
-    RosTopicManager::getInstance()->createSubscriber<vision_idl::msg::Command>("/vision/command", std::bind(&CommandHandler::commandCallback, this, std::placeholders::_1)); 
+    RosTopicManager::getInstance()->createSubscriber<robot_idl::msg::Command>("/vision/command", std::bind(&CommandHandler::commandCallback, this, std::placeholders::_1)); 
 
     RosTopicManager::getInstance()->spinNode(); 
 }
 
-void CommandHandler::commandCallback(vision_idl::msg::Command::SharedPtr aCommand)
+void CommandHandler::commandCallback(robot_idl::msg::Command::SharedPtr aCommand)
 {
     if("find_object" == aCommand->command.data)
     {

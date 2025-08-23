@@ -5,7 +5,7 @@
 #include "plog/Log.h"
 #include "PointCloudViewer.h"
 #include "Utils.hpp"
-#include "vision_idl/msg/found_object_response.hpp"
+#include "robot_idl/msg/found_object_response.hpp"
 
 ObjectLocatorModule::ObjectLocatorModule(const std::string& anObjectType) : 
     mVisualize(false), mSavePointCloud(true), mRunning(true)
@@ -70,7 +70,7 @@ ObjectLocatorModule::ObjectLocatorModule(const std::string& anObjectType) :
                                                                      mCloudVisQueue, 
                                                                      mObjectManager); 
 
-    RosTopicManager::getInstance()->createPublisher<vision_idl::msg::FoundObjectResponse>("/vision/found_object_response"); 
+    RosTopicManager::getInstance()->createPublisher<robot_idl::msg::FoundObjectResponse>("/vision/found_object_response"); 
 }
 
 ObjectLocatorModule::~ObjectLocatorModule()
@@ -117,6 +117,7 @@ void ObjectLocatorModule::run()
         }
 
         // TODO: validate the found object data in some way 
+        // TODO: dont keep sending the same object if pose doesnt change significantly 
 
 
         // Inform that object has been found 
@@ -124,7 +125,7 @@ void ObjectLocatorModule::run()
         {
             // convert internal data type to idl data type
             //TODO: helper function to convert to idl format
-            vision_idl::msg::FoundObjectResponse foundObj; 
+            robot_idl::msg::FoundObjectResponse foundObj; 
             std_msgs::msg::String type; 
             type.set__data(obj.class_label); 
             foundObj.set__object_type(type); 
@@ -144,7 +145,7 @@ void ObjectLocatorModule::run()
             foundObj.set__obj_points_g(pc); 
 
             // publish response
-            RosTopicManager::getInstance()->publishMessage<vision_idl::msg::FoundObjectResponse>("/vision/found_object_response", foundObj); 
+            RosTopicManager::getInstance()->publishMessage<robot_idl::msg::FoundObjectResponse>("/vision/found_object_response", foundObj); 
             std::this_thread::sleep_for(std::chrono::milliseconds(50)); 
         }
 
@@ -154,12 +155,9 @@ void ObjectLocatorModule::run()
 
 void ObjectLocatorModule::runVisualizer()
 {
+    bool cloudVisInit = false; 
+    int cloudNum = 0; 
     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("Object Viewer"));
-    viewer->setBackgroundColor(0, 0, 0);
-    viewer->addCoordinateSystem(0.1);
-    viewer->initCameraParameters();
-
-    int cloudNum = 0;
 
     while (isRunning())
     {
@@ -186,6 +184,15 @@ void ObjectLocatorModule::runVisualizer()
 
         if (mCloudVisQueue)
         {
+            if(!cloudVisInit)
+            {
+                cloudVisInit = true; 
+                
+                viewer->setBackgroundColor(0, 0, 0);
+                viewer->addCoordinateSystem(0.1);
+                viewer->initCameraParameters();
+            }
+
             pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
             if (mCloudVisQueue->try_pop(cloud) && cloud && !cloud->empty())
             {

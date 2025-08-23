@@ -5,7 +5,7 @@
 
 NavDataHandler::NavDataHandler(const std::string& aNavTopicName)
 {
-    RosTopicManager::getInstance()->createSubscriber<nora_idl::msg::RobotState>(aNavTopicName, 
+    RosTopicManager::getInstance()->createSubscriber<robot_idl::msg::RobotState>(aNavTopicName, 
                                                                                 std::bind(&NavDataHandler::onDataRecvd, 
                                                                                           this, 
                                                                                           std::placeholders::_1)); 
@@ -17,7 +17,7 @@ NavDataHandler::~NavDataHandler()
 
 }
 
-void NavDataHandler::onDataRecvd(nora_idl::msg::RobotState::SharedPtr aRobotState)
+void NavDataHandler::onDataRecvd(robot_idl::msg::RobotState::SharedPtr aRobotState)
 {
     using namespace std::chrono;
 
@@ -28,8 +28,8 @@ void NavDataHandler::onDataRecvd(nora_idl::msg::RobotState::SharedPtr aRobotStat
 
     system_clock::time_point time_point(duration_since_epoch);
 
-    nora_idl::msg::Vec3 pos = aRobotState->position;
-    nora_idl::msg::Quaternion q = aRobotState->quat;
+    robot_idl::msg::Vec3 pos = aRobotState->position;
+    robot_idl::msg::Quaternion q = aRobotState->quat;
 
     cv::Matx44f T_G_V = transformFromXYZQuat(pos.x, pos.y, pos.z, q.x, q.y, q.z, q.w);
 

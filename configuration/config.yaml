@@ -4,7 +4,7 @@ save_clouds: true
 nav_topic: /robot/pose
 
 cameras:
-  #- file: usbCamera.yaml
+  # - file: rosCamera.yaml
   - file: realSenseCamera_d435i.yaml
 
 models:

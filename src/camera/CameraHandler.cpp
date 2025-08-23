@@ -50,6 +50,7 @@ void CameraHandler::run()
 void CameraHandler::runCamera(const CameraContext aCameraCtx)
 {
     aCameraCtx.mCamera->init(); 
+    
     LOGD << "Getting frames for camera with params: (fx fy cx cy near(m) far(m)): " 
          << aCameraCtx.mParams->mIntrinsics->focalX()       << ", "
          << aCameraCtx.mParams->mIntrinsics->focalY()       << ", "

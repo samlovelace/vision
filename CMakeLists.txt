@@ -8,8 +8,8 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(nora_idl REQUIRED)
-find_package(vision_idl REQUIRED)
+find_package(robot_idl REQUIRED)
+find_package(robot_idl REQUIRED)
 find_package(yaml-cpp REQUIRED)
 find_package(message_filters REQUIRED)
 find_package(realsense2 REQUIRED)
@@ -55,8 +55,8 @@ include_directories(${PROJECT_NAME}
 
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp
-  nora_idl
-  vision_idl
+  robot_idl
+  robot_idl
   message_filters
   cv_bridge
 )

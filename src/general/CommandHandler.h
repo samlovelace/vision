@@ -2,7 +2,7 @@
 #define COMMANDHANDLER_H
 
 #include "Vision.h"
-#include "vision_idl/msg/command.hpp" 
+#include "robot_idl/msg/command.hpp" 
 
 
 class CommandHandler 
@@ -12,7 +12,7 @@ public:
     ~CommandHandler();
 
     void init(); 
-    void commandCallback(vision_idl::msg::Command::Ptr aCommand); 
+    void commandCallback(robot_idl::msg::Command::Ptr aCommand); 
 private:
     std::shared_ptr<Vision> mVision; 
    

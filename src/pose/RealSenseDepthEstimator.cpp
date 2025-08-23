@@ -12,7 +12,6 @@ RealSenseDepthEstimator::~RealSenseDepthEstimator()
 
 }
 
-
 bool RealSenseDepthEstimator::estimateDepth(CameraOutput& aCameraOutput, cv::Mat& aDepthFrame)
 {
     if(aCameraOutput.depth.mFrame.empty())
