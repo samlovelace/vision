@@ -9,7 +9,6 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(robot_idl REQUIRED)
-find_package(robot_idl REQUIRED)
 find_package(yaml-cpp REQUIRED)
 find_package(message_filters REQUIRED)
 find_package(realsense2 REQUIRED)
@@ -51,6 +50,7 @@ include_directories(${PROJECT_NAME}
   ${OpenCV_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
   /opt/ros/humble/include/cv_bridge
+  #/usr/local/include
 )
 
 ament_target_dependencies(${PROJECT_NAME}
