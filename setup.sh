@@ -71,7 +71,15 @@ install_ros() {
 LIB_DIR="/opt"
 OPENCV_VERSION=4.7.0
 LIB_INSTALL_DIR="/usr/local"
-WS="/robot_ws"
+WS="/home/robot_ws"
+
+# Subtract 2 from total cores
+CORES=$(( $(nproc) - 2 ))
+
+# Ensure at least 1 core is used
+if [ "$CORES" -lt 1 ]; then
+  CORES=1
+fi
 
 # List of required packages
 DEPENDENCIES=(
@@ -120,15 +128,15 @@ mkdir -p "$WS"/src
 
 git clone https://github.com/samlovelace/robot_idl.git "$WS/src/robot_idl"
 
-#librealsense 
+ #librealsense 
 cd "$LIB_DIR"
 git clone https://github.com/IntelRealSense/librealsense.git
 cd librealsense 
 mkdir build && cd build 
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make -j$(nproc)
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make -j"$CORES"
 make install 
 
-# opencv
+# # opencv
 cd "$LIB_DIR"
 git clone https://github.com/opencv/opencv_contrib.git
 cd opencv_contrib 
@@ -144,7 +152,7 @@ cmake -D CMAKE_BUILD_TYPE=Release \
       -D CMAKE_INSTALL_PREFIX="$LIB_INSTALL_DIR" \
       -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib/modules \
       -D BUILD_EXAMPLES=OFF .. 
-make -j$(nproc) && make install && ldconfig
+make -j"$CORES" && make install && ldconfig
 
 #pcl 
 cd "$LIB_DIR"
@@ -159,7 +167,7 @@ cmake .. \
   -DBUILD_examples=OFF \
   -DWITH_VTK=ON
 
-make -j$(nproc) && make install && ldconfig
+make -j"$CORES" && make install && ldconfig
 
 cd "$WS"
 source /opt/ros/humble/setup.bash
