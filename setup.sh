@@ -74,7 +74,7 @@ LIB_INSTALL_DIR="/usr/local"
 WS="/home/robot_ws"
 
 # Subtract 2 from total cores
-CORES=$(( $(nproc) - 2 ))
+CORES=$(( $(nproc) - 4 ))
 
 # Ensure at least 1 core is used
 if [ "$CORES" -lt 1 ]; then
