@@ -57,7 +57,9 @@ void RealSenseCamera_d435i::processFrames()
         int width = rgb.get_width();
         int height = rgb.get_height();
 
-        cv::Mat colorImage(cv::Size(width, height), CV_8UC3, (void*)rgb.get_data(), cv::Mat::AUTO_STEP);
+        cv::Mat colorImageBGR(cv::Size(width, height), CV_8UC3, (void*)rgb.get_data(), cv::Mat::AUTO_STEP);
+        cv::Mat colorImageRGB;
+        cv::cvtColor(colorImageBGR, colorImageRGB, cv::COLOR_BGR2RGB);
 
         int depthWidth = rawDepth.get_width();
         int depthHeight = rawDepth.get_height();
@@ -74,7 +76,7 @@ void RealSenseCamera_d435i::processFrames()
             std::chrono::duration<double, std::milli>(frames.get_timestamp()));
 
         CameraFrame left;
-        left.mFrame = colorImage;
+        left.mFrame = colorImageRGB;
         left.mTimestamp = timestamp;
 
         CameraFrame depth;
@@ -94,7 +96,3 @@ void RealSenseCamera_d435i::processFrames()
         }
     }
 }
-
-
-
-
