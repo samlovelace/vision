@@ -25,6 +25,11 @@ bool UsbCamera::init()
     mCapture.set(cv::CAP_PROP_FRAME_HEIGHT, 600);
 }
 
+bool UsbCamera::fini()
+{
+    return true; 
+}
+
 CameraOutput UsbCamera::getOutput()
 {
     cv::Mat img; 

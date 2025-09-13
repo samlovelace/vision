@@ -75,8 +75,8 @@ void PoseEstimationHandler::run()
                 continue; 
             }
 
-            std::pair<int, int> imgSize = detection.mCameraOutput.mParams->mImgSize; 
-            cv::resize(depthMap, depthMap, cv::Size(imgSize.first, imgSize.second)); 
+            //std::pair<int, int> imgSize = detection.mCameraOutput.mParams->mImgSize; 
+            //cv::resize(depthMap, depthMap, cv::Size(imgSize.first, imgSize.second)); 
             mDepthMapVisQueue->push(depthMap); 
 
             for(auto& [obj, detections] : detection.mDetections->mDetections)

@@ -40,6 +40,11 @@ bool RosCamera::init()
     return true; 
 }
 
+bool RosCamera::fini()
+{
+    return true; 
+}
+
 CameraOutput RosCamera::getOutput()
 {
     std::lock_guard<std::mutex> lock(mOutputMutex); 

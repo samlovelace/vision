@@ -45,6 +45,14 @@ bool RealSenseCamera_d435i::init()
     return true; 
 }
 
+bool RealSenseCamera_d435i::fini()
+{
+    mRunning = false; 
+
+    mPipeline->stop(); 
+    mPipeline.reset(); 
+}
+
 CameraOutput RealSenseCamera_d435i::getOutput()
 {
     std::lock_guard<std::mutex> lock(mFrameMutex); 

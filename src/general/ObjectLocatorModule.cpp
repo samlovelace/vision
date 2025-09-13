@@ -198,7 +198,7 @@ void ObjectLocatorModule::runVisualizer()
             {
                 if (mSavePointCloud)
                 {
-                    std::string cloudFile = "clouds/object_cloud_" + std::to_string(cloudNum++) + ".ply";
+                    std::string cloudFile = "/home/sam/testing/clouds/object_cloud_" + std::to_string(cloudNum++) + ".ply";
                     Utils::savePointCloudAsPLY<pcl::PointXYZ>(cloud, cloudFile);
                 }
 
