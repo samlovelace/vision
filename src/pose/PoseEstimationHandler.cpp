@@ -54,13 +54,6 @@ PoseEstimationHandler::~PoseEstimationHandler()
 void PoseEstimationHandler::run()
 {
 
-    cv::Matx44f T_S_C(
-    -1.0f, 0.0f, 0.0f, 0.0f,
-     0.0f, 0.0f, 1.0f, 0.0f,
-     0.0f, 1.0f, 0.0f, 0.0f,
-     0.0f, 0.0f, 0.0f, 1.0f
-    );
-
     while(isRunning())
     {
         Detection detection; 
@@ -90,10 +83,7 @@ void PoseEstimationHandler::run()
                     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_G(new pcl::PointCloud<pcl::PointXYZ>);
 
                     // transform cloud into global frame
-                    //mObjCloudGenerator->transformCloud(cloud_Cam, cloud_G, detection.mCameraOutput.T_G_C*T_S_C); 
-                    
-                    // WANT TO SEE WHAT THE POINT CLOUD LOOKS LIKE IN CAMERA FRAME 
-                    cloud_G = cloud_Cam; 
+                    mObjCloudGenerator->transformCloud(cloud_Cam, cloud_G, detection.mCameraOutput.T_G_C); 
                     
                     // push to visualization queue
                     mCloudVisQueue->push(cloud_G);

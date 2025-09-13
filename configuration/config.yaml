@@ -19,7 +19,7 @@ models:
     engine: opencv
 
 object_detection:
-  min_confidence: 0.75
+  min_confidence: 0.85
   similar_detection: 0.7 # IoU threshold to check if bounding boxes are over the same object
 
 pose_estimation:

@@ -5,7 +5,8 @@
 #include <opencv2/opencv.hpp>
 #include <chrono> 
 
-struct DetectedObject {
+struct DetectedObject 
+{
     std::string class_label;        // e.g., "cat"
     std::string instance_id;        // e.g., "cat_001"
     cv::Point3f global_centroid;    // XYZ in world frame
