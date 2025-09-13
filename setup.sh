@@ -134,7 +134,7 @@ cd "$LIB_DIR"
 git clone https://github.com/IntelRealSense/librealsense.git
 cd librealsense 
 mkdir build && cd build 
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local .. && make -j"$CORES"
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local -DFORCE_RSUSB_BACKEND=TRUE .. && make -j"$CORES"
 make install 
 
 # # opencv
