@@ -5,7 +5,7 @@ rate: 10 # Hz
 img_size: [640, 480]
 focal: [383.619, 383.619]
 center: [321.347, 239.354]
-near: 0.5 # m
+near: 0.1 # m
 far: 3.5 # m
 baseline: 0.0049759 # m
 xyz: [0, 0, 0]

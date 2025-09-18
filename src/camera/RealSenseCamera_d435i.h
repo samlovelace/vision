@@ -13,6 +13,7 @@ public:
     ~RealSenseCamera_d435i();
 
     bool init() override; 
+    bool fini() override; 
     CameraOutput getOutput() override; 
 
 private:

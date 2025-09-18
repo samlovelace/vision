@@ -21,6 +21,8 @@ private:
     std::map<std::string, DetectedObject> mObjects; 
 
     std::string generateInstanceId(const std::string& aClassName); 
+
+    void addNewObject(const Detection2D& aDetection, cv::Point3f aCentroid_G); 
    
 };
 #endif //DETECTEDOBJECTMANAGER_H

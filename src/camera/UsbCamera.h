@@ -10,6 +10,7 @@ public:
     ~UsbCamera();
 
     bool init() override; 
+    bool fini() override; 
     CameraOutput getOutput() override; 
 
 private:

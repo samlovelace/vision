@@ -56,61 +56,57 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr ObjectCloudGenerator::generateCloud_openCV(c
     return cloud; 
 }
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr ObjectCloudGenerator::generateCloud(const cv::Rect& aBoundingBox, const cv::Mat& aDepthMap, std::shared_ptr<CameraParams> aCamParams)
+pcl::PointCloud<pcl::PointXYZ>::Ptr ObjectCloudGenerator::generateCloud(
+    const cv::Rect& aBoundingBox,
+    const cv::Mat& aDepthMap,
+    std::shared_ptr<CameraParams> aCamParams)
 {
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
-    // save camera intrinsics in local variable for easy use
-    float fx = aCamParams->mIntrinsics->focalX(); 
+    //Validate inputs
+    if (aDepthMap.empty()) return cloud;
+    if (aDepthMap.type() != CV_32FC1) 
+    {
+        // Convert if you prefer, or just bail:
+        // cv::Mat tmp; aDepthMap.convertTo(tmp, CV_32FC1);
+        return cloud;
+    }
+    if (!aCamParams || !aCamParams->mIntrinsics) return cloud;
+
+    // Clamp bbox to image bounds to avoid out-of-range access
+    cv::Rect imgRect(0, 0, aDepthMap.cols, aDepthMap.rows);
+    cv::Rect roi = aBoundingBox & imgRect;
+    if (roi.empty()) return cloud;
+
+    // Pull intrinsics
+    float fx = aCamParams->mIntrinsics->focalX();
     float fy = aCamParams->mIntrinsics->focalY();
     float cx = aCamParams->mIntrinsics->centerX();
     float cy = aCamParams->mIntrinsics->centerY();
-    float near = aCamParams->mIntrinsics->nearPlane_m; 
-    float far = aCamParams->mIntrinsics->farPlane_m;  
-    float baseline = aCamParams->mIntrinsics->baseline_m; 
+    float near = aCamParams->mIntrinsics->nearPlane_m;
+    float far  = aCamParams->mIntrinsics->farPlane_m;
 
-    for (int x = aBoundingBox.x; x < aBoundingBox.x + aBoundingBox.width; ++x)
+    // Iterate safely (y outer for cache locality)
+    for (int y = roi.y; y < roi.y + roi.height; ++y)
     {
-        for (int y = aBoundingBox.y; y < aBoundingBox.y + aBoundingBox.height; ++y)
+        const float* drow = aDepthMap.ptr<float>(y);
+        for (int x = roi.x; x < roi.x + roi.width; ++x)
         {
-            // float disparity = aDepthMap.at<float>(y, x);  
-            
-            // if (disparity <= 0.0f || std::isnan(disparity))
-            //     continue;
-
-            // float Z = (fx * baseline) / disparity;
-            // if (Z < near || Z > far) continue;
-
-            float Z = aDepthMap.at<float>(y, x);
-            
-            // skip invalid depths
-            if (Z <= 0.0f || std::isnan(Z))
-                continue;
-
-            if (Z < near || Z > far)
-                continue;
-
+            float Z = drow[x];
+            if (!(Z > 0.0f) || std::isnan(Z)) continue; // reject 0, negatives, NaNs
+            if (Z < near || Z > far) continue;
 
             float X = (x - cx) * (Z / fx);
             float Y = (y - cy) * (Z / fy);
 
-            pcl::PointXYZ pt;
-            pt.x = X;
-            pt.y = Y;
-            pt.z = Z;
-
-            //LOGW << "Pt: " << pt; 
-
-            cloud->points.push_back(pt);
+            cloud->points.emplace_back(X, Y, Z);
         }
     }
 
-
-    cloud->width = cloud->points.size();
+    cloud->width = static_cast<uint32_t>(cloud->points.size());
     cloud->height = 1;
     cloud->is_dense = false;
-
-    return cloud; 
+    return cloud;
 }
 
 cv::Point3f ObjectCloudGenerator::computeCloudCentroid(pcl::PointCloud<pcl::PointXYZ>::Ptr& aCloud)

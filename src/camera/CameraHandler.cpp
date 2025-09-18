@@ -76,7 +76,7 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
         int width = aCameraCtx.mParams->mImgSize.first; 
         int height = aCameraCtx.mParams->mImgSize.second; 
 
-        cv::resize(frames.left.mFrame,frames.left.mFrame, cv::Size(width, height)); 
+        //cv::resize(frames.left.mFrame, frames.left.mFrame, cv::Size(width, height)); 
 
         if(frames.isStereo)
         {
@@ -91,7 +91,6 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
 
         // compute pose of camera in global frame 
         output.T_G_C = T_G_V * aCameraCtx.mParams->mS2V; 
-
         output.mParams = aCameraCtx.mParams; 
 
         // push to frame queue 
@@ -100,6 +99,7 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
         aCameraCtx.mRate->block(); 
     }
 
+    aCameraCtx.mCamera->fini(); 
     LOGD << "CameraHandler processing loop exited"; 
 }
 

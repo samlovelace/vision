@@ -25,7 +25,13 @@ bool RealSenseCamera_d435i::init()
         return false;  
     }
 
-    mPipeline->start();
+    rs2::config cfg;
+
+    // Set both streams to the same resolution
+    cfg.enable_stream(RS2_STREAM_COLOR, 640, 480, RS2_FORMAT_RGB8, 15);
+    cfg.enable_stream(RS2_STREAM_DEPTH, 640, 480, RS2_FORMAT_Z16, 15);
+
+    mPipeline->start(cfg);
     mStartTime = std::chrono::system_clock::now(); 
     
     for(int i = 0; i < 30; i++)
@@ -39,6 +45,14 @@ bool RealSenseCamera_d435i::init()
     return true; 
 }
 
+bool RealSenseCamera_d435i::fini()
+{
+    mRunning = false; 
+
+    mPipeline->stop(); 
+    mPipeline.reset(); 
+}
+
 CameraOutput RealSenseCamera_d435i::getOutput()
 {
     std::lock_guard<std::mutex> lock(mFrameMutex); 
@@ -47,17 +61,25 @@ CameraOutput RealSenseCamera_d435i::getOutput()
 
 void RealSenseCamera_d435i::processFrames()
 {
+    // Create an align object to align depth to color
+    rs2::align align_to_color(RS2_STREAM_COLOR);
+
     while (mRunning)
     {
         rs2::frameset frames = mPipeline->wait_for_frames();
         
-        rs2::depth_frame rawDepth = frames.get_depth_frame();
-        rs2::video_frame rgb = frames.get_color_frame();
+        // Align the depth frame to the color frame
+        rs2::frameset aligned_frames = align_to_color.process(frames);
+        
+        rs2::depth_frame rawDepth = aligned_frames.get_depth_frame();
+        rs2::video_frame rgb = aligned_frames.get_color_frame();
 
         int width = rgb.get_width();
         int height = rgb.get_height();
 
-        cv::Mat colorImage(cv::Size(width, height), CV_8UC3, (void*)rgb.get_data(), cv::Mat::AUTO_STEP);
+        cv::Mat colorImageBGR(cv::Size(width, height), CV_8UC3, (void*)rgb.get_data(), cv::Mat::AUTO_STEP);
+        cv::Mat colorImageRGB;
+        cv::cvtColor(colorImageBGR, colorImageRGB, cv::COLOR_BGR2RGB);
 
         int depthWidth = rawDepth.get_width();
         int depthHeight = rawDepth.get_height();
@@ -74,7 +96,7 @@ void RealSenseCamera_d435i::processFrames()
             std::chrono::duration<double, std::milli>(frames.get_timestamp()));
 
         CameraFrame left;
-        left.mFrame = colorImage;
+        left.mFrame = colorImageRGB;
         left.mTimestamp = timestamp;
 
         CameraFrame depth;
@@ -94,7 +116,3 @@ void RealSenseCamera_d435i::processFrames()
         }
     }
 }
-
-
-
-

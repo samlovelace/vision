@@ -18,7 +18,8 @@ public:
     RosCamera();
     ~RosCamera();
 
-    bool init() override; 
+    bool init() override;
+    bool fini() override;  
     CameraOutput getOutput() override; 
 
 private:
