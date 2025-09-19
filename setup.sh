@@ -3,7 +3,7 @@
 LIB_DIR="/opt"
 OPENCV_VERSION=4.7.0
 LIB_INSTALL_DIR="/usr/local"
-WS="/home/robot_ws"
+WS=$1
 
 # Subtract 2 from total cores
 CORES=$(( $(nproc) - 4 ))
