@@ -1,9 +1,11 @@
 #!/bin/bash
 
+WS=$1
+source "$WS/src/robot_idl/scripts/common.sh" "$@"
+
 LIB_DIR="/opt"
 OPENCV_VERSION=4.7.0
 LIB_INSTALL_DIR="/usr/local"
-WS=$1
 
 # Subtract 2 from total cores
 CORES=$(( $(nproc) - 4 ))
