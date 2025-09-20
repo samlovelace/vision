@@ -41,10 +41,17 @@ DEPENDENCIES=(
 
 install_librealsense()
 {
+	REPO_NAME="librealsense"
+
+	if [ -d "$LIB_DIR/$REPO_NAME/.git" ]; then
+    	echo "$REPO_NAME already cloned at $LIB_DIR. Skipping clone and assuming proper build..."
+		return
+	fi
+
 	#librealsense 
 	cd "$LIB_DIR"
 	git clone https://github.com/IntelRealSense/librealsense.git
-	cd librealsense 
+	cd "$REPO_NAME" 
 	mkdir build && cd build 
 	cmake -DCMAKE_INSTALL_PREFIX="$LIB_INSTALL_DIR" -DFORCE_RSUSB_BACKEND=TRUE .. && make -j"$CORES"
 	$SUDO make install 
@@ -52,11 +59,25 @@ install_librealsense()
 
 install_opencv()
 {
-	# # opencv
+	REPO_NAME="opencv_contrib"
+
+	if [ -d "$LIB_DIR/$REPO_NAME/.git" ]; then
+    	echo "$REPO_NAME already cloned at $LIB_DIR. Skipping clone and assuming proper build..."
+		return
+	fi
+
+	# opencv
 	cd "$LIB_DIR"
 	git clone https://github.com/opencv/opencv_contrib.git
 	cd opencv_contrib 
 	git checkout "$OPENCV_VERSION"
+
+	REPO_NAME="opencv"
+
+	if [ -d "$LIB_DIR/$REPO_NAME/.git" ]; then
+    	echo "$REPO_NAME already cloned at $LIB_DIR. Skipping clone and assuming proper build..."
+		return
+	fi
 
 	cd "$LIB_DIR"
 	git clone https://github.com/opencv/opencv.git
@@ -73,6 +94,13 @@ install_opencv()
 
 install_pcl()
 {
+	REPO_NAME="pcl"
+
+	if [ -d "$LIB_DIR/$REPO_NAME/.git" ]; then
+    	echo "$REPO_NAME already cloned at $LIB_DIR. Skipping clone and assuming proper build..."
+		return
+	fi
+
 	#pcl 
 	cd "$LIB_DIR"
 	git clone https://github.com/PointCloudLibrary/pcl.git
@@ -90,7 +118,7 @@ install_pcl()
 
 }
 
-# Optional: define a wrapper
+# define the set of functions to be called by robot_idl setup script 
 function run_custom_build_steps() {
     install_librealsense
     install_opencv
