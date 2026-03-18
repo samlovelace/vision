@@ -4,8 +4,8 @@ save_clouds: true
 nav_topic: /robot/pose
 
 cameras:
-  # - file: rosCamera.yaml
-  - file: realSenseCamera_d435i.yaml
+  - file: rosCamera.yaml
+  # - file: realSenseCamera_d435i.yaml
 
 models:
   - name: mobilenet
@@ -24,3 +24,8 @@ object_detection:
 
 pose_estimation:
   depth_estimation: realSense
+
+tag_detection:
+  board:
+    type: test # the name object type associated with this board
+    file: tags/testBoard.yaml

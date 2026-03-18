@@ -136,7 +136,7 @@ void ObjectLocatorModule::run()
             geometry_msgs::msg::Point pt; 
             pt.set__x(obj.global_centroid.x); 
             pt.set__y(obj.global_centroid.y); 
-            pt.set__x(obj.global_centroid.z); 
+            pt.set__z(obj.global_centroid.z); 
             objCentroid_G.set__point(pt); 
 
             foundObj.set__obj_centroid_g(objCentroid_G); 
@@ -222,7 +222,6 @@ void ObjectLocatorModule::runVisualizer()
 
     cv::destroyAllWindows(); 
 }
-
 
 
 void ObjectLocatorModule::stop()

@@ -1,9 +1,9 @@
 id: 0
 type: ros
-stereo: false
+stereo: true
 rate: 10 # Hz
 img_size: [640, 480]
-focal: [381.3611502479813, 286.020862685986]
+focal: [381.3611502479813, 381.3611502479813]
 center: [320, 240]
 near: 0.5
 far: 3.5

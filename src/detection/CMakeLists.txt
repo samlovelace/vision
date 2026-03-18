@@ -1,4 +1,5 @@
-set(INFERENCE_SOURCES
+set(DETECTION_SOURCES
+    ${CMAKE_CURRENT_LIST_DIR}/ArcuoBoardDetector.cpp
     ${CMAKE_CURRENT_LIST_DIR}/EngineFactory.cpp
     ${CMAKE_CURRENT_LIST_DIR}/InferenceHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ObjectDetectionHandler.cpp

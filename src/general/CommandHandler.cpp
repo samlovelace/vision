@@ -15,8 +15,8 @@ CommandHandler::~CommandHandler()
 
 void CommandHandler::init()
 {
-    RosTopicManager::getInstance()->createSubscriber<robot_idl::msg::Command>("/vision/command", std::bind(&CommandHandler::commandCallback, this, std::placeholders::_1)); 
-
+    RosTopicManager::getInstance()->createSubscriber<robot_idl::msg::Command>("/vision/command", 
+        std::bind(&CommandHandler::commandCallback, this, std::placeholders::_1)); 
     RosTopicManager::getInstance()->spinNode(); 
 }
 
@@ -26,7 +26,11 @@ void CommandHandler::commandCallback(robot_idl::msg::Command::SharedPtr aCommand
     {
         mVision->find_object(aCommand->object_type.data); 
     }
-    if("disable" == aCommand->command.data)
+    else if ("find_tags" == aCommand->command.data)
+    {
+        mVision->find_tags(aCommand->object_type.data); 
+    }
+    else if("disable" == aCommand->command.data)
     {
         mVision->stop(); 
     }

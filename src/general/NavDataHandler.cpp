@@ -112,18 +112,18 @@ cv::Matx44f NavDataHandler::getClosestGlobalPose(
     auto diff_after = std::chrono::abs(after->first - aTime);
     auto diff_before = std::chrono::abs(before->first - aTime);
 
-    LOGD << "Nav data map size: " << mGlobalPoseMap.size();
-    LOGD << "Query time (ms): "
-         << std::chrono::duration_cast<std::chrono::milliseconds>(aTime.time_since_epoch()).count();
-    LOGD << "Before time (ms): "
-         << std::chrono::duration_cast<std::chrono::milliseconds>(before->first.time_since_epoch()).count();
-    LOGD << "After time (ms): "
-         << std::chrono::duration_cast<std::chrono::milliseconds>(after->first.time_since_epoch()).count();
+    // LOGD << "Nav data map size: " << mGlobalPoseMap.size();
+    // LOGD << "Query time (ms): "
+    //      << std::chrono::duration_cast<std::chrono::milliseconds>(aTime.time_since_epoch()).count();
+    // LOGD << "Before time (ms): "
+    //      << std::chrono::duration_cast<std::chrono::milliseconds>(before->first.time_since_epoch()).count();
+    // LOGD << "After time (ms): "
+    //      << std::chrono::duration_cast<std::chrono::milliseconds>(after->first.time_since_epoch()).count();
 
-    LOGD << "diff_before (ms): "
-         << std::chrono::duration_cast<std::chrono::milliseconds>(diff_before).count();
-    LOGD << "diff_after (ms): "
-         << std::chrono::duration_cast<std::chrono::milliseconds>(diff_after).count();
+    // LOGD << "diff_before (ms): "
+    //      << std::chrono::duration_cast<std::chrono::milliseconds>(diff_before).count();
+    // LOGD << "diff_after (ms): "
+    //      << std::chrono::duration_cast<std::chrono::milliseconds>(diff_after).count();
 
     auto match = (diff_before <= diff_after) ? before : after;
     

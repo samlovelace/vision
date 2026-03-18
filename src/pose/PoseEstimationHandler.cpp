@@ -53,7 +53,6 @@ PoseEstimationHandler::~PoseEstimationHandler()
 
 void PoseEstimationHandler::run()
 {
-
     while(isRunning())
     {
         Detection detection; 

@@ -24,7 +24,7 @@ find_package(OpenCV REQUIRED)
 
 add_subdirectory(src/camera)
 add_subdirectory(src/general)
-add_subdirectory(src/inference)
+add_subdirectory(src/detection)
 add_subdirectory(src/model)
 add_subdirectory(src/pose)
 
@@ -33,7 +33,7 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 set(SOURCES 
   ${CAMERA_SOURCES}
   ${GENERAL_SOURCES}
-  ${INFERENCE_SOURCES}
+  ${DETECTION_SOURCES}
   ${MODEL_SOURCES}
   ${POSE_SOURCES}
 )
@@ -43,7 +43,7 @@ target_sources(${PROJECT_NAME} PRIVATE ${SOURCES})
 include_directories(${PROJECT_NAME}
   src/camera
   src/general
-  src/inference
+  src/detection
   src/model
   src/pose
   ${CMAKE_CURRENT_LIST_DIR}/dependencies/plog/plog-master/include
