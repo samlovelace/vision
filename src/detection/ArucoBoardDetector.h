@@ -31,6 +31,8 @@ private:
     bool isRunning() {std::lock_guard<std::mutex> lock(mRunningMutex); return mRunning; }
     void setRunning(bool aFlag) {std::lock_guard<std::mutex> lock(mRunningMutex); mRunning = aFlag; }
 
+    void printXYZandRPY(const cv::Matx44f& T);
+
 private: 
     std::string mType; // the semantic type associated with the board 
     std::shared_ptr<cv::aruco::Board> mBoard; 

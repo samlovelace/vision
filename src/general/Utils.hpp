@@ -86,7 +86,29 @@ namespace Utils
         return true;
     }
 
+    inline void printXYZandRPY(const cv::Matx44f& T, const std::string& aName)
+    {
+        // Extract translation
+        float x = T(0, 3);
+        float y = T(1, 3);
+        float z = T(2, 3);
 
+        // Extract rotation matrix
+        cv::Matx33f R(
+            T(0,0), T(0,1), T(0,2),
+            T(1,0), T(1,1), T(1,2),
+            T(2,0), T(2,1), T(2,2)
+        );
+
+        // Compute roll, pitch, yaw (XYZ convention)
+        float pitch = std::atan2(-R(2,0), std::sqrt(R(0,0)*R(0,0) + R(1,0)*R(1,0)));
+        float roll  = std::atan2(R(2,1), R(2,2));
+        float yaw   = std::atan2(R(1,0), R(0,0));
+
+        LOGV << aName; 
+        LOGV << "XYZ (m): " << x << ", " << y << ", " << z;
+        LOGV << "RPY (deg): " << roll * 180.0/M_PI << ", " << pitch * 180.0/M_PI << ", " << yaw * 180.0/M_PI;
+    }
 
 } // namespace Utils
 

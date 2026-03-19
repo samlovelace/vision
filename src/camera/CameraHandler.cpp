@@ -88,6 +88,7 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
         StampedCameraOutput output; 
         output.frames = frames; 
         cv::Matx44f T_G_V = mNavDataHandler->getClosestGlobalPose(frames.left.mTimestamp); 
+        Utils::printXYZandRPY(T_G_V, "T_G_V"); 
 
         // compute pose of camera in global frame 
         output.T_G_C = T_G_V * aCameraCtx.mParams->mS2V; 
@@ -95,7 +96,7 @@ void CameraHandler::runCamera(const CameraContext aCameraCtx)
 
         // push to frame queue 
         mFrameQueue->push(output);
-
+        
         aCameraCtx.mRate->block(); 
     }
 
@@ -125,7 +126,8 @@ void CameraHandler::parseCameraConfig(const YAML::Node& aCameraConfig)
     //parse s2v and pass to params 
     std::vector<float> xyz = aCameraConfig["xyz"].as<std::vector<float>>(); 
     std::vector<float> quat = aCameraConfig["quat"].as<std::vector<float>>(); 
-    cv::Matx44f s2v = Utils::transformFromXYZQuat(xyz, quat); 
+    cv::Matx44f s2v = Utils::transformFromXYZQuat(xyz, quat);
+    Utils::printXYZandRPY(s2v, "T_V_C");  
 
     std::vector<int> widthHeight = aCameraConfig["img_size"].as<std::vector<int>>();  
     std::pair<int, int> imgSize = {widthHeight[0], widthHeight[1]}; 

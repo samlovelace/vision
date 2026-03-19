@@ -1,6 +1,7 @@
 #include <ament_index_cpp/get_package_share_directory.hpp>
 #include "ArucoBoardDetector.h"
 #include "plog/Log.h"
+#include "Utils.hpp"
 
 ArucoBoardDetector::ArucoBoardDetector(const YAML::Node& aConfig, 
     std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueue, 
@@ -111,19 +112,18 @@ void ArucoBoardDetector::run()
                 if(markersDetected > 0)
                 {
                     LOGV << "Refined detection to " << markersDetected << " markers...";
-                    
-                    cv::Matx33d R;
-                    cv::Rodrigues(rvec, R);
-                    cv::Vec3d rpy(atan2(R(2,1), R(2,2)),
-                                  atan2(-R(2,0), sqrt(R(2,1)*R(2,1) + R(2,2)*R(2,2))),
-                                  atan2(R(1,0), R(0,0)));
-                    LOGV << "xyz (m): " << tvec << " rpy (deg): " << rpy * 180.0/M_PI;
 
                     // compute [G]lobal pose of [O]bject based on pose in [C]amera frame 
                     cv::Matx44f T_C_O = cv::Affine3d(rvec, tvec).matrix;
-                    cv::Matx44f T_G_O = output.T_G_C * T_C_O; 
 
-                    
+                    // debug data 
+                    // cv::Matx44f T_V_O = output.mParams->mS2V * T_C_O;                     
+                    // Utils::printXYZandRPY(T_C_O, "T_C_O");
+                    // Utils::printXYZandRPY(T_V_O, "T_V_O"); 
+                    // Utils::printXYZandRPY(output.T_G_C, "T_G_C");
+
+                    cv::Matx44f T_G_O = output.T_G_C * T_C_O;
+                    Utils::printXYZandRPY(T_G_O, "T_G_O"); 
 
                     // draw axes on board origin
                     if(mVisQueue) 
