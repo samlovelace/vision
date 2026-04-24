@@ -1,11 +1,11 @@
-mode: vision # vision, calibration
+mode: vision # vision
 visualize: true
 save_clouds: true
 nav_topic: /robot/pose
 
 cameras:
-  - file: rosCamera.yaml
-  # - file: realSenseCamera_d435i.yaml
+  #- file: rosCamera.yaml
+  - file: realSenseCamera_d435i.yaml
 
 models:
   - name: mobilenet
@@ -27,5 +27,5 @@ pose_estimation:
 
 tag_detection:
   board:
-    type: test # the name object type associated with this board
+    type: test # the name of the object type associated with this board
     file: tags/testBoard.yaml
