@@ -110,6 +110,51 @@ namespace Utils
         LOGV << "RPY (deg): " << roll * 180.0/M_PI << ", " << pitch * 180.0/M_PI << ", " << yaw * 180.0/M_PI;
     }
 
+    inline cv::Vec4f quatFromMatx44f(const cv::Matx44f& T)
+    {
+        // Extract rotation elements
+        float r00 = T(0,0), r01 = T(0,1), r02 = T(0,2);
+        float r10 = T(1,0), r11 = T(1,1), r12 = T(1,2);
+        float r20 = T(2,0), r21 = T(2,1), r22 = T(2,2);
+
+        float trace = r00 + r11 + r22;
+        float qw, qx, qy, qz;
+
+        if (trace > 0.0f) {
+            float s = 0.5f / std::sqrt(trace + 1.0f);
+            qw = 0.25f / s;
+            qx = (r21 - r12) * s;
+            qy = (r02 - r20) * s;
+            qz = (r10 - r01) * s;
+        } else if (r00 > r11 && r00 > r22) {
+            float s = 2.0f * std::sqrt(1.0f + r00 - r11 - r22);
+            qw = (r21 - r12) / s;
+            qx = 0.25f * s;
+            qy = (r01 + r10) / s;
+            qz = (r02 + r20) / s;
+        } else if (r11 > r22) {
+            float s = 2.0f * std::sqrt(1.0f + r11 - r00 - r22);
+            qw = (r02 - r20) / s;
+            qx = (r01 + r10) / s;
+            qy = 0.25f * s;
+            qz = (r12 + r21) / s;
+        } else {
+            float s = 2.0f * std::sqrt(1.0f + r22 - r00 - r11);
+            qw = (r10 - r01) / s;
+            qx = (r02 + r20) / s;
+            qy = (r12 + r21) / s;
+            qz = 0.25f * s;
+        }
+
+        // Vec4f laid out as [x, y, z, w] (ROS convention)
+        return { qx, qy, qz, qw };
+    }
+
+    inline cv::Point3f positionFromMatx44f(const cv::Matx44f& T) 
+    {
+        return { T(0,3), T(1,3), T(2,3) };
+    }
+
 } // namespace Utils
 
 #endif

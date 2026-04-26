@@ -1,11 +1,11 @@
-mode: vision # vision
+mode: vision # TODO: obsolete
 visualize: true
-save_clouds: true
-nav_topic: /robot/pose
+save_clouds: false
+nav_topic: /robot/state
 
 cameras:
-  #- file: rosCamera.yaml
-  - file: realSenseCamera_d435i.yaml
+  - file: rosCamera.yaml
+  #- file: realSenseCamera_d435i.yaml
 
 models:
   - name: mobilenet
@@ -26,6 +26,9 @@ pose_estimation:
   depth_estimation: realSense
 
 tag_detection:
-  board:
-    type: test # the name of the object type associated with this board
-    file: tags/testBoard.yaml
+  boards:
+    - type: test # the name of the object type associated with this board
+      file: tags/testBoard.yaml
+
+    - type: other
+      file: other.yaml

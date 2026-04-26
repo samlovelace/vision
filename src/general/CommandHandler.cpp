@@ -3,7 +3,8 @@
 #include "RosTopicManager.hpp"
 #include "plog/Log.h"
 
-CommandHandler::CommandHandler(std::shared_ptr<Vision> aVisionPtr) : mVision(aVisionPtr)
+CommandHandler::CommandHandler(std::shared_ptr<Vision> aVisionPtr) 
+    : mVision(aVisionPtr)
 {
 
 }
@@ -17,6 +18,7 @@ void CommandHandler::init()
 {
     RosTopicManager::getInstance()->createSubscriber<robot_idl::msg::VisionCommand>("/vision/command", 
         std::bind(&CommandHandler::commandCallback, this, std::placeholders::_1)); 
+    
     RosTopicManager::getInstance()->spinNode(); 
 }
 
@@ -24,11 +26,7 @@ void CommandHandler::commandCallback(robot_idl::msg::VisionCommand::SharedPtr aC
 {
     if("find_object" == aCommand->command.data)
     {
-        mVision->find_object(aCommand->object_type.data); 
-    }
-    else if ("find_tags" == aCommand->command.data)
-    {
-        mVision->find_tags(aCommand->object_type.data); 
+        mVision->dispatch(aCommand->object_type.data); 
     }
     else if("disable" == aCommand->command.data)
     {

@@ -12,7 +12,7 @@ public:
     ~CommandHandler();
 
     void init(); 
-    void commandCallback(robot_idl::msg::VisionCommand::Ptr aCommand); 
+    void commandCallback(robot_idl::msg::VisionCommand::SharedPtr aCommand); 
 private:
     std::shared_ptr<Vision> mVision; 
    

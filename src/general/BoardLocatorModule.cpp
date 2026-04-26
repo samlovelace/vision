@@ -2,8 +2,10 @@
 #include "BoardLocatorModule.h"
 #include "ConfigManager.hpp"
 #include "RosTopicManager.hpp"
+#include "robot_idl/msg/found_object_response.hpp"
 
-BoardLocatorModule::BoardLocatorModule(const std::string& aBoardToFind)
+BoardLocatorModule::BoardLocatorModule(const KnownObjectConfig& anObjectToFind) 
+    : mObjectToFind(anObjectToFind)
 {
     auto config = ConfigManager::get().getFullConfig(); 
     mVisualize = config["visualize"].as<bool>(); 
@@ -27,9 +29,10 @@ BoardLocatorModule::BoardLocatorModule(const std::string& aBoardToFind)
         m2DVisQueue = std::make_shared<ConcurrentQueue<StampedCameraOutput>>(); 
     }
 
-    // Arcuo Tag detector configuration 
-    auto tagDetectionConfig = config["tag_detection"]; 
-    mDetector = std::make_shared<ArucoBoardDetector>(tagDetectionConfig, mFrameQueue, m2DVisQueue); 
+    mObjectManager = std::make_shared<DetectedObjectManager>(); 
+    mDetector = std::make_shared<ArucoBoardDetector>(anObjectToFind, mFrameQueue, m2DVisQueue, mObjectManager); 
+
+    RosTopicManager::getInstance()->createPublisher<robot_idl::msg::FoundObjectResponse>("vision/response"); 
 }
 
 BoardLocatorModule::~BoardLocatorModule()
@@ -46,12 +49,61 @@ BoardLocatorModule::~BoardLocatorModule()
 void BoardLocatorModule::start()
 {   
     setRunning(true); 
+    
     mThreads.emplace_back(&CameraHandler::run, mCameraHandler.get()); 
     mThreads.emplace_back(&ArucoBoardDetector::run, mDetector.get()); 
+    mThreads.emplace_back(&BoardLocatorModule::run, this); 
 
     if(mVisualize)
     {
         runVisualizer(); 
+    }
+}
+
+void BoardLocatorModule::run()
+{
+    while(isRunning())
+    {
+        std::vector<DetectedObject> foundObjs = mObjectManager->getObjects(mObjectToFind.mType); 
+
+        if(foundObjs.empty())
+        {
+            continue; 
+        }
+
+        // TODO: validate the found object data in some way 
+        // TODO: dont keep sending the same object if pose doesnt change significantly 
+
+        // Inform that object has been found 
+        for(auto& obj : foundObjs)
+        {
+            // convert internal data type to idl data type
+            //TODO: helper function to convert to idl format
+            robot_idl::msg::FoundObjectResponse foundObj; 
+            std_msgs::msg::String type; 
+            type.set__data(obj.class_label); 
+            foundObj.set__object_type(type); 
+
+            geometry_msgs::msg::PointStamped objCentroid_G;
+            objCentroid_G.header.frame_id = "world"; 
+            
+            geometry_msgs::msg::Point pt; 
+            pt.set__x(obj.global_centroid.x); 
+            pt.set__y(obj.global_centroid.y); 
+            pt.set__z(obj.global_centroid.z); 
+            objCentroid_G.set__point(pt); 
+
+            foundObj.set__obj_centroid_g(objCentroid_G); 
+
+            sensor_msgs::msg::PointCloud2 pc; 
+            foundObj.set__obj_points_g(pc); 
+
+            // publish response
+            RosTopicManager::getInstance()->publishMessage<robot_idl::msg::FoundObjectResponse>("vision/response", foundObj); 
+            std::this_thread::sleep_for(std::chrono::milliseconds(50)); 
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); 
     }
 }
 

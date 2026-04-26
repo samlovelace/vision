@@ -1,29 +1,22 @@
-#include <ament_index_cpp/get_package_share_directory.hpp>
+
 #include "ArucoBoardDetector.h"
 #include "plog/Log.h"
 #include "Utils.hpp"
 
-ArucoBoardDetector::ArucoBoardDetector(const YAML::Node& aConfig, 
+ArucoBoardDetector::ArucoBoardDetector(const KnownObjectConfig& aKnownObjectConfig, 
     std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueue, 
-    std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aVisQueue) : 
-        mFrameQueue(aFrameQueue), 
-        mVisQueue(aVisQueue)
+    std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aVisQueue, 
+    std::shared_ptr<DetectedObjectManager> anObjectManager) 
+    : mFrameQueue(aFrameQueue), 
+      mVisQueue(aVisQueue), 
+      mObjectManager(anObjectManager), 
+      mKnownObjectCfg(aKnownObjectConfig)
 {  
-    LOGV << YAML::Dump(aConfig); 
-    mType = aConfig["board"]["type"].as<std::string>(); 
-    std::string boardFilePath = aConfig["board"]["file"].as<std::string>(); 
-
-    std::string packagePath = ament_index_cpp::get_package_share_directory("vision");
-    std::string configPath = packagePath + "/configuration/";
-
-    if(!parseBoardFile(configPath + boardFilePath))
+    if(!parseBoardFile(aKnownObjectConfig.mFile))
     {
-        LOGE << "Failed to parse board file at " << boardFilePath; 
+        LOGE << "Failed to parse board file at " << aKnownObjectConfig.mFile; 
         return; // TODO: respond to commander in some way 
     }
-    
-    
-
 }
 
 ArucoBoardDetector::~ArucoBoardDetector()
@@ -123,7 +116,15 @@ void ArucoBoardDetector::run()
                     // Utils::printXYZandRPY(output.T_G_C, "T_G_C");
 
                     cv::Matx44f T_G_O = output.T_G_C * T_C_O;
-                    Utils::printXYZandRPY(T_G_O, "T_G_O"); 
+                    //Utils::printXYZandRPY(T_G_O, "T_G_O"); 
+
+                    DetectedObject obj;
+                    obj.class_label = mKnownObjectCfg.mType;
+                    obj.confidence = 1;
+                    obj.global_centroid = Utils::positionFromMatx44f(T_G_O); 
+                    obj.global_orientation = Utils::quatFromMatx44f(T_G_O); 
+
+                    mObjectManager->storeObject(obj); 
 
                     // draw axes on board origin
                     if(mVisQueue) 

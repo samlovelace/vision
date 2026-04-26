@@ -67,6 +67,11 @@ target_link_libraries(${PROJECT_NAME}
   realsense2
 )
 
+# needed for some reason?
+target_compile_definitions(${PROJECT_NAME} PRIVATE _GLIBCXX_USE_CXX11_ABI=1)
+#target_compile_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined -g -O1)
+#target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined)
+
 install(TARGETS ${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})
 install(DIRECTORY configuration/ DESTINATION share/${PROJECT_NAME}/configuration)
 

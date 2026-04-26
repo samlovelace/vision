@@ -12,17 +12,16 @@ public:
     DetectedObjectManager();
     ~DetectedObjectManager();
 
-    void storeObject(const Detection2D& aDetection, cv::Point3f aCentroid_G); 
+    void storeObject(DetectedObject& aDetection); 
     std::vector<DetectedObject> getObjects(const std::string& anObjectType); 
 
 private:
-    
+    std::string generateInstanceId(const std::string& aClassName); 
+    void addNewObject(DetectedObject& aDetection); 
+   
+private: 
     // key: instance_id
     std::map<std::string, DetectedObject> mObjects; 
 
-    std::string generateInstanceId(const std::string& aClassName); 
-
-    void addNewObject(const Detection2D& aDetection, cv::Point3f aCentroid_G); 
-   
 };
 #endif //DETECTEDOBJECTMANAGER_H

@@ -10,6 +10,7 @@ struct DetectedObject
     std::string class_label;        // e.g., "cat"
     std::string instance_id;        // e.g., "cat_001"
     cv::Point3f global_centroid;    // XYZ in world frame
+    cv::Vec4f   global_orientation; // wxyz quaternion in world frame 
     float confidence;               // optional
     std::chrono::system_clock::time_point last_seen;            // to manage object lifetime
 };

@@ -3,22 +3,25 @@
 
 #include <yaml-cpp/yaml.h>
  
-#include <opencv2/objdetect/aruco_detector.hpp>    // ArucoDetector, DetectorParameters
-#include <opencv2/objdetect/aruco_board.hpp>       // Board, GridBoard
-#include <opencv2/aruco.hpp>                       // estimatePoseBoard, drawAxis
-#include <opencv2/calib3d.hpp>                     // Rodrigues (if converting rvec to rotation matrix)
-#include <opencv2/core.hpp>                        // Mat, Vec3d, Point3f etc
-#include <opencv2/imgproc.hpp>                     // if doing any frame preprocessing
+#include <opencv2/objdetect/aruco_detector.hpp>
+#include <opencv2/objdetect/aruco_board.hpp>       
+#include <opencv2/aruco.hpp>                       
+#include <opencv2/calib3d.hpp>                     
+#include <opencv2/core.hpp>                        
+#include <opencv2/imgproc.hpp>                     
  
 #include "ConcurrentQueue.hpp"
 #include "CameraData.hpp"
+#include "DetectedObjectManager.h"
+#include "Types.hpp"
 
 class ArucoBoardDetector 
 { 
 public:
-    ArucoBoardDetector(const YAML::Node& aConfig, 
+    ArucoBoardDetector(const KnownObjectConfig& aBoardFilePath, 
                        std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aFrameQueue,
-                       std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aVisQueue);
+                       std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> aVisQueue, 
+                       std::shared_ptr<DetectedObjectManager> anObjectManager);
     ~ArucoBoardDetector();
 
     void run(); 
@@ -42,5 +45,7 @@ private:
 
     std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> mFrameQueue;
     std::shared_ptr<ConcurrentQueue<StampedCameraOutput>> mVisQueue; 
+    std::shared_ptr<DetectedObjectManager> mObjectManager; 
+    const KnownObjectConfig mKnownObjectCfg; 
 };
 #endif //ARUCOBOARDDETECTOR_H

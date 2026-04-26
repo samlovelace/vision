@@ -70,7 +70,7 @@ ObjectLocatorModule::ObjectLocatorModule(const std::string& anObjectType) :
                                                                      mCloudVisQueue, 
                                                                      mObjectManager); 
 
-    RosTopicManager::getInstance()->createPublisher<robot_idl::msg::FoundObjectResponse>("/vision/found_object_response"); 
+    RosTopicManager::getInstance()->createPublisher<robot_idl::msg::FoundObjectResponse>("vision/response"); 
 }
 
 ObjectLocatorModule::~ObjectLocatorModule()
@@ -145,7 +145,7 @@ void ObjectLocatorModule::run()
             foundObj.set__obj_points_g(pc); 
 
             // publish response
-            RosTopicManager::getInstance()->publishMessage<robot_idl::msg::FoundObjectResponse>("/vision/found_object_response", foundObj); 
+            RosTopicManager::getInstance()->publishMessage<robot_idl::msg::FoundObjectResponse>("vision/response", foundObj); 
             std::this_thread::sleep_for(std::chrono::milliseconds(50)); 
         }
 

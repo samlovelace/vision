@@ -90,8 +90,12 @@ void PoseEstimationHandler::run()
                     // compute object centroid 
                     cv::Point3f objCentroid_G = mObjCloudGenerator->computeCloudCentroid(cloud_G); 
 
-                    // TODO: idk a good name for this function 
-                    mDetectedObjectManager->storeObject(det, objCentroid_G);
+                    DetectedObject obj; 
+                    obj.class_label = det.class_name; 
+                    obj.confidence = det.confidence; 
+                    obj.global_centroid = objCentroid_G; 
+
+                    mDetectedObjectManager->storeObject(obj);
                 }
             }
               

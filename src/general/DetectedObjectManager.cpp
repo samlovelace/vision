@@ -15,12 +15,12 @@ DetectedObjectManager::~DetectedObjectManager()
 
 }
 
-void DetectedObjectManager::storeObject(const Detection2D& aDetection, cv::Point3f aCentroid_G)
+void DetectedObjectManager::storeObject(DetectedObject& aDetection)
 {   
-    std::vector<DetectedObject> objsOfSameClass = getObjects(aDetection.class_name); 
+    std::vector<DetectedObject> objsOfSameClass = getObjects(aDetection.class_label); 
 
     // TODO: make config 
-    float threshold = 0.3; 
+    float centroidSimilarityThreshold = 0.3; 
 
     bool foundSimilar = false; 
 
@@ -28,10 +28,10 @@ void DetectedObjectManager::storeObject(const Detection2D& aDetection, cv::Point
     {
         for(auto& obj : objsOfSameClass)
         {
-            if(cv::norm(obj.global_centroid - aCentroid_G) < threshold)
+            if(cv::norm(obj.global_centroid - aDetection.global_centroid) < centroidSimilarityThreshold)
             {
                 // assume same object, update centroid and confidence to avg 
-                obj.global_centroid = (obj.global_centroid + aCentroid_G) * 0.5f; 
+                obj.global_centroid = (obj.global_centroid + aDetection.global_centroid) * 0.5f; 
                 obj.confidence = (obj.confidence + aDetection.confidence) * 0.5f;  
                 obj.last_seen = std::chrono::system_clock::now();
                 
@@ -44,27 +44,19 @@ void DetectedObjectManager::storeObject(const Detection2D& aDetection, cv::Point
 
     if(!foundSimilar)
     {
-        LOGV << "Adding new detected object of type: " << aDetection.class_name; 
-        addNewObject(aDetection, aCentroid_G); 
+        LOGV << "Adding new detected object of type: " << aDetection.class_label; 
+        addNewObject(aDetection); 
     } 
 }
 
-void DetectedObjectManager::addNewObject(const Detection2D& aDetection, cv::Point3f aCentroid_G)
+void DetectedObjectManager::addNewObject(DetectedObject& aDetection)
 {
-    // create new detect object  
-    DetectedObject obj; 
-    obj.class_label = aDetection.class_name; 
-    obj.confidence = aDetection.confidence; 
-
-    obj.global_centroid = aCentroid_G; 
-
     // generate unique instance id
-    obj.instance_id = generateInstanceId(aDetection.class_name); 
+    aDetection.instance_id = generateInstanceId(aDetection.class_label); 
+    aDetection.last_seen = std::chrono::system_clock::now(); 
 
-    obj.last_seen = std::chrono::system_clock::now(); 
-
-    mObjects.insert({obj.instance_id, obj}); 
-    LOGV << "Detected " << obj.instance_id << " at " << obj.global_centroid;
+    mObjects.insert({aDetection.instance_id, aDetection}); 
+    LOGV << "Detected " << aDetection.instance_id << " at " << aDetection.global_centroid;
 }
 
 std::string DetectedObjectManager::generateInstanceId(const std::string& aClassName)
@@ -89,14 +81,15 @@ std::string DetectedObjectManager::generateInstanceId(const std::string& aClassN
             LOGV << "Suffix: " << suffix; 
             
             try {
-                    num = std::stoi(suffix);
-                    num++; // increment
+                num = std::stoi(suffix);
+                num++; // increment
 
-                    if (num > maxId) 
-                    {
-                        num = maxId; 
-                    }
-            } catch (...) {
+                if (num > maxId) 
+                {
+                    num = maxId; 
+                }
+            } 
+            catch (...) {
                 // skip malformed IDs
             }
         }
