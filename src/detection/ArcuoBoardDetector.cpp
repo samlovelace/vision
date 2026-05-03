@@ -116,7 +116,7 @@ void ArucoBoardDetector::run()
                     // Utils::printXYZandRPY(output.T_G_C, "T_G_C");
 
                     cv::Matx44f T_G_O = output.T_G_C * T_C_O;
-                    //Utils::printXYZandRPY(T_G_O, "T_G_O"); 
+                    Utils::printXYZandRPY(T_G_O, "T_G_O"); 
 
                     DetectedObject obj;
                     obj.class_label = mKnownObjectCfg.mType;

@@ -84,16 +84,23 @@ void BoardLocatorModule::run()
             type.set__data(obj.class_label); 
             foundObj.set__object_type(type); 
 
-            geometry_msgs::msg::PointStamped objCentroid_G;
-            objCentroid_G.header.frame_id = "world"; 
+            geometry_msgs::msg::PoseStamped objPose_G;
+            objPose_G.header.frame_id = "world"; 
             
             geometry_msgs::msg::Point pt; 
             pt.set__x(obj.global_centroid.x); 
             pt.set__y(obj.global_centroid.y); 
             pt.set__z(obj.global_centroid.z); 
-            objCentroid_G.set__point(pt); 
+            objPose_G.pose.set__position(pt); 
 
-            foundObj.set__obj_centroid_g(objCentroid_G); 
+            geometry_msgs::msg::Quaternion quat; 
+            quat.set__w(obj.global_orientation[0]);
+            quat.set__x(obj.global_orientation[1]);
+            quat.set__y(obj.global_orientation[2]);
+            quat.set__z(obj.global_orientation[3]); 
+            objPose_G.pose.set__orientation(quat); 
+
+            foundObj.set__obj_pose_g(objPose_G); 
 
             sensor_msgs::msg::PointCloud2 pc; 
             foundObj.set__obj_points_g(pc); 
