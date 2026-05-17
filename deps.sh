@@ -118,7 +118,7 @@ install_pcl()
 
 }
 
-# define the set of functions to be called by robot_idl setup script 
+# define the set of functions to be called by ptera_msgs setup script 
 function run_custom_build_steps() {
     install_librealsense
     install_opencv
