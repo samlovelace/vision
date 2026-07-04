@@ -116,13 +116,26 @@ void ObjectLocatorModule::run()
             continue; 
         }
 
-        // TODO: validate the found object data in some way 
-        // TODO: dont keep sending the same object if pose doesnt change significantly 
+        // TODO: make config
+        float positionVarianceThreshold = 0.05f;
+        float positionSignificanceThreshold = 0.05f;
 
-
-        // Inform that object has been found 
+        // Inform that object has been found
         for(auto& obj : foundObjs)
         {
+            // wait for the current window to look statistically stable
+            if(obj.pose_filter.getPositionVarianceMagnitude() > positionVarianceThreshold)
+            {
+                continue;
+            }
+
+            // only (re)publish if this is the first stable estimate, or the
+            // settled pose has moved meaningfully since we last published it
+            if(obj.published && !obj.pose_filter.hasSignificantChange(obj.last_published_position, positionSignificanceThreshold))
+            {
+                continue;
+            }
+
             // convert internal data type to idl data type
             //TODO: helper function to convert to idl format
             ptera_msgs::msg::FoundObjectResponse foundObj; 
@@ -150,8 +163,9 @@ void ObjectLocatorModule::run()
             foundObj.set__obj_points_g(pc); 
 
             // publish response
-            RosTopicManager::getInstance()->publishMessage<ptera_msgs::msg::FoundObjectResponse>("vision/response", foundObj); 
-            std::this_thread::sleep_for(std::chrono::milliseconds(50)); 
+            RosTopicManager::getInstance()->publishMessage<ptera_msgs::msg::FoundObjectResponse>("vision/response", foundObj);
+            mObjectManager->markPublished(obj.instance_id, obj.global_centroid);
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); 

@@ -12,8 +12,9 @@ public:
     DetectedObjectManager();
     ~DetectedObjectManager();
 
-    void storeObject(DetectedObject& aDetection); 
-    std::vector<DetectedObject> getObjects(const std::string& anObjectType); 
+    void storeObject(DetectedObject& aDetection);
+    std::vector<DetectedObject> getObjects(const std::string& anObjectType);
+    void markPublished(const std::string& anInstanceId, const cv::Point3f& aPublishedPosition);
 
 private:
     std::string generateInstanceId(const std::string& aClassName); 
