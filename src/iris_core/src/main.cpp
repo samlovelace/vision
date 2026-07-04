@@ -12,7 +12,7 @@ int main()
 {
     rclcpp::init(0, nullptr); 
     createLogger(); 
-    std::string packagePath = ament_index_cpp::get_package_share_directory("iris_core");
+    std::string packagePath = ament_index_cpp::get_package_share_directory("iris_bringup");
     std::string configPath = packagePath + "/configuration/config.yaml";
 
     ConfigManager::get().load(configPath); 

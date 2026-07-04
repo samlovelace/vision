@@ -74,6 +74,5 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE _GLIBCXX_USE_CXX11_ABI=1)
 #target_link_options(${PROJECT_NAME} PRIVATE -fsanitize=address,undefined)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION lib/${PROJECT_NAME})
-install(DIRECTORY configuration/ DESTINATION share/${PROJECT_NAME}/configuration)
 
 ament_package()

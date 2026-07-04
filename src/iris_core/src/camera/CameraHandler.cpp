@@ -13,8 +13,8 @@ CameraHandler::CameraHandler(const YAML::Node& aCameraConfig,
     mFrameQueue(aFrameQueue), mNavDataHandler(aNavDataHandler), mRunning(true)
 {
     LOGD << YAML::Dump(aCameraConfig); 
-    std::string packagePath = ament_index_cpp::get_package_share_directory("iris_core");
-    std::string configPath = packagePath + "/configuration/camera/"; 
+    std::string packagePath = ament_index_cpp::get_package_share_directory("iris_bringup");
+    std::string configPath = packagePath + "/configuration/camera/";
 
     for(const auto& cameraFile : aCameraConfig)
     {

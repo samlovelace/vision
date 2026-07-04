@@ -16,7 +16,7 @@ Vision::Vision() : mModule(nullptr)
         throw std::runtime_error("Failed to get sub config for tag_detection"); 
     }
 
-    std::string packagePath = ament_index_cpp::get_package_share_directory("iris_core");
+    std::string packagePath = ament_index_cpp::get_package_share_directory("iris_bringup");
     std::string configPath = packagePath + "/configuration/";
 
     for(const auto& board : tagDetectionConfig["boards"])
