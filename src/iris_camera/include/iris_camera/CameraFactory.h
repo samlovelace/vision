@@ -1,7 +1,7 @@
 #ifndef CAMERAFACTORY_H
 #define CAMERAFACTORY_H
  
-#include "ICamera.hpp"
+#include "iris_camera/ICamera.hpp"
 #include <yaml-cpp/yaml.h>
  
 class CameraFactory 

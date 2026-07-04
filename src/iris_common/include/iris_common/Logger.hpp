@@ -68,42 +68,15 @@ void createLogger() {
     // Format time in HH_MM_SS
     std::ostringstream timeSS;
     timeSS << std::put_time(std::localtime(&now_time_t), "%H_%M_") << std::setw(2) << std::setfill('0') << seconds.count();
-    std::string logFileName = "vision_log_" + timeSS.str() + ".csv";
-    //std::string datalogFileName = "NORA_DataLog_" + timeSS.str() + ".csv";
+    std::string logFileName = "iris_camera_log_" + timeSS.str() + ".csv";
 
     // Full paths for log files
     std::string logFilePath = directoryName + "/" + logFileName;
-    //std::string datalogFilePath = directoryName + "/" + datalogFileName;
 
     // Initialize logger with CSV file name and console logger
     static plog::RollingFileAppender<plog::CsvFormatter> fileAppender(logFilePath.c_str());  // Create the 1st appender.
     static plog::ColorConsoleAppender<plog::TxtFormatter> consoleAppender;  // Create the 2nd appender.
     plog::init(plog::verbose, &fileAppender).addAppender(&consoleAppender);  // Initialize the logger with both appenders.
-
-    // Initialize a separate logger for the data log file
-    //static plog::RollingFileAppender<plog::CsvFormatter> dataFileAppender(datalogFilePath.c_str());
-    //plog::init<1>(plog::verbose, &dataFileAppender);  // Use a separate instance for the data log
-
-    // Log the creation of the data log file
-    //PLOG_INFO << datalogFileName << " created";
-}
-
-// Signal handler function
-void signalHandler(int signal) {
-
-    LOGD  << "\n" << "\t\t"
-	  R"(_________________________
-		|                       |
-		|   SHUTTING DOWN...    |
-		|_______________________|
-               __   /
-              / o) /
-     _.----._/ /
-    /         /
- __/ (  | (  |
-/__.-'|_|--|_|
-)";
-    exit(0); // Exit the program
 }
 
 #endif // LOGGER_H

@@ -3,7 +3,7 @@
 
 #include <opencv2/opencv.hpp> 
 #include <memory>
-#include "CameraParams.hpp"
+#include "iris_camera/CameraParams.hpp"
 
 struct CameraFrame
 {

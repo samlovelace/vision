@@ -1,7 +1,7 @@
 
 #include "BoardLocatorModule.h"
 #include "ConfigManager.hpp"
-#include "RosTopicManager.hpp"
+#include "iris_common/RosTopicManager.hpp"
 #include "ptera_msgs/msg/found_object_response.hpp"
 
 BoardLocatorModule::BoardLocatorModule(const KnownObjectConfig& anObjectToFind) 

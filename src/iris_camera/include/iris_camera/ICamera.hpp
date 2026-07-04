@@ -1,7 +1,7 @@
 #ifndef ICAMERA_HPP
 #define ICAMERA_HPP
  
-#include "CameraData.hpp"
+#include "iris_camera/CameraData.hpp"
 
 class ICamera 
 { 

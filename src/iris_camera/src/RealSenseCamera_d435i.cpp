@@ -1,5 +1,5 @@
 
-#include "RealSenseCamera_d435i.h"
+#include "iris_camera/RealSenseCamera_d435i.h"
 #include "plog/Log.h"
 
 RealSenseCamera_d435i::RealSenseCamera_d435i()

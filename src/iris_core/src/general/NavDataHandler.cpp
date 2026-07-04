@@ -1,6 +1,6 @@
 
 #include "NavDataHandler.h"
-#include "RosTopicManager.hpp"
+#include "iris_common/RosTopicManager.hpp"
 #include "plog/Log.h"
 
 NavDataHandler::NavDataHandler(const std::string& aNavTopicName)

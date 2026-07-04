@@ -1,7 +1,7 @@
 #ifndef REALSENSECAMERA_D435i_H
 #define REALSENSECAMERA_D435i_H
  
-#include "ICamera.hpp"
+#include "iris_camera/ICamera.hpp"
 
 #include "librealsense2/rs.hpp"
 #include <thread>

@@ -1,13 +1,13 @@
 set(GENERAL_SOURCES
     ${CMAKE_CURRENT_LIST_DIR}/BoardLocatorModule.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Calibration.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/CameraHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/CommandHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/DetectedObjectManager.cpp
     ${CMAKE_CURRENT_LIST_DIR}/NavDataHandler.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ObjectLocatorModule.cpp
     ${CMAKE_CURRENT_LIST_DIR}/ObjectPoseFilter.cpp
     ${CMAKE_CURRENT_LIST_DIR}/PointCloudViewer.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/RateController.cpp
     ${CMAKE_CURRENT_LIST_DIR}/Vision.cpp
     PARENT_SCOPE
 )

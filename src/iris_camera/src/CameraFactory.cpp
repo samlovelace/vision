@@ -1,8 +1,8 @@
 
-#include "CameraFactory.h"
-#include "UsbCamera.h"
-#include "RosCamera.h"
-#include "RealSenseCamera_d435i.h"
+#include "iris_camera/CameraFactory.h"
+#include "iris_camera/UsbCamera.h"
+#include "iris_camera/RosCamera.h"
+#include "iris_camera/RealSenseCamera_d435i.h"
 
 #include "plog/Log.h"
 

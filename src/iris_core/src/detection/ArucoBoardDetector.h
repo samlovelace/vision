@@ -10,7 +10,7 @@
 #include <opencv2/core.hpp>                        
 #include <opencv2/imgproc.hpp>                     
  
-#include "ConcurrentQueue.hpp"
+#include "iris_common/ConcurrentQueue.hpp"
 #include "CameraData.hpp"
 #include "DetectedObjectManager.h"
 #include "Types.hpp"

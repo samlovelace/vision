@@ -3,10 +3,10 @@
 
 #include <memory>
 
-#include "ICamera.hpp"
-#include "ConcurrentQueue.hpp"
-#include "CameraParams.hpp"
-#include "RateController.h"
+#include "iris_camera/ICamera.hpp"
+#include "iris_common/ConcurrentQueue.hpp"
+#include "iris_camera/CameraParams.hpp"
+#include "iris_camera/RateController.h"
 
 struct CameraContext
 {

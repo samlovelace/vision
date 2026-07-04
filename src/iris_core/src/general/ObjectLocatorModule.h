@@ -2,7 +2,7 @@
 #define OBJECTLOCATORMODULE_H
  
 #include "CameraHandler.h"
-#include "ConcurrentQueue.hpp" 
+#include "iris_common/ConcurrentQueue.hpp" 
 #include "ObjectDetectionHandler.h"
 #include "PoseEstimationHandler.h"
 #include "InferenceHandler.h"

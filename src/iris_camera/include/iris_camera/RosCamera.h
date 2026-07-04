@@ -1,7 +1,7 @@
 #ifndef ROSCAMERA_H
 #define ROSCAMERA_H
  
-#include "ICamera.hpp"
+#include "iris_camera/ICamera.hpp"
 #include <mutex> 
 
 #include <sensor_msgs/msg/image.hpp>

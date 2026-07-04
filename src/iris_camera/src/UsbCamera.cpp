@@ -1,5 +1,5 @@
 
-#include "UsbCamera.h"
+#include "iris_camera/UsbCamera.h"
 #include "plog/Log.h"
 
 UsbCamera::UsbCamera()

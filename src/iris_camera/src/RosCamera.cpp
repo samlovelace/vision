@@ -1,6 +1,6 @@
 
-#include "RosCamera.h"
-#include "RosTopicManager.hpp"
+#include "iris_camera/RosCamera.h"
+#include "iris_common/RosTopicManager.hpp"
 #include <cv_bridge/cv_bridge.h>
 #include "plog/Log.h"
 

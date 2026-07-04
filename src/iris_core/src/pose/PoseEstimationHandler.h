@@ -2,7 +2,7 @@
 #define POSEESTIMATOR_H
  
 #include <yaml-cpp/yaml.h>
-#include "ConcurrentQueue.hpp"
+#include "iris_common/ConcurrentQueue.hpp"
 #include "Detection.hpp"
 #include "IDepthEstimator.hpp"
 #include "InferenceHandler.h"

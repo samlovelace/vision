@@ -1,7 +1,7 @@
 
 #include "ObjectLocatorModule.h"
 #include "ConfigManager.hpp"
-#include "RosTopicManager.hpp"
+#include "iris_common/RosTopicManager.hpp"
 #include "plog/Log.h"
 #include "PointCloudViewer.h"
 #include "Utils.hpp"

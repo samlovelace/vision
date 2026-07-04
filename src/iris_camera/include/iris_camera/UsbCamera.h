@@ -1,7 +1,7 @@
 #ifndef USBCAMERA_H
 #define USBCAMERA_H
  
-#include "ICamera.hpp" 
+#include "iris_camera/ICamera.hpp" 
 
 class UsbCamera : public ICamera
 { 

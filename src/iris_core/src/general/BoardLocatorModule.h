@@ -1,14 +1,15 @@
 #ifndef BOARDLOCATORMODULE
 #define BOARDLOCATORMODULE
  
-#include <string> 
-#include <memory> 
+#include <string>
+#include <memory>
 #include <vector>
+#include <thread>
 
 #include "IModule.hpp"
 #include "Types.hpp"
 #include "CameraHandler.h"
-#include "ConcurrentQueue.hpp" 
+#include "iris_common/ConcurrentQueue.hpp" 
 #include "CameraData.hpp"
 #include "NavDataHandler.h"
 #include "DetectedObjectManager.h"

@@ -3,7 +3,7 @@
  
 #include <yaml-cpp/yaml.h>
 #include "ModelContext.hpp"
-#include "ConcurrentQueue.hpp"
+#include "iris_common/ConcurrentQueue.hpp"
 #include "Detection.hpp"
 #include "CameraData.hpp"
 #include "InferenceHandler.h"

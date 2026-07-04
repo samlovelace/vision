@@ -62,9 +62,9 @@ public:
     }
 
     void clear() {
-        std::lock_guard<std::mutex> lock(mMutex); 
-        std::queue<T> empty; 
-        std::swap(mQueue, empty); 
+        std::lock_guard<std::mutex> lock(mMutex);
+        std::queue<T> empty;
+        std::swap(mQueue, empty);
     }
 
 private:
